@@ -1,0 +1,51 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.4.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'war'
+
+version = '1.0.0'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    providedRuntime
+}
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-aop')
+    compile('org.springframework.boot:spring-boot-starter-cache')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('org.springframework.boot:spring-boot-starter-validation')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-websocket')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.activiti:activiti-spring-boot-starter-basic:6.0.0')
+    compile('org.activiti:activiti-spring-boot-starter-actuator:6.0.0')
+    compile('org.activiti:activiti-spring-boot-starter-jpa:6.0.0')
+    compile('org.apache.shiro:shiro-spring:1.4.0')
+    compile('org.apache.shiro:shiro-ehcache:1.4.0')
+    compile("org.thymeleaf:thymeleaf:3.0.7.RELEASE")
+    compile("org.thymeleaf:thymeleaf-spring4:3.0.7.RELEASE")
+    compile("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.2.2")
+    compile('com.github.theborakompanioni:thymeleaf-extras-shiro:2.0.0')
+    compile('org.apache.poi:poi:3.16')
+    compile('org.apache.poi:poi-scratchpad:3.16')
+    compile files('libs/ojdbc6.jar')
+    runtime('org.springframework.boot:spring-boot-devtools')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}

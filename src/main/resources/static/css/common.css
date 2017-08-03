@@ -1,0 +1,160 @@
+﻿body,html,div,p,ul,li,ol,dl,dt,dd,img,a,h1,h2,h3,h4,h5,h6{margin: 0;padding: 0;}
+ul,li,dl,dt,dd{list-style: none;}
+a{text-decoration: none;outline: none;}
+a:hover,a:focus,button:focus{text-decoration: none;outline: none!important;border:none;}
+a:visited {text-decoration: none;}
+img{border:0;}
+i,em{font-style: normal}
+html,body{font-family: "微软雅黑","宋体";min-width: 1200px}
+.pull-left{float: left;}
+.pull-right{float: right}
+.hide{display: none;}
+
+.head{overflow: hidden;clear: both;margin-top: 3%}
+.wrap{width: 940px;margin: 0 auto;}
+.head .back{margin-top: 30px;color: #383838}
+.head .back:hover{color: #f7831e}
+
+.loginBody{background: url(../img/bg.jpg) no-repeat center top;margin-top: 20px;overflow: hidden;height: 520px}
+.loginBody .leftLinks{width:610px;position: relative;float: left;background: none;
+	height: 520px}
+.loginBody .rightLogin{width: 310px;position: relative;float: left;top: 0px;left: 40px;opacity: 0}
+
+.loginBody .leftLinks #name{top: 50px;position: absolute;left: 120px;opacity: 0}
+.loginBody .leftLinks #name h1{font-size: 36px;color: #fff;position: relative;}
+.loginBody .leftLinks #name h1 .edition{position: absolute;display: inline-block;height: 22px;line-height: 22px;
+	font-size: 14px;font-weight: normal;background: #f9ab3a;padding: 0 10px;border-radius: 15px;top: 5px;right: -60px;
+}
+.loginBody .leftLinks #name h2{font-size: 24px;color: #fff;font-weight: normal;margin-top: 7px}
+.leftLinks #bg{position: absolute;left: 0;bottom: -287px;height: 287px}
+
+.leftLinks #star span{position: absolute;opacity: 0}
+.leftLinks #star .one{left: 150px;top:285px}
+.leftLinks #star .two{left: 600px;top:315px}
+
+.leftLinks #desk{position: absolute;bottom: 50px;height: 133px;left: 130px;opacity: 0}
+.leftLinks #pc{position: absolute;bottom: 50px;height: 144px;left: 265px;opacity: 0}
+.leftLinks #books{position: absolute;bottom: 30px;height: 70px;left: 157px;opacity: 0}
+
+#btnLins #one{left: 39px;top: 303px}
+#btnLins #two{left: 104px;top: 185px}
+#btnLins #three{left: 237px;top: 232px}
+#btnLins #four{left: 350px;top: 128px}
+#btnLins #five{left: 456px;top: 260px}
+#btnLins #six{left: 555px;top: 242px}
+#btnLins #seven{left: 594px;top: 376px}
+#btnLins .dotWrap{position: absolute;display: inline-block;width: 70px;height: 70px;opacity: 0}
+#btnLins .dotWrap .dot{position: absolute;width:70px;height:70px;background: #fff;text-align: center;line-height: 53px;border-radius: 100%;
+	display: table-cell;z-index: 9;border: 5px solid #fdbb5c;cursor: pointer; vertical-align:middle;}
+#btnLins .dotWrap .pulse {position: absolute; width: 80px;  height: 80px; left: -5px; top: -5px; background:#15a6ea; -webkit-border-radius: 40px; -moz-border-radius: 40px; border-radius: 40px; z-index: 1; opacity: 0; -webkit-animation: warn 4s ease-out; -moz-animation: warn 4s ease-out; animation: warn 4s ease-out; -webkit-animation-iteration-count: infinite; -moz-animation-iteration-count: infinite; animation-iteration-count: infinite;  
+	z-index: 1;}
+#btnLins .dotWrap img{vertical-align: middle;}
+#btnLins .dotWrap p{margin-top: 75px;text-align: center;font-size: 12px;color: #fff}
+/*animate dot*/
+ @keyframes warn {  
+        0% {  
+            transform: scale(0);  
+            opacity: 0.0;  
+        }  
+        25% {  
+            transform: scale(0);  
+            opacity: 0.1;  
+        }  
+        50% {  
+            transform: scale(0.5);  
+            opacity: 0.3;  
+        }  
+        75% {  
+            transform: scale(0.8);  
+            opacity: 0.8;  
+        }  
+        100% {  
+            transform: scale(1.1);  
+            opacity: 0.0;  
+        }  
+    }  
+    @-webkit-keyframes "warn" {  
+        0% {  
+            -webkit-transform: scale(0);  
+            opacity: 0.0;  
+        }  
+        25% {  
+            -webkit-transform: scale(0);  
+            opacity: 0.1;  
+        }  
+        50% {  
+            -webkit-transform: scale(0.1);  
+            opacity: 0.3;  
+        }  
+        75% {  
+            -webkit-transform: scale(0.5);  
+            opacity: 0.5;  
+        }  
+        100% {  
+            -webkit-transform: scale(1);  
+            opacity: 0.0;  
+        }  
+    }  
+
+.rightLogin .box .tit{font-size: 18px;font-weight: normal;color: #2c2a29;margin-bottom: 25px}
+.rightLogin .loginToggle{background: #fff;padding: 15px;width: 280px;}
+.rightLogin .loginLine{margin-top: 15px;height: 46px;}
+.rightLogin .border{border: 1px solid #dddddd;}
+.rightLogin .icon{border-right: 1px solid #dddddd;display: inline-block;float: left;height: 45px;overflow: hidden;line-height: 45px}
+.rightLogin .border .inp{float: left;height: 43px;padding: 0 10px;border: none;width: 200px;
+    }
+.rightLogin .border .inp::-webkit-input-placeholder {color: #b2b2b2;font-size: 16px;font-family: "微软雅黑"}
+.rightLogin .border .inp:-moz-placeholder {color: #b2b2b2;font-size: 16px;font-family: "微软雅黑"}
+.rightLogin .border .inp::-moz-placeholder  {color: #b2b2b2;font-size: 16px;font-family: "微软雅黑"}
+.rightLogin .border .inp:-ms-input-placeholder {color: #b2b2b2;font-size: 16px;font-family: "微软雅黑"}
+.rightLogin .loginLine .sub{width: 100%;height: 48px;background: #2fd079;color: #fff;font-size: 20px;border:none;cursor: pointer;font-family: "微软雅黑";
+    margin-top: 10px}
+.loginToggle .check{color: #b2b2b2;font-size: 14px;padding-top: 10px}
+.loginToggle .check input{vertical-align: middle;margin-top: 0px;margin-right: 5px;}
+
+.copyright{text-align: center;font-size: 14px;color: #383838;margin-top: 30px}
+
+/*responsive style*/
+@media all and (max-width: 768px) {
+  .loginBody .rightLogin{float: none;width: 90%;left: 5%;right: 5%;transform:translateY(40px)!important;}
+  .rightLogin .loginToggle{width: 100%}
+  .wrap{width: 100%}
+  .loginBody{padding: 0 0 28%;height: auto;}
+  .logo{width: 65%}
+  .logo img{width: 100%}
+  .head .back{margin-top: 3%}
+  html,body{min-width: auto}
+}
+
+#nav{display: none;}
+#nav li{color: #aaa;width: 100%;padding-left: 5%;background:#313131;color: #aaaaaa;font-size: 14px;;line-height: 36px; border-bottom: 1px solid #404040;
+    cursor: pointer;}
+#navToggle{float: right;margin-top: 2.7%;margin-left: 4px;display: none;margin-right: 1%;cursor: pointer;}
+#nav li.active{background: #262626;color: #fff}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title>发布公告</title>
+    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/summernote/summernote.css}"/>
+</head>
+<body>
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-edit fa-fw "></i>
+            发布公告
+        </h1>
+    </div>
+</div>
+
+
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>发布公告</h2>
+                </header>
+                <div role="content">
+                    <div class="widget-body no-padding">
+                        <form id="form" class="smart-form" novalidate="novalidate" method="post">
+                            <fieldset>
+                                <div class="row">
+                                    <section class="col col-4">
+                                        <label class="select">
+                                            <select name="type" id="type"></select>
+                                            <i> </i>
+                                        </label>
+                                    </section>
+                                    <section class="col col-8">
+                                        <label class="input">
+                                            <input type="text" name="title" id="title" placeholder="公告标题"/>
+                                        </label>
+                                    </section>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <textarea id="content" name="content" class="summernote">
+                                </textarea>
+                            </fieldset>
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    保 存
+                                </button>
+                                <a class="btn btn-danger" href="#/notice/index">
+                                    取 消
+                                </a>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+<script src="js/plugin/summernote/summernote.min.js"></script>
+<script src="js/plugin/summernote/summernote-zh-CN.min.js"></script>
+<script type="text/javascript">
+    pageSetUp();
+    var pagefunction = function () {
+
+        BindDictItem("type", "NOTICE_TYPE", "公告类型");
+
+        $('.summernote').summernote({
+            height: 400,
+            focus: false,
+            tabsize: 2,
+            lang: 'zh-CN',
+            dialogsInBody: true,
+            dialogsFade: true,
+        });
+
+        var $form = $("#form").validate({
+            rules: {
+                title: {required: true},
+                type: {required: true},
+                content: {required: true}
+            },
+            messages: {
+                title: {required: '请输入公告标题'},
+                type: {required: '请选择公告类型'},
+                content: {required: '请输入公告内容'}
+            },
+            submitHandler: function () {
+                $.ajax({
+                    url: '/notice/create',
+                    type: 'post',
+                    data: $('#form').serialize(),
+                    success: function () {
+                        window.location = '#/notice/index';
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+    };
+    var pagedestroy = function () {
+        $(".summernote").summernote('destroy');
+    }
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+</body>
+</html>

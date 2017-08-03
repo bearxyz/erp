@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title>系统错误</title>
+</head>
+<body>
+<!--[if IE 9]>
+<style>
+    .error-text {
+        color: #333 !important;
+    }
+</style>
+<![endif]-->
+
+<!-- row -->
+<div class="row">
+
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="text-center error-box">
+                    <h1 class="error-text tada animated"><i class="fa fa-times-circle text-danger error-icon-shadow"></i> 错误 500</h1>
+                    <h2 class="font-xl"><strong>发生错误!</strong></h2>
+                    <br />
+                    <p class="lead semi-bold">
+                        <strong>非常抱歉，您遇到一个技术错误。</strong><br><br>
+                        <small>
+                            我们正在努力修正该问题。 请耐心等待一段时间之后再重试。 <br> 同时，您可以选择:
+                        </small>
+                    </p>
+                    <ul class="error-search text-left font-md">
+                        <li><a href="dashboard.html"><small>去控制台 <i class="fa fa-arrow-right"></i></small></a></li>
+                        <li><a href="javascript:window.location.go(-1);"><small>返回</small></a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<!-- end row -->
+
+<script type="text/javascript">
+
+    pageSetUp();
+
+    var pagefunction = function() {
+    };
+
+    pagefunction();
+
+</script>
+
+</body>
+</html>
