@@ -3,6 +3,7 @@ package com.bearxyz.domain.po.business;
 import com.bearxyz.domain.po.BaseDomain;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by bearxyz on 2017/5/25.
@@ -25,13 +26,15 @@ public class Goods extends BaseDomain {
     @Column(length = 10)
     private String unit = "";
     @Column
-    private Float price = (float) 0.0;
-    @Column
     private Integer stock = 0;
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(columnDefinition = "CLOB")
     private String brief = "";
+
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "GOODS_ID")
+    private List<Package> packages;
 
     @Transient
     private String typeName = "";
@@ -86,14 +89,6 @@ public class Goods extends BaseDomain {
 
     public void setNature(String nature) {
         this.nature = nature;
-    }
-
-    public Float getPrice() {
-        return price;
-    }
-
-    public void setPrice(Float price) {
-        this.price = price;
     }
 
     public String getUnit() {

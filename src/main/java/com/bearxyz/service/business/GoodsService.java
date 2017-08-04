@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,6 +55,13 @@ public class GoodsService {
         partners.setRecordsFiltered((long)goods.size());
         partners.setData(goods);
         return partners;
+    }
+
+    public List<Goods> getByIds(String[] ids){
+        List<Goods> goods = new ArrayList<>();
+        for(String id: ids)
+            goods.add(repository.findOne(id));
+        return goods;
     }
 
 }

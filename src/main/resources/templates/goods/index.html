@@ -87,7 +87,6 @@
                             </th>
                             <th>商品名称</th>
                             <th>规格型号</th>
-                            <th>单价</th>
                             <th>单位</th>
                             <th>操作</th>
                             </thead>
@@ -126,9 +125,10 @@
             jQuery('#jstree').jstree({
                 'core': {
                     'data': {
-                        'url': "/goods/tree",
+                        'url': "/common/getDictTree",
                         'data': function (node) {
-                            return {"pid": node.id};
+                            var mask = (node.id == "#") ? "GOODS_NATURE" : node.id;
+                            return {"mask": mask};
                         }
                     },
                     'check_callback': true
@@ -146,7 +146,7 @@
                 url: "/goods/index",
                 "type": "POST",
                 "data": {
-                    pid: function () {
+                    mask: function () {
                         return $('#id').val();
                     }
                 }
@@ -155,7 +155,6 @@
                 CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
                 {"data": "name"},
                 {"data": "spec"},
-                {"data": "price", render: $.fn.dataTable.render.number(',', '.', 2, '¥')},
                 {"data": "unitName"},
                 {
                     "data": "operate",

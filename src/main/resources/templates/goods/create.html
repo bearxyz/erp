@@ -20,27 +20,45 @@
         <input type="hidden" id="nature" name="nature" th:value="${nature}">
         <fieldset>
             <div class="row">
-                <section class="col col-6">
+                <section class="col col-4">
                     <label class="input">
-                        <input type="text" name="name" id="name" placeholder="商品名称"/>
+                        <input type="text" name="name" placeholder="商品名称"/>
                     </label>
                 </section>
-                <section class="col col-6">
+                <section class="col col-4">
                     <label class="input">
-                        <input type="text" name="spec" id="spec" placeholder="型号规格"/>
+                        <input type="text" name="spec" placeholder="型号规格"/>
                     </label>
                 </section>
-            </div>
-            <div class="row">
-                <section class="col col-6">
+                <section class="col col-4">
                     <label class="select"><select name="unit" id="unit"></select><i></i></label>
                 </section>
-                <section class="col col-6">
-                    <label class="input">
-                        <input type="text" name="price" id="price" placeholder="单价"/>
-                    </label>
-                </section>
             </div>
+            <section>
+                <button type="button" class="btn btn-primary">新增包装信息</button>
+            </section>
+                <section>
+                    <div class="table-responsive">
+                        <table class="table" id="productTarget">
+                            <thead>
+                            <tr>
+                                <th>包装规格</th>
+                                <th>包装数量</th>
+                                <th>包装单位</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><label class="input"><input name="spec" /></label></td>
+                                <td><label class="input"><input name="ammount" /></label></td>
+                                <td><label class="input"><input name="unit" /></label></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </section>
+
             <section>
                 <textarea id="brief" name="brief" class="summernote"></textarea>
             </section>
@@ -75,14 +93,10 @@
 
         var $form = $("#form").validate({
             rules: {
-                name: {required: true},
-                spec: {required: true},
-                price: {required: true, digits: true}
+                name: {required: true}
             },
             messages: {
-                name: {required: '请输入商品名称'},
-                spec: {required: '请输入型号规格'},
-                price: {required: '请输入单价', digits: '请输入数字'}
+                name: {required: '请输入商品名称'}
             },
             onsubmit: true,
             submitHandler: function () {

@@ -38,29 +38,16 @@ public class GoodsController {
 
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ResponseBody
-    public String list(@RequestParam(value = "pid", required = false) String pid, @RequestParam("draw") String draw) throws JsonProcessingException {
-        String mask = "";
-        Dict dict = sysService.getDictById(pid);
-        if(dict!=null) mask = dict.getMask();
+    public String list(@RequestParam(value = "mask", required = false) String mask, @RequestParam("draw") String draw) throws JsonProcessingException {
         DataTable<Goods> goods = service.getByNature(mask);
         goods.setDraw(Integer.parseInt(draw));
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(goods);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/tree", method = RequestMethod.GET)
-    public List<TreeNode> getTree(@RequestParam("pid") String pid) {
-        if (pid.equals("#")) {
-            return sysService.getDictTreeByParentMask("GOODS_NATURE");
-        } else
-            return sysService.getDictTreeByParentId(pid);
-    }
-
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public String create(@RequestParam("id") String id, Model model) {
-        Dict dict = sysService.getDictById(id);
-        model.addAttribute("nature", dict.getMask());
+        model.addAttribute("nature", id);
         model.addAttribute("goods", new Goods());
         return "/goods/create";
     }

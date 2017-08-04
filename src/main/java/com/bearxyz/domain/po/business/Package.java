@@ -18,31 +18,15 @@ public class Package extends BaseDomain {
 
     @Column(length = 50)
     private String spec = "";
-    @Column(length = 50)
-    private String type = "";
     @Column(length = 10)
     private String unit = "";
     @Column
     private Integer ammount = 0;
     @Column
     private Integer stock = 0;
-    @Column(length = 36)
-    private String companyId = "";
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(columnDefinition = "CLOB")
-    private String brief = "";
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "T_GOODS_PACKAGE",
-            joinColumns = {@JoinColumn(name = "GOODS_ID", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "PACKAGE_ID", referencedColumnName = "id")}
-    )
-    private List<Goods> goods = new ArrayList<>();
 
     @Transient
     private String unitName = "";
-
 
     public String getSpec() {
         return spec;
@@ -52,11 +36,35 @@ public class Package extends BaseDomain {
         this.spec = spec;
     }
 
-    public String getType() {
-        return type;
+    public String getUnit() {
+        return unit;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public Integer getAmmount() {
+        return ammount;
+    }
+
+    public void setAmmount(Integer ammount) {
+        this.ammount = ammount;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 }

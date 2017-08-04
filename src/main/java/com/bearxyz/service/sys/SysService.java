@@ -157,7 +157,7 @@ public class SysService {
 
     public List<TreeNode> getDictTreeByParentMask(String mask) {
         List<Dict> dicts = getAllDictByParentMask(mask);
-        return dictListToTreeNode(dicts);
+        return dictListToTreeNodeWithMask(dicts);
     }
 
     private List<TreeNode> dictListToTreeNode(List<Dict> dicts) {
@@ -165,6 +165,19 @@ public class SysService {
         for (Dict dict : dicts) {
             TreeNode node = new TreeNode();
             node.setId(dict.getId());
+            node.setText(dict.getName());
+            if (getCountByParentId(dict.getId()) > 0)
+                node.setChildren(true);
+            treeNodeList.add(node);
+        }
+        return treeNodeList;
+    }
+
+    private List<TreeNode> dictListToTreeNodeWithMask(List<Dict> dicts) {
+        List<TreeNode> treeNodeList = new ArrayList<>();
+        for (Dict dict : dicts) {
+            TreeNode node = new TreeNode();
+            node.setId(dict.getMask());
             node.setText(dict.getName());
             if (getCountByParentId(dict.getId()) > 0)
                 node.setChildren(true);

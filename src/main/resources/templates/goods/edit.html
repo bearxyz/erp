@@ -19,24 +19,23 @@
     <form id="form" class="smart-form" novalidate="novalidate">
         <fieldset>
             <div class="row">
-                <section class="col col-6">
+                <section class="col col-4">
                     <label class="input">
-                        <input type="text" name="name" id="name" placeholder="商品名称" th:value="${goods.name}"/>
+                        <input type="text" name="name" placeholder="商品名称" th:value="${goods.name}"/>
                     </label>
                 </section>
-                <section class="col col-6">
+                <section class="col col-4">
                     <label class="input">
-                        <input type="text" name="spec" id="spec" placeholder="型号规格" th:value="${goods.spec}"/>
+                        <input type="text" name="spec" placeholder="型号规格" th:value="${goods.spec}"/>
                     </label>
+                </section>
+                <section class="col col-4">
+                    <label class="select"><select name="unit" id="unit"></select><i></i></label>
                 </section>
             </div>
             <div class="row">
-                <section class="col col-6">
-                    <label class="select"><select name="unit" id="unit"></select><i></i></label>
-                </section>
-                <label class="input">
-                    <input type="text" name="price" id="price" placeholder="单价" th:value="${goods.price}"/>
-                </label>
+
+
             </div>
             <section>
                 <textarea id="brief" name="brief" class="summernote">[[${goods.brief}]]</textarea>
@@ -73,13 +72,11 @@
         var $form = $("#form").validate({
             rules: {
                 name: {required: true},
-                spec: {required: true},
-                price: {required: true, digits: true}
+                spec: {required: true}
             },
             messages: {
                 name: {required: '请输入商品名称'},
-                spec: {required: '请输入型号规格'},
-                price: {required: '请输入单价', digits: '请输入数字'}
+                spec: {required: '请输入型号规格'}
             },
             onsubmit: true,
             submitHandler: function () {

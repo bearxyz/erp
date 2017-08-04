@@ -44,8 +44,8 @@
                     </span>
                     <h2><strong> 领用记录</strong></h2>
                     <div class="widget-toolbar" shiro:hasPermission="/foruse/apply">
-                        <a class="btn btn-primary" data-toggle="modal" data-target="#remoteModal"
-                           th:href="@{foruse/apply}">
+                        <a class="btn btn-primary"
+                           th:href="@{/#/foruse/apply}">
                             <i class="fa fa-edit"> </i>
                             <span class="hidden-mobile">领用申请</span>
                         </a>
@@ -75,15 +75,7 @@
 
 </section>
 <!-- end widget grid -->
-<!-- Dynamic Modal -->
-<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        </div>
-    </div>
-</div>
-<!-- /.modal -->
+
 
 <script type="text/javascript">
 
