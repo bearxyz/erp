@@ -30,13 +30,40 @@
                     </label>
                 </section>
                 <section class="col col-4">
-                    <label class="select"><select name="unit" id="unit"></select><i></i></label>
+                    <label class="input"><input type="text" name="unit" placeholder="单位"
+                                                th:value="${goods.unit}"/></label>
                 </section>
             </div>
-            <div class="row">
+            <section>
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="add">新增包装信息</a>
+            </section>
+            <section>
+                <div class="table-responsive">
+                    <table class="table" id="productTarget">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>包装规格</th>
+                            <th>包装数量</th>
+                            <th>包装单位</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="package, pStat:${goods.packages}">
+                            <td><a class="btn btn-danger btn-sm" href="javascript:void(0);" th:onclick="'del(this,\''+${package.id}+'\')'"><i
+                                    class="fa fa-minus-circle"></i></a></td>
+                            <td><label class="input"><input th:name="'packages['+${pStat.index}+'].packageSpec'"
+                                                            th:value="${package.packageSpec}" required="required"/></label></td>
+                            <td><label class="input"><input th:name="'packages['+${pStat.index}+'].ammount'"
+                                                            th:value="${package.ammount}" required="required" class="number"/></label></td>
+                            <td><label class="input"><input th:name="'packages['+${pStat.index}+'].packageUnit'"
+                                                            th:value="${package.packageUnit}" required="required"/></label></td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-
-            </div>
+                </div>
+            </section>
             <section>
                 <textarea id="brief" name="brief" class="summernote">[[${goods.brief}]]</textarea>
             </section>
@@ -54,11 +81,12 @@
 <script src="js/plugin/summernote/summernote.min.js"></script>
 <script src="js/plugin/summernote/summernote-zh-CN.min.js"></script>
 <script th:inline="javascript">
+
+    var i = [[${#lists.size(goods.packages)}]];
+
     pageSetUp();
 
     var pagefunction = function () {
-
-        BindDictItem("unit", "UNIT_TYPE", "单位", [[${goods.unit}]]);
 
         $('.summernote').summernote({
             height: 400,
@@ -106,9 +134,31 @@
                 error.insertAfter(element.parent());
             }
         });
+        if(!$("#form").valid()){
+            $(".ammount").each(function () {
+                $(this.rules("add",{number:true, messages:{number:"请输入数字"}}));
+            });
+        }
     };
 
     loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+    $('#add').on('click', function () {
+        $('#productTarget').append("<tr>" +
+            '<td><a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="delRow(this);"><i class="fa fa-minus-circle"></i></a></td>' +
+            '<td><label class="input"><input name="packages[' + i + '].packageSpec" required="required"/></label></td>' +
+            '<td><label class="input"><input class="ammount" name="packages[' + i + '].ammount" required="required" class="number"/></label></td>' +
+            '<td><label class="input"><input name="packages[' + i + '].packageUnit" required="required"/></label></td>' +
+            "</tr>");
+        i++;
+    });
+    function del(obj, id) {
+        delRow(obj);
+        $.ajax({
+            url: '/goods/delPak',
+            type: 'POST',
+            data: {id: id}
+        });
+    }
 </script>
 </body>
 </html>

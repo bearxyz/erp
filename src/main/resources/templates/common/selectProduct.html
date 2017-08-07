@@ -195,7 +195,16 @@
                     var products = eval(data);
 
                     $.each(products, function (i, item) {
-                        $('#productTarget').append("<tr><td>"+item.name+"</td><td>"+item.spec+"</td><td>"+item.stock+"</td><td><input type='hidden' name='id' value='"+item.id+"' /><label class='input'><input name='count' class='' value='0' /></label></td></tr>");
+                        var html = "<tr><td>" + item.name + "</td><td>" + item.spec + "</td>" +
+                            "<td><label class='select'><select name='package'>" +
+                            "<option value='1'>无包装[单位:" + item.unit + "]</option>";
+                        for (i = 0; i < item.packages.length; i++) {
+                            html += "<option value='" + item.packages[i].ammount + "'>" + item.packages[i].packageSpec + "[单位:" + item.packages[i].packageUnit + "]</option>";
+                        }
+                        html += "</select><i></i></label></td>" +
+                            "<td><input type='hidden' name='id' value='" + item.id + "' /><label class='input'><input name='count' class='' value='0' />" +
+                            "</label></td></tr>";
+                        $('#productTarget').append(html);
                     });
                 }
             });

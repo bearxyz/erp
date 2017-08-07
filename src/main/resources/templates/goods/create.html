@@ -31,33 +31,39 @@
                     </label>
                 </section>
                 <section class="col col-4">
-                    <label class="select"><select name="unit" id="unit"></select><i></i></label>
+                    <label class="input"><input type="text" name="unit" placeholder="单位"/></label>
                 </section>
             </div>
             <section>
-                <button type="button" class="btn btn-primary">新增包装信息</button>
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="add">新增包装信息</a>
             </section>
-                <section>
-                    <div class="table-responsive">
-                        <table class="table" id="productTarget">
-                            <thead>
-                            <tr>
-                                <th>包装规格</th>
-                                <th>包装数量</th>
-                                <th>包装单位</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td><label class="input"><input name="spec" /></label></td>
-                                <td><label class="input"><input name="ammount" /></label></td>
-                                <td><label class="input"><input name="unit" /></label></td>
-                            </tr>
-                            </tbody>
-                        </table>
+            <section>
+                <div class="table-responsive">
+                    <table class="table" id="productTarget">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>包装规格</th>
+                            <th>包装数量</th>
+                            <th>包装单位</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="delRow(this);"><i
+                                    class="fa fa-minus-circle"></i></a></td>
+                            <td><label class="input"><input name="packages[0].packageSpec" required="required"/></label>
+                            </td>
+                            <td><label class="input"><input name="packages[0].ammount" required="required"
+                                                            class="number"/></label></td>
+                            <td><label class="input"><input name="packages[0].packageUnit" required="required"/></label>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-                    </div>
-                </section>
+                </div>
+            </section>
 
             <section>
                 <textarea id="brief" name="brief" class="summernote"></textarea>
@@ -76,11 +82,10 @@
 <script src="js/plugin/summernote/summernote.min.js"></script>
 <script src="js/plugin/summernote/summernote-zh-CN.min.js"></script>
 <script>
+    var i = 0;
     pageSetUp();
 
     var pagefunction = function () {
-
-        BindDictItem("unit", "UNIT_TYPE", "单位");
 
         $('.summernote').summernote({
             height: 400,
@@ -93,10 +98,14 @@
 
         var $form = $("#form").validate({
             rules: {
-                name: {required: true}
+                name: {required: true},
+                spec: {required: true},
+                unit: {required: true}
             },
             messages: {
-                name: {required: '请输入商品名称'}
+                name: {required: '请输入商品名称'},
+                spec: {required: '请输入型号规格'},
+                unit: {required: '请输入单位'}
             },
             onsubmit: true,
             submitHandler: function () {
@@ -126,9 +135,20 @@
                 error.insertAfter(element.parent());
             }
         });
+
     };
 
     loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+
+    $('#add').on('click', function () {
+        i++;
+        $('#productTarget').append("<tr>" +
+            '<td><a class="btn btn-danger btn-sm" href="javascript:void(0);" onclick="delRow(this);"><i class="fa fa-minus-circle"></i></a></td>' +
+            '<td><label class="input"><input name="packages[' + i + '].packageSpec" required="required"/></label></td>' +
+            '<td><label class="input"><input id="ammount[' + i + ']" name="packages[' + i + '].ammount" required="required" class="number"/></label></td>' +
+            '<td><label class="input"><input name="packages[' + i + '].packageUnit" required="required"/></label></td>' +
+            "</tr>");
+    });
 </script>
 </body>
 </html>

@@ -17,31 +17,28 @@ public class Package extends BaseDomain {
     private static final long serialVersionUID = 2238791613867000784L;
 
     @Column(length = 50)
-    private String spec = "";
+    private String packageSpec = "";
     @Column(length = 10)
-    private String unit = "";
+    private String packageUnit = "";
     @Column
     private Integer ammount = 0;
     @Column
     private Integer stock = 0;
 
-    @Transient
-    private String unitName = "";
-
-    public String getSpec() {
-        return spec;
+    public String getPackageSpec() {
+        return packageSpec;
     }
 
-    public void setSpec(String spec) {
-        this.spec = spec;
+    public void setPackageSpec(String packageSpec) {
+        this.packageSpec = packageSpec;
     }
 
-    public String getUnit() {
-        return unit;
+    public String getPackageUnit() {
+        return packageUnit;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit;
+    public void setPackageUnit(String packageUnit) {
+        this.packageUnit = packageUnit;
     }
 
     public Integer getAmmount() {
@@ -60,11 +57,4 @@ public class Package extends BaseDomain {
         this.stock = stock;
     }
 
-    public String getUnitName() {
-        return unitName;
-    }
-
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
-    }
 }

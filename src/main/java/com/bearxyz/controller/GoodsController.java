@@ -1,12 +1,8 @@
 package com.bearxyz.controller;
 
 import com.bearxyz.common.DataTable;
-import com.bearxyz.common.TreeNode;
 import com.bearxyz.domain.po.business.Goods;
-import com.bearxyz.domain.po.business.OfficialPartner;
-import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.service.business.GoodsService;
-import com.bearxyz.service.sys.SysService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
-import java.util.List;
 
 /**
  * Created by bearxyz on 2017/7/25.
@@ -27,9 +22,6 @@ public class GoodsController {
 
     @Autowired
     private GoodsService service;
-
-    @Autowired
-    private SysService sysService;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index() {
@@ -79,6 +71,13 @@ public class GoodsController {
     @ResponseBody
     public String delete(String[] ids) {
         service.delete(ids);
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/delPak", method = RequestMethod.POST)
+    @ResponseBody
+    public String delete(String id) {
+        service.deletePackageById(id);
         return "{success: true}";
     }
 

@@ -79,3 +79,30 @@ function BindDictItem(ctrlName, mask, placeholder, selected) {
     var url = '/common/getDict?mask=' + encodeURI(mask);
     BindSelect(ctrlName, url, placeholder, selected);
 }
+
+function getRowObj(obj)
+{
+    var i = 0;
+    while(obj.tagName.toLowerCase() != "tr"){
+        obj = obj.parentNode;
+        if(obj.tagName.toLowerCase() == "table")return null;
+    }
+    return obj;
+}
+function getRowNo(obj){
+    var trObj = getRowObj(obj);
+    var trArr = trObj.parentNode.children;
+    for(var trNo= 0; trNo < trArr.length; trNo++){
+        if(trObj == trObj.parentNode.children[trNo]){
+            alert(trNo+1);
+        }
+    }
+}
+function delRow(obj){
+    var tr = this.getRowObj(obj);
+    if(tr != null){
+        tr.parentNode.removeChild(tr);
+    }else{
+        throw new Error("the given object is not contained by the table");
+    }
+}

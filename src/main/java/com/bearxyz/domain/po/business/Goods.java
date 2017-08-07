@@ -39,8 +39,6 @@ public class Goods extends BaseDomain {
     @Transient
     private String typeName = "";
     @Transient
-    private String unitName = "";
-    @Transient
     private String natureName = "";
 
     public String getName() {
@@ -107,19 +105,19 @@ public class Goods extends BaseDomain {
         this.typeName = typeName;
     }
 
-    public String getUnitName() {
-        return unitName;
-    }
-
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
-    }
-
     public String getNatureName() {
         return natureName;
     }
 
     public void setNatureName(String natureName) {
         this.natureName = natureName;
+    }
+
+    public List<Package> getPackages() {
+        return packages;
+    }
+
+    public void setPackages(List<Package> packages) {
+        this.packages = packages;
     }
 }
