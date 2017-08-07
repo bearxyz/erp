@@ -150,6 +150,10 @@ public class SysService {
         return dictRepository.findOne(id);
     }
 
+    public Dict getDictByMask(String mask){
+        return dictRepository.findByMask(mask);
+    }
+
     public List<TreeNode> getDictTreeByParentId(String pid) {
         List<Dict> dicts = getAllDictByParentId(pid);
         return dictListToTreeNode(dicts);

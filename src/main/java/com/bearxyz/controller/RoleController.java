@@ -38,10 +38,7 @@ public class RoleController {
     @ResponseBody
     @RequestMapping(value = "/role/index", method = RequestMethod.POST)
     public String getList(@RequestParam(value = "pid", required = false) String pid, @RequestParam("draw") String draw) throws JsonProcessingException {
-        String mask = "";
-        Dict dict = sysService.getDictById(pid);
-        if (dict != null) mask = dict.getMask();
-        DataTable<Role> roles = sysService.getRolesByType(mask);
+        DataTable<Role> roles = sysService.getRolesByType(pid);
         roles.setDraw(Integer.parseInt(draw));
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(roles);
@@ -53,12 +50,12 @@ public class RoleController {
         if (pid.equals("#")) {
             return sysService.getDictTreeByParentMask("ROLE_TYPE");
         } else
-            return sysService.getDictTreeByParentId(pid);
+            return sysService.getDictTreeByParentMask(pid);
     }
 
     @RequestMapping(value = "/role/create", method = RequestMethod.GET)
     public String create(@RequestParam("id") String id, Model model) {
-        Dict dict = sysService.getDictById(id);
+        Dict dict = sysService.getDictByMask(id);
         model.addAttribute("type", dict.getMask());
         model.addAttribute("role", new Role());
         return "/role/create";
