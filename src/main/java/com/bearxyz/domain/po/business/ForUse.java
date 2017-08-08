@@ -17,9 +17,9 @@ public class ForUse extends BaseDomain {
     @Column(length = 200)
     private String purpose = "";
     @Column(length = 50)
-    private String processInstanceId;
+    private String processInstanceId = "";
     @Column(length = 36)
-    private String userId;
+    private String userId = "";
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "FOR_USE_ID")

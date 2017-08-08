@@ -195,14 +195,17 @@
                     var products = eval(data);
 
                     $.each(products, function (i, item) {
-                        var html = "<tr><td>" + item.name + "</td><td>" + item.spec + "</td>" +
-                            "<td><label class='select'><select name='package'>" +
-                            "<option value='1'>无包装[单位:" + item.unit + "]</option>";
-                        for (i = 0; i < item.packages.length; i++) {
-                            html += "<option value='" + item.packages[i].ammount + "'>" + item.packages[i].packageSpec + "[单位:" + item.packages[i].packageUnit + "]</option>";
+                        var html = "<tr><td><a class='btn btn-danger btn-sm' href='javascript:void(0);' onclick='delRow(this);'><i class='fa fa-minus-circle'></i></a></td>" +
+                            "<td><label class='input'><input name='items[" + i + "].goodsId' value='" + item.id + "' type='hidden' />" +
+                            "<input name='name' value='" + item.name + "' disabled='disabled' /></label></td>" +
+                            "<td><label class='input'><input name='spec' value='" + item.spec + "' disabled='disabled' /></label></td>" +
+                            "<td><label class='select'><select name='items[" + i + "].packageId'>" +
+                            "<option value=''>无包装[单位:" + item.unit + "]</option>";
+                        for (n = 0; n < item.packages.length; n++) {
+                            html += "<option value='" + item.packages[n].id + "'>" + item.packages[n].packageSpec + "[单位:" + item.packages[n].packageUnit + "]</option>";
                         }
                         html += "</select><i></i></label></td>" +
-                            "<td><input type='hidden' name='id' value='" + item.id + "' /><label class='input'><input name='count' class='' value='0' />" +
+                            "<td><label class='input'><input name='items[" + i + "].count' class='' value='0' class='number' />" +
                             "</label></td></tr>";
                         $('#productTarget').append(html);
                     });

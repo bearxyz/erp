@@ -41,10 +41,10 @@ public class ForUseWorkflowService {
         String bussinessKey = forUse.getId();
         ProcessInstance processInstance = null;
         try{
-            identityService.setAuthenticatedUserId(forUse.getCreatedBy());
+            identityService.setAuthenticatedUserId(forUse.getUserId());
             processInstance = runtimeService.startProcessInstanceByKey("forUse", bussinessKey, variables);
             String processInstanceId = processInstance.getId();
-
+            forUse.setProcessInstanceId(processInstanceId);
         }
         finally {
             identityService.setAuthenticatedUserId(null);

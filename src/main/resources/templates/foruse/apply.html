@@ -38,6 +38,7 @@
                                         <table class="table" id="productTarget">
                                             <thead>
                                             <tr>
+                                                <th></th>
                                                 <th>物品名称</th>
                                                 <th>规格</th>
                                                 <th>包装</th>
@@ -88,14 +89,6 @@
 
     var pagefunction = function () {
         $("#form").validate({
-            rules: {
-                name: {required: true},
-                mask: {required: true}
-            },
-            messages: {
-                name: {required: '请输入字典项名称'},
-                mask: {required: '请输入字典标识'}
-            },
             onsubmit: true,
             submitHandler: function () {
                 $.ajax({
@@ -103,8 +96,7 @@
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function () {
-                        $('#remoteModal').modal('hide');
-                        $('#dt_basic').DataTable().ajax.reload();
+                        window.location = '#/foruse/index';
                     },
                     error: function (e) {
                         $.bigBox({

@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.4.RELEASE'
+        springBootVersion = '1.5.6.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -34,9 +34,17 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-websocket')
     compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.activiti:activiti-spring-boot-starter-basic:6.0.0')
-    compile('org.activiti:activiti-spring-boot-starter-actuator:6.0.0')
-    compile('org.activiti:activiti-spring-boot-starter-jpa:6.0.0')
+    compile('org.activiti:activiti-spring-boot-starter-basic:5.22.0')
+    compile('org.activiti:activiti-spring-boot-starter-actuator:5.22.0')
+    compile('org.activiti:activiti-spring-boot-starter-jpa:5.22.0')
+    compile('org.apache.xmlgraphics:batik-codec:1.7')
+    compile('org.apache.xmlgraphics:batik-css:1.7')
+    compile('org.apache.xmlgraphics:batik-svg-dom:1.7')
+    compile('org.apache.xmlgraphics:batik-svggen:1.7')
+    compile('org.activiti:activiti-explorer:5.22.0')
+    compile('org.activiti:activiti-diagram-rest:5.22.0')
+    compile('org.activiti:activiti-simple-workflow:5.22.0')
+    compile('org.activiti:activiti-spring:5.22.0')
     compile('org.apache.shiro:shiro-spring:1.4.0')
     compile('org.apache.shiro:shiro-ehcache:1.4.0')
     compile("org.thymeleaf:thymeleaf:3.0.7.RELEASE")
