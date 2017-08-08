@@ -63,9 +63,10 @@
                     url: '/workflow/create',
                     type: 'post',
                     data: $('#form').serialize(),
-                    success: function () {
-                        $('#remoteModal').modal('hide');
-                        $('#dt_basic').DataTable().ajax.reload();
+                    success: function (data) {
+                        var d = eval(data);
+                        alert(d.id);
+                        window.location = '/modeler.html?modelId='+d.id;
                     },
                     error: function (e) {
                         $.bigBox({

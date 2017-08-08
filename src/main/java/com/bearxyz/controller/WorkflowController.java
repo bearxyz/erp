@@ -46,7 +46,7 @@ public class WorkflowController {
     @RequestMapping(value = {"/create"}, method = RequestMethod.POST)
     public String save(@RequestParam("name") String name, @RequestParam("key") String key, @RequestParam("description") String description) throws UnsupportedEncodingException {
         String id = workflowService.create(name, key, description);
-        return "{id: " + id + "}";
+        return "{'id': '" + id + "'}";
     }
 
 }
