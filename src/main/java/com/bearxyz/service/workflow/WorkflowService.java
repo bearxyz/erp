@@ -89,13 +89,16 @@ public class WorkflowService {
         repositoryService.deleteModel(id);
     }
 
+    public Task getTaskByBussinessId(String id){
+        return taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
+    }
+
     public String startWorkflow(String processKey, String key, String uid, Map<String, Object> variables){
         String bussinessKey = key;
         ProcessInstance processInstance = null;
         try{
             identityService.setAuthenticatedUserId(uid);
             processInstance = runtimeService.startProcessInstanceByKey(processKey, bussinessKey, variables);
-            String processInstanceId = processInstance.getId();
         }
         finally {
             identityService.setAuthenticatedUserId(null);

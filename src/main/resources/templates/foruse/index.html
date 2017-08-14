@@ -91,13 +91,17 @@
             "serverSide": true,
             "ajax": {
                 url: "/foruse/index",
-                "type": "POST"
+                "type": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
             },
             "columns": [
-                {"data": "username"},
-                {"data": "realname"},
-                {"data": "email"},
-                {"data": "enabled", "sClass": "text-center", render: formatStatus, width: "50px"},
+                {"data": "goods"},
+                {"data": "purpose"},
+                {"data": "dateCeated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
+                {"data": "taskName", "sClass": "text-center"},
                 {
                     "data": "operate",
                     "sClass": "text-center",
@@ -106,7 +110,6 @@
                 }
             ],
             "autoWidth": true,
-            "ordering": false,
             "searching": false,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
             "preDrawCallback": function () {

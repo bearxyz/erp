@@ -96,6 +96,11 @@ public class CommonController {
         return "/common/tasks";
     }
 
+    @RequestMapping(value = "/task/todo", method = RequestMethod.GET)
+    public String todo(){
+        return "/common/task/todo";
+    }
+
     @RequestMapping(value = "/task/claim/{id}", method = RequestMethod.POST)
     @ResponseBody
     public String claim(@PathVariable("id")String taskId) throws JsonProcessingException {

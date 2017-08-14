@@ -1,6 +1,7 @@
 package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
+import org.activiti.engine.task.Task;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,8 +19,15 @@ public class ForUse extends BaseDomain {
     private String purpose = "";
     @Column(length = 50)
     private String processInstanceId = "";
-    @Column(length = 36)
-    private String userId = "";
+    @Column
+    private Boolean approved = false;
+
+    @Transient
+    private String goods = "";
+    @Transient
+    private String taskId;
+    @Transient
+    private String taskName;
 
     @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "FOR_USE_ID")
@@ -41,19 +49,43 @@ public class ForUse extends BaseDomain {
         this.processInstanceId = processInstanceId;
     }
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public List<ForUseItem> getItems() {
         return items;
     }
 
     public void setItems(List<ForUseItem> items) {
         this.items = items;
+    }
+
+    public Boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
+    }
+
+    public String getGoods() {
+        return goods;
+    }
+
+    public void setGoods(String goods) {
+        this.goods = goods;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
     }
 }

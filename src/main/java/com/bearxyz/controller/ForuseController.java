@@ -1,8 +1,13 @@
 package com.bearxyz.controller;
 
+import com.bearxyz.common.DataTable;
+import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.ForUse;
+import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.service.business.ForUseService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +32,16 @@ public class ForuseController {
         return "/foruse/index";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/index", method = RequestMethod.POST)
+    public String getList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        DataTable<ForUse> foruses = service.getForUse(user.getId(), req);
+        foruses.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(foruses);
+    }
+
     @RequestMapping(value = "/apply", method = RequestMethod.GET)
     public String create(Model model) {
         model.addAttribute("foruse", new ForUse());
@@ -36,7 +51,6 @@ public class ForuseController {
     @RequestMapping(value = "/apply", method = RequestMethod.POST)
     @ResponseBody
     public String doCreate(@ModelAttribute("foruse")ForUse forUse, SessionStatus status) {
-        forUse.setUserId(((User) SecurityUtils.getSubject().getPrincipal()).getId());
         service.apply(forUse);
         status.setComplete();
         return "{success: true}";
