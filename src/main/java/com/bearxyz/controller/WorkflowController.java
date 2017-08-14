@@ -1,5 +1,6 @@
 package com.bearxyz.controller;
 
+import com.bearxyz.common.ActionResponse;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.service.workflow.WorkflowService;
@@ -7,10 +8,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.repository.Model;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -44,9 +47,27 @@ public class WorkflowController {
 
     @ResponseBody
     @RequestMapping(value = {"/create"}, method = RequestMethod.POST)
-    public String save(@RequestParam("name") String name, @RequestParam("key") String key, @RequestParam("description") String description) throws UnsupportedEncodingException {
+    public String save(@RequestParam("name") String name, @RequestParam("key") String key, @RequestParam("description") String description) throws UnsupportedEncodingException, JsonProcessingException {
         String id = workflowService.create(name, key, description);
-        return "{'id': '" + id + "'}";
+        ActionResponse response = new ActionResponse();
+        response.setSuccess(true);
+        response.setId(id);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(response);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/delete"}, method = RequestMethod.POST)
+    public String delete(@Param("id") String id) {
+        workflowService.delete(id);
+        return "{success: true}";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/deploy"}, method = RequestMethod.POST)
+    public String deploy(@Param("id") String id) throws IOException {
+        workflowService.deploy(id);
+        return "{success: true}";
     }
 
 }

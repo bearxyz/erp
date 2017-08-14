@@ -35,7 +35,7 @@ public class PermissionController {
 
     @ResponseBody
     @RequestMapping(value = "/index", method = RequestMethod.POST)
-    public String getList(@RequestParam(value = "pid", required = false) String pid, @RequestParam("draw")String draw) throws JsonProcessingException {
+    public String getList(@RequestParam(value = "pid", required = false) String pid, @RequestParam("draw") String draw) throws JsonProcessingException {
         DataTable<Permission> permissions = sysService.getPermissionActions(pid);
         permissions.setDraw(Integer.parseInt(draw));
         ObjectMapper mapper = new ObjectMapper();
@@ -49,7 +49,7 @@ public class PermissionController {
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String create(@RequestParam(value="pid", required = false) String pid, @RequestParam("type") String type, Model model) {
+    public String create(@RequestParam(value = "pid", required = false) String pid, @RequestParam("type") String type, Model model) {
         model.addAttribute("pid", pid);
         model.addAttribute("type", type);
         model.addAttribute("permission", new Permission());
@@ -84,6 +84,13 @@ public class PermissionController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public String delete(@Param("ids") String[] ids) {
         sysService.deletePermissions(ids);
+        return "{success: true}";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/move", method = RequestMethod.POST)
+    public String move(@Param("id") String id, @Param("position") Integer position, @Param("old_position")Integer old_position) {
+        sysService.movePermission(id, position, old_position);
         return "{success: true}";
     }
 

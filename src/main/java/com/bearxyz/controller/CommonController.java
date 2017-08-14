@@ -1,20 +1,23 @@
 package com.bearxyz.controller;
 
+import com.bearxyz.common.ActionResponse;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.Select;
 import com.bearxyz.common.TreeNode;
 import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.sys.Dict;
+import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.sys.SysService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -35,6 +38,9 @@ public class CommonController {
 
     @Autowired
     private GoodsService goodsService;
+
+    @Autowired
+    private TaskService taskService;
 
     @RequestMapping(value = "/getDict")
     @ResponseBody
@@ -78,6 +84,47 @@ public class CommonController {
         List<Goods> goods = goodsService.getByIds(ids);
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(goods);
+    }
+
+    @RequestMapping(value = "/tasks", method = RequestMethod.GET)
+    public String tasks(Model model){
+        User user = (User)SecurityUtils.getSubject().getPrincipal();
+        List<Task> tasks = taskService.createTaskQuery().taskCandidateOrAssigned(user.getId()).list();
+        for(Task task: tasks){
+        }
+        model.addAttribute("tasks", tasks);
+        return "/common/tasks";
+    }
+
+    @RequestMapping(value = "/task/claim/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String claim(@PathVariable("id")String taskId) throws JsonProcessingException {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        taskService.claim(taskId, user.getId());
+        ObjectMapper mapper = new ObjectMapper();
+        ActionResponse response = new ActionResponse();
+        response.setSuccess(true);
+        return mapper.writeValueAsString(response);
+    }
+
+    @RequestMapping(value = "/task/addUser", method = RequestMethod.POST)
+    @ResponseBody
+    public String addCandidateUser(String taskId, String uid) throws JsonProcessingException {
+        taskService.addCandidateUser(taskId, uid);
+        ObjectMapper mapper = new ObjectMapper();
+        ActionResponse response = new ActionResponse();
+        response.setSuccess(true);
+        return mapper.writeValueAsString(response);
+    }
+
+    @RequestMapping(value = "/task/delegate", method = RequestMethod.POST)
+    @ResponseBody
+    public String delegateTask(String taskId, String uid) throws JsonProcessingException {
+        taskService.delegateTask(taskId, uid);
+        ObjectMapper mapper = new ObjectMapper();
+        ActionResponse response = new ActionResponse();
+        response.setSuccess(true);
+        return mapper.writeValueAsString(response);
     }
 
 }

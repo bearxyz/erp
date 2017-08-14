@@ -63,10 +63,9 @@
                     url: '/workflow/create',
                     type: 'post',
                     data: $('#form').serialize(),
+                    dataType:'json',
                     success: function (data) {
-                        var d = eval(data);
-                        alert(d.id);
-                        window.location = '/modeler.html?modelId='+d.id;
+                        window.location = '/modeler.html?modelId=' + data.id;
                     },
                     error: function (e) {
                         $.bigBox({

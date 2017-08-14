@@ -8,6 +8,7 @@ import com.bearxyz.repository.ForUseRepository;
 import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.PackageRepository;
 import com.bearxyz.service.workflow.ForUseWorkflowService;
+import com.bearxyz.service.workflow.WorkflowService;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class ForUseService {
     private PackageRepository packageRepository;
 
     @Autowired
-    private ForUseWorkflowService workflowService;
+    private WorkflowService workflowService;
 
     public void apply(ForUse forUse){
         for(ForUseItem item: forUse.getItems()){
@@ -50,7 +51,8 @@ public class ForUseService {
             }
         }
         Map<String, Object> variables = new HashMap<String, Object>();
-        workflowService.startWorkflow(forUse, variables);
+        repository.saveAndFlush(forUse);
+        forUse.setProcessInstanceId(workflowService.startWorkflow("for-use",forUse.getId(),forUse.getCreatedBy(),variables));
     }
 
     public void approve(){}

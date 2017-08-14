@@ -43,7 +43,7 @@ public class SysService {
 
     public User saveUser(User user) throws NameRepeatedException {
         User u = userRepository.findByUsername(user.getUsername());
-        if(u!=null) throw new NameRepeatedException("用户名重复");
+        if (u != null) throw new NameRepeatedException("用户名重复");
         return userRepository.saveAndFlush(user);
     }
 
@@ -62,7 +62,7 @@ public class SysService {
     }
 
     public DataTable<User> getUsersByType(String type, int start, int length) {
-        PageRequest request = new PageRequest(start/length, length, null);
+        PageRequest request = new PageRequest(start / length, length, null);
         Page<User> users = userRepository.findUsersByType(type, request);
         DataTable dt = new DataTable<User>();
         dt.setData(users.getContent());
@@ -77,15 +77,15 @@ public class SysService {
         userRepository.saveAndFlush(user);
     }
 
-    public List<RoleListVO> getRoles(){
+    public List<RoleListVO> getRoles() {
         List<RoleListVO> vo = new ArrayList<>();
         List<Dict> type = dictRepository.findAllByParentMask("ROLE_TYPE");
-        for(Dict t: type){
+        for (Dict t : type) {
             RoleListVO v = new RoleListVO();
             v.setType(t.getName());
             List<Role> roles = roleRepository.findAllByType(t.getMask());
             List<RoleVO> rvo = new ArrayList<>();
-            for(Role role: roles){
+            for (Role role : roles) {
                 RoleVO vo1 = new RoleVO();
                 BeanUtils.copyProperties(role, vo1);
                 rvo.add(vo1);
@@ -111,8 +111,8 @@ public class SysService {
     public DataTable<Role> getRolesByType(String type) {
         List<Role> roles = roleRepository.findAllByType(type);
         DataTable<Role> dt = new DataTable<>();
-        dt.setRecordsFiltered((long)roles.size());
-        dt.setRecordsTotal((long)roles.size());
+        dt.setRecordsFiltered((long) roles.size());
+        dt.setRecordsTotal((long) roles.size());
         dt.setData(roles);
         return dt;
     }
@@ -150,7 +150,7 @@ public class SysService {
         return dictRepository.findOne(id);
     }
 
-    public Dict getDictByMask(String mask){
+    public Dict getDictByMask(String mask) {
         return dictRepository.findByMask(mask);
     }
 
@@ -203,7 +203,7 @@ public class SysService {
     }
 
     public DataTable<Dict> getDictsByParentId(String pid, int start, int length) {
-        PageRequest request = new PageRequest(start/length, length, null);
+        PageRequest request = new PageRequest(start / length, length, null);
         if (pid == null || pid == "") pid = " ";
         Page<Dict> dicts = dictRepository.findDictsByParentId(pid, request);
         DataTable dt = new DataTable<Dict>();
@@ -214,6 +214,8 @@ public class SysService {
     }
 
     public Permission savePermission(Permission permission) {
+        if (permission.getId() == null || permission.getId().isEmpty())
+            permission.setSeq(permissionRepository.findMaxSeq() + 1);
         permissionRepository.saveAndFlush(permission);
         shiroService.updatePermission();
         return permission;
@@ -225,9 +227,9 @@ public class SysService {
         for (Permission permission : permissions) {
             PermissionVO vo = new PermissionVO();
             List<Permission> children = getPermissionAction(permission.getId());
-            List<PermissionVO> chil=new ArrayList<>();
+            List<PermissionVO> chil = new ArrayList<>();
             vo.setPermission(permission);
-            for(Permission c: children){
+            for (Permission c : children) {
                 PermissionVO v = new PermissionVO();
                 v.setPermission(c);
                 chil.add(v);
@@ -258,12 +260,12 @@ public class SysService {
         return permissionRepository.findAllByParentIdOrderBySeqAsc(pid);
     }
 
-    public DataTable<Permission> getPermissionActions(String pid){
+    public DataTable<Permission> getPermissionActions(String pid) {
         DataTable<Permission> dt = new DataTable<>();
         List<Permission> permissions = permissionRepository.findAllByParentIdOrderBySeqAsc(pid);
         dt.setData(permissions);
-        dt.setRecordsTotal((long)permissions.size());
-        dt.setRecordsFiltered((long)permissions.size());
+        dt.setRecordsTotal((long) permissions.size());
+        dt.setRecordsFiltered((long) permissions.size());
         return dt;
     }
 
@@ -283,7 +285,7 @@ public class SysService {
         return treeNodeList;
     }
 
-    public List<Permission> getUserPermissions(String userId){
+    public List<Permission> getUserPermissions(String userId) {
         return permissionRepository.findAllByUserId(userId);
     }
 
@@ -297,14 +299,34 @@ public class SysService {
         roleRepository.saveAndFlush(role);
     }
 
-    public void assignRolesToUser(String userId, String[] roles){
+    public void assignRolesToUser(String userId, String[] roles) {
         User user = getUserById(userId);
         user.getRoles().clear();
-        for(String role: roles){
+        for (String role : roles) {
             Role r = getRoleById(role);
             user.getRoles().add(r);
         }
         userRepository.saveAndFlush(user);
+    }
+
+    public void movePermission(String id, Integer position, Integer old_position) {
+        Permission permission = permissionRepository.findOne(id);
+        List<Permission> permissions = new ArrayList<>();
+        if (position > old_position) {
+            permissions = permissionRepository.findAllBySeqSmallToBig(old_position, position);
+            for (Permission other : permissions) {
+                other.setSeq(other.getSeq() - 1);
+                permissionRepository.saveAndFlush(other);
+            }
+        }
+        if (position < old_position) {
+            permissions = permissionRepository.findAllBySeqBigToSmall(position, old_position);
+            for (Permission other : permissions) {
+                other.setSeq(other.getSeq() + 1);
+                permissionRepository.saveAndFlush(other);
+            }
+        }
+        permission.setSeq(position);
     }
 
 }

@@ -89,10 +89,12 @@
                 </header>
                 <div>
                     <div class="widget-body no-padding" id="grid-content">
-                        <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable" width="100%">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
+                               width="100%">
                             <thead>
                             <input id="id" type="hidden"/>
-                            <th class="smart-form" style="padding:5px;"><label class="checkbox"><input name="check-all" type="checkbox"/><i> </i></label>
+                            <th class="smart-form" style="padding:5px;"><label class="checkbox"><input name="check-all"
+                                                                                                       type="checkbox"/><i> </i></label>
                             </th>
                             <th>权限名称</th>
                             <th>权限标识</th>
@@ -140,7 +142,7 @@
                     },
                     'check_callback': true
                 },
-                'plugins': ['contextmenu'],
+                'plugins': ['contextmenu', 'dnd'],
                 'contextmenu': {
                     'items': {
                         'create': {
@@ -162,6 +164,11 @@
                             }
                         },
                         'ccp': null
+                    }
+                },
+                'types': {
+                    '#': {
+                        'max_children': 0
                     }
                 }
             });
@@ -189,7 +196,7 @@
                 {"data": "url"},
                 {
                     "data": "operate",
-                    "sClass":"text-center",
+                    "sClass": "text-center",
                     render: formatAction
                 }
             ],
@@ -227,11 +234,11 @@
     });
 
     $('#dt_basic').on("change", ":checkbox", function () {
-        if($(this).is("[name='check-all']"))
+        if ($(this).is("[name='check-all']"))
             $(":checkbox", "#dt_basic").prop("checked", $(this).prop("checked"));
-        else{
-            var checkbox = $("tbody:checkbox","#dt_basic");
-            $(":checkbox[name='check-all']", "#dt_basic").prop("checked", checkbox.length==checkbox.filter(":checked"));
+        else {
+            var checkbox = $("tbody:checkbox", "#dt_basic");
+            $(":checkbox[name='check-all']", "#dt_basic").prop("checked", checkbox.length == checkbox.filter(":checked"));
         }
     });
 
@@ -247,9 +254,9 @@
         $('#dt_basic').DataTable().ajax.reload();
     });
 
-    function create(){
+    function create() {
         var id = $('#id').val();
-        if(id!="")
+        if (id != "")
             $('#remoteModal').modal({remote: '/permission/create?pid=' + id + '&type=PERMISSION_TYPE_ACTION'});
         else {
             $.SmartMessageBox({
@@ -308,6 +315,15 @@
                 }
             });
     }
+
+    jQuery('#jstree').on('move_node.jstree', function (e,data) {
+        $.ajax({
+            url: '/permission/move',
+            type:'POST',
+            data:{id: data.node.id, position: data.position, old_position: data.old_position},
+            success:function () {}
+        });
+    });
 
 </script>
 

@@ -117,6 +117,8 @@
                 }
             ],
             "autoWidth": true,
+            "paging": false,
+            "lengthChange": false,
             "ordering": false,
             "searching": false,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
@@ -149,9 +151,68 @@
     function formatAction(cellValue, options, rowObject) {
         var html = '<div class="btn-group btn-group-justified">';
         html+='<a href="/modeler.html?modelId=' + rowObject.id + '" class="btn-warning btn btn-xs"><i class="fa fa-edit"></i> <span class="hidden-mobile">编辑</span></a>';
-        html+='<a href="/modeler.html?modelId=' + rowObject.id + '" class="btn-danger btn btn-xs"><i class="fa fa-trash"></i> <span class="hidden-mobile">删除</span></a>';
+        html+='<a href="javascript:void(0);" class="btn-primary btn btn-xs" onclick="deploy('+rowObject.id+')"><i class="fa fa-cloud-upload"></i> <span class="hidden-mobile">部署</span></a>';
+        html+='<a href="javascript:void(0);" class="btn-danger btn btn-xs" onclick="del('+rowObject.id+')"><i class="fa fa-trash-o"></i> <span class="hidden-mobile">删除</span></a>';
         html += '</div>';
         return html;
+    }
+    function del(id) {
+        $.SmartMessageBox({
+                title: "注 意!",
+                content: "确定要删除选定的数据项吗？",
+                buttons: '[取 消][确 定]'
+            },
+            function (ButtonPressed) {
+                if (ButtonPressed === "确 定") {
+                    $.ajax({
+                        url: '/workflow/delete',
+                        type: 'POST',
+                        data: {id: id},
+                        success: function () {
+                            $('#dt_basic').DataTable().ajax.reload();
+                        },
+                        error: function (e) {
+                            $.bigBox({
+                                title: "系统内部错误！",
+                                content: "该错误已被记录，请联系管理员，并稍后重试！",
+                                color: "#C46A69",
+                                icon: "fa fa-warning shake animated",
+                                timeout: 6000
+                            });
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+    }
+    function deploy(id) {
+        $.SmartMessageBox({
+                title: "注 意!",
+                content: "确定要部署选定的数据项吗？",
+                buttons: '[取 消][确 定]'
+            },
+            function (ButtonPressed) {
+                if (ButtonPressed === "确 定") {
+                    $.ajax({
+                        url: '/workflow/deploy',
+                        type: 'POST',
+                        data: {id: id},
+                        success: function () {
+                            $('#dt_basic').DataTable().ajax.reload();
+                        },
+                        error: function (e) {
+                            $.bigBox({
+                                title: "系统内部错误！",
+                                content: "该错误已被记录，请联系管理员，并稍后重试！",
+                                color: "#C46A69",
+                                icon: "fa fa-warning shake animated",
+                                timeout: 6000
+                            });
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
     }
 </script>
 </body>
