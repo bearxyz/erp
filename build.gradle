@@ -34,6 +34,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-websocket')
     compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.jodd:jodd:3.3.2')
+    compile('joda-time:joda-time:2.9.9')
     compile('org.activiti:activiti-spring-boot-starter-basic:5.22.0')
     compile('org.activiti:activiti-spring-boot-starter-actuator:5.22.0')
     compile('org.activiti:activiti-spring-boot-starter-jpa:5.22.0')

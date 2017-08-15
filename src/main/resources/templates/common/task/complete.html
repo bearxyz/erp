@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title>事务办理</title>
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 事务办理</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form" class="smart-form" novalidate="novalidate">
+        <input type="hidden" id="taskId" name="taskId" th:value="${taskId}">
+        <input type="hidden" id="taskKey" name="taskKey" th:value="${taskKey}">
+        <fieldset>
+            <section>
+                <label class="textarea textarea-resizable">
+                    <textarea class="custom-scroll" placeholder="备注" id="memo" name="memo"></textarea>
+                </label>
+            </section>
+        </fieldset>
+        <footer>
+            <button type="button" class="btn btn-primary" id="create">
+                同 意
+            </button>
+            <button type="button" class="btn btn-danger">
+                驳 回
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                取 消
+            </button>
+        </footer>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    pageSetUp();
+
+    var pagefunction = function () {
+    };
+
+    $('#create').on('click', function () {
+        $.ajax({
+            url: '/common/task/complete',
+            type: 'POST',
+            data: {
+                taskId: [[${taskId}]],
+                var: [{key: 'deptLeaderPass', value: true, type: 'B'}, {key: 'deptLeaderMemo', value: $('#memo').val(), type: 'S'}]
+            },
+            success: function () {
+                window.location.reload();
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

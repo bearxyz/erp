@@ -8,6 +8,7 @@ import com.bearxyz.repository.ForUseRepository;
 import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.PackageRepository;
 import com.bearxyz.service.workflow.WorkflowService;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -56,8 +57,12 @@ public class ForUseService {
                 item.setAmmount(item.getCount());
             }
         }
-        Map<String, Object> variables = new HashMap<String, Object>();
         repository.saveAndFlush(forUse);
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("name","物品领用");
+        variables.put("url","/common/task/showForuse/");
+        variables.put("bid",forUse.getId());
+        variables.put("applyer", forUse.getCreatedBy());
         forUse.setProcessInstanceId(workflowService.startWorkflow("for-use",forUse.getId(),forUse.getCreatedBy(),variables));
     }
 
@@ -88,8 +93,15 @@ public class ForUseService {
                 goods+= g.getName()+item.getCount()+item.getUnit()+";";
             }
             Task task = workflowService.getTaskByBussinessId(forUse.getId());
-            forUse.setTaskId(task.getId());
-            forUse.setTaskName(task.getName());
+            if(task!=null) {
+                forUse.setTaskId(task.getId());
+                forUse.setTaskName(task.getName());
+            }
+            else {
+                HistoricTaskInstance historicTaskInstance = workflowService.getFinishedTaskByBussinessId(forUse.getId());
+                forUse.setTaskId(historicTaskInstance.getId());
+                forUse.setTaskName("完成");
+            }
             forUse.setGoods(goods);
         }
         result.setRecordsTotal(page.getTotalElements());
@@ -97,11 +109,5 @@ public class ForUseService {
         result.setData(content);
         return result;
     }
-
-    public void approve(){}
-
-    public void deny(){}
-
-    public void reapply(){}
 
 }

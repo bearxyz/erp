@@ -75,7 +75,15 @@
 
 </section>
 <!-- end widget grid -->
-
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
 
 <script type="text/javascript">
 
@@ -101,7 +109,7 @@
                 {"data": "goods"},
                 {"data": "purpose"},
                 {"data": "dateCeated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
-                {"data": "taskName", "sClass": "text-center"},
+                {"data": "taskName", "sClass": "text-center", render: formatStatus},
                 {
                     "data": "operate",
                     "sClass": "text-center",
@@ -145,6 +153,11 @@
             if(setresetPwdBtn) html+=setresetPwdBtn(rowObject.id);
         }catch (e){}
         html += '</div>';
+        return html;
+    }
+    
+    function formatStatus(cellValue, options, rowObject) {
+        var html = '<a class="btn btn-primary" data-toggle="modal" data-target="#remoteModal" href="/common/task/trace/'+rowObject.processInstanceId+'">'+rowObject.taskName;
         return html;
     }
 </script>

@@ -8,6 +8,8 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -39,6 +41,8 @@ public class WorkflowService {
     private ManagementService managementService;
     @Autowired
     private IdentityService identityService;
+    @Autowired
+    private HistoryService historyService;
 
     public DataTable<Model> getAllModelList(){
         DataTable<Model> dt = new DataTable<>();
@@ -91,6 +95,10 @@ public class WorkflowService {
 
     public Task getTaskByBussinessId(String id){
         return taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
+    }
+
+    public HistoricTaskInstance getFinishedTaskByBussinessId(String id){
+        return historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey(id).singleResult();
     }
 
     public String startWorkflow(String processKey, String key, String uid, Map<String, Object> variables){
