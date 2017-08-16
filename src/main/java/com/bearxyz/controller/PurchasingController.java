@@ -26,6 +26,11 @@ public class PurchasingController {
     @Autowired
     private PurchasingService service;
 
+    @RequestMapping(value = "/project", method = RequestMethod.GET)
+    public String project(){
+        return "/purchasing/project";
+    }
+
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(){
         return "/purchasing/index";

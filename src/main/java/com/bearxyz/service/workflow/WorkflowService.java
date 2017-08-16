@@ -97,10 +97,6 @@ public class WorkflowService {
         return taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
     }
 
-    public HistoricTaskInstance getFinishedTaskByBussinessId(String id){
-        return historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey(id).singleResult();
-    }
-
     public String startWorkflow(String processKey, String key, String uid, Map<String, Object> variables){
         String bussinessKey = key;
         ProcessInstance processInstance = null;

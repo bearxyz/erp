@@ -3,7 +3,9 @@ package com.bearxyz.service.business;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
+import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.repository.GoodsRepository;
+import com.bearxyz.repository.PackageRepository;
 import com.bearxyz.repository.PurchasingDetailRepository;
 import com.bearxyz.repository.PurchasingRepository;
 import com.bearxyz.service.workflow.WorkflowService;
@@ -36,6 +38,9 @@ public class PurchasingService {
     private PurchasingDetailRepository detailRepository;
 
     @Autowired
+    private PackageRepository packageRepository;
+
+    @Autowired
     private GoodsRepository goodsRepository;
 
     @Autowired
@@ -52,10 +57,23 @@ public class PurchasingService {
         variables.put("url","/purchasing/");
         variables.put("bid",purchasing.getId());
         variables.put("applyer", purchasing.getCreatedBy());
-        purchasing.setProcessInstanceId(workflowService.startWorkflow("common-audit",purchasing.getId(),purchasing.getCreatedBy(),variables));
+        purchasing.setProcessInstanceId(workflowService.startWorkflow("purchasing-audit",purchasing.getId(),purchasing.getCreatedBy(),variables));
     }
 
     public void save(Purchasing purchasing){
+        for(PurchasingDetail item: purchasing.getItems()){
+            Goods goods = goodsRepository.findOne(item.getGoodsId());
+            if(item.getPackageId()!=null&&!item.getPackageId().isEmpty()) {
+                Package pkg = packageRepository.findOne(item.getPackageId());
+                item.setSpec(pkg.getPackageSpec());
+                item.setUnit(pkg.getPackageUnit());
+                item.setAmmount(pkg.getAmmount() * item.getCount());
+            }else{
+                item.setSpec(goods.getSpec());
+                item.setUnit(goods.getUnit());
+                item.setAmmount(item.getCount());
+            }
+        }
         repository.saveAndFlush(purchasing);
     }
 

@@ -36,6 +36,11 @@ public class ForuseController {
     @Autowired
     private TaskService taskService;
 
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public String list(){
+        return "/foruse/list";
+    }
+
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(){
         return "/foruse/index";

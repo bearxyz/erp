@@ -39,7 +39,7 @@ public class ForUseService {
     private ForUseItemRepository forUseItemRepository;
 
     @Autowired
-    private GoodsRepository goodsRepository;
+    private GoodsService goodsService;
 
     @Autowired
     private PackageRepository packageRepository;
@@ -69,7 +69,7 @@ public class ForUseService {
 
     public void save(ForUse forUse){
         for(ForUseItem item: forUse.getItems()){
-            Goods goods = goodsRepository.findOne(item.getGoodsId());
+            Goods goods = goodsService.getById(item.getGoodsId());
             if(item.getPackageId()!=null&&!item.getPackageId().isEmpty()) {
                 Package pkg = packageRepository.findOne(item.getPackageId());
                 item.setSpec(pkg.getPackageSpec());
@@ -81,7 +81,7 @@ public class ForUseService {
                 item.setAmmount(item.getCount());
             }
         }
-        repository.saveAndFlush(forUse);
+        repository.save(forUse);
     }
 
     public DataTable<ForUse> getForUse(String uid, PaginationCriteria req){
@@ -107,7 +107,7 @@ public class ForUseService {
         for(ForUse forUse: content){
             String goods = "";
             for(ForUseItem item : forUse.getItems()){
-                Goods g = goodsRepository.findOne(item.getGoodsId());
+                Goods g = goodsService.getById(item.getGoodsId());
                 goods+= g.getName()+item.getCount()+item.getUnit()+";";
             }
             Task task = workflowService.getTaskByBussinessId(forUse.getId());

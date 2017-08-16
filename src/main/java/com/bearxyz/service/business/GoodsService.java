@@ -44,26 +44,26 @@ public class GoodsService {
         }
     }
 
-    public void deletePackageById(String id){
+    public void deletePackageById(String id) {
         packageRepository.delete(id);
     }
 
-    public Goods getById(String id){
+    public Goods getById(String id) {
         return repository.findOne(id);
     }
 
-    public DataTable<Goods> getByNature(String nature){
-        List<Goods> goods = repository.findAllByNature(nature);
+    public DataTable<Goods> getByNature(String nature) {
+        List<Goods> goods = (nature.isEmpty()) ? repository.findAll() : repository.findAllByNature(nature);
         DataTable<Goods> partners = new DataTable<>();
-        partners.setRecordsTotal((long)goods.size());
-        partners.setRecordsFiltered((long)goods.size());
+        partners.setRecordsTotal((long) goods.size());
+        partners.setRecordsFiltered((long) goods.size());
         partners.setData(goods);
         return partners;
     }
 
-    public List<Goods> getByIds(String[] ids){
+    public List<Goods> getByIds(String[] ids) {
         List<Goods> goods = new ArrayList<>();
-        for(String id: ids)
+        for (String id : ids)
             goods.add(repository.findOne(id));
         return goods;
     }
