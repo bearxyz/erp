@@ -214,7 +214,7 @@ public class SysService {
     }
 
     public Permission savePermission(Permission permission) {
-        if (permission.getId() == null || permission.getId().isEmpty())
+        if (permission.getType().equals("PERMISSION_TYPE_MENU")&&(permission.getId() == null || permission.getId().isEmpty()))
             permission.setSeq(permissionRepository.findMaxSeq() + 1);
         permissionRepository.saveAndFlush(permission);
         shiroService.updatePermission();

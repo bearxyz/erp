@@ -29,7 +29,7 @@ public class ForUse extends BaseDomain {
     @Transient
     private String taskName;
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "FOR_USE_ID")
     private List<ForUseItem> items = new ArrayList<>();
 

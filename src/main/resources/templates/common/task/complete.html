@@ -26,10 +26,10 @@
             </section>
         </fieldset>
         <footer>
-            <button type="button" class="btn btn-primary" id="create">
+            <button type="button" class="btn btn-primary" id="pass">
                 同 意
             </button>
-            <button type="button" class="btn btn-danger">
+            <button type="button" class="btn btn-danger" id="deny">
                 驳 回
             </button>
             <button type="button" class="btn btn-danger" data-dismiss="modal">
@@ -45,18 +45,22 @@
     var pagefunction = function () {
     };
 
-    $('#create').on('click', function () {
-        $.ajax({
-            url: '/common/task/complete',
-            type: 'POST',
-            data: {
-                taskId: [[${taskId}]],
-                var: [{key: 'deptLeaderPass', value: true, type: 'B'}, {key: 'deptLeaderMemo', value: $('#memo').val(), type: 'S'}]
-            },
-            success: function () {
-                window.location.reload();
-            }
-        });
+    $('#pass').on('click', function () {
+        var memo = ($('#memo').val()!=null)?$('#memo').val():'';
+        completeTask([[${taskId}]], [{key: 'deptLeaderPass', value: true, type: 'B'}, {
+            key: 'deptLeaderMemo',
+            value: memo,
+            type: 'S'
+        }]);
+    });
+
+    $('#deny').on('click', function () {
+        var memo = ($('#memo').val()!=null)?$('#memo').val():'';
+        completeTask([[${taskId}]], [{key: 'deptLeaderPass', value: false, type: 'B'}, {
+            key: 'deptLeaderMemo',
+            value: memo,
+            type: 'S'
+        }]);
     });
 
 </script>

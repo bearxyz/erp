@@ -5,6 +5,7 @@ import com.bearxyz.domain.po.BaseDomain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Created by bearxyz on 2017/8/2.
@@ -27,6 +28,9 @@ public class ForUseItem extends BaseDomain {
     private String unit = "";
     @Column(length = 36)
     private String packageId = "";
+
+    @Transient
+    private Goods goods;
 
     public String getGoodsId() {
         return goodsId;
@@ -75,4 +79,13 @@ public class ForUseItem extends BaseDomain {
     public void setPackageId(String packageId) {
         this.packageId = packageId;
     }
+
+    public Goods getGoods() {
+        return goods;
+    }
+
+    public void setGoods(Goods goods) {
+        this.goods = goods;
+    }
+
 }

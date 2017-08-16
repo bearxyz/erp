@@ -3,11 +3,16 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.ForUse;
+import com.bearxyz.domain.po.business.ForUseItem;
+import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.service.business.ForUseService;
+import com.bearxyz.service.business.GoodsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +31,10 @@ public class ForuseController {
 
     @Autowired
     private ForUseService service;
+    @Autowired
+    private GoodsService goodsService;
+    @Autowired
+    private TaskService taskService;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(){
@@ -53,6 +62,34 @@ public class ForuseController {
     public String doCreate(@ModelAttribute("foruse")ForUse forUse, SessionStatus status) {
         service.apply(forUse);
         status.setComplete();
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/reApply/{id}", method = RequestMethod.GET)
+    public String reApply(@PathVariable("id") String id, Model model) {
+        ForUse forUse = service.getOneById(id);
+        for(ForUseItem item: forUse.getItems()){
+            Goods goods = goodsService.getById(item.getGoodsId());
+            item.setGoods(goods);
+        }
+        Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
+        model.addAttribute("foruse", forUse);
+        model.addAttribute("taskId", task.getId());
+        return "/foruse/reApply";
+    }
+
+    @RequestMapping(value = "/reApply", method = RequestMethod.POST)
+    @ResponseBody
+    public String doReApply(@ModelAttribute("foruse")ForUse forUse, SessionStatus status) {
+        service.save(forUse);
+        status.setComplete();
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/del", method = RequestMethod.POST)
+    @ResponseBody
+    public String delete(String id) {
+        service.deleteItemById(id);
         return "{success: true}";
     }
 

@@ -28,7 +28,7 @@ public interface PermissionRepository extends JpaRepository<Permission, String> 
             "inner join SYS_USER su on ru.USER_ID = su.ID where p.TYPE='PERMISSION_TYPE_MENU' AND su.ID=?1 order by seq ASC", nativeQuery = true)
     List<Permission> findAllByUserId(String id);
 
-    @Query(value = "select top 1 seq FROM SYS_PERMISSION ORDER BY SEQ DESC", nativeQuery = true)
+    @Query(value = "select max(seq) FROM SYS_PERMISSION WHERE TYPE ='PERMISSION_TYPE_MENU'", nativeQuery = true)
     Integer findMaxSeq();
 
     List<Permission> findAllBySeqLessThanEqual(Integer seq);

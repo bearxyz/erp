@@ -106,3 +106,41 @@ function delRow(obj){
         throw new Error("the given object is not contained by the table");
     }
 }
+
+function completeTask(taskId, variables) {
+    var keys = "", values = "", types = "";
+    if (variables) {
+        $.each(variables, function () {
+            if (keys != "") {
+                keys += ",";
+                values += ",";
+                types += ",";
+            }
+            keys += this.key;
+            values += this.value;
+            types += this.type;
+        });
+    }
+    $.post('/common/task/complete/' + taskId, {keys: keys, values: values, types: types}, function () {
+        window.location.reload();
+    });
+}
+
+function completeTaskRedirect(taskId, variables, url) {
+    var keys = "", values = "", types = "";
+    if (variables) {
+        $.each(variables, function () {
+            if (keys != "") {
+                keys += ",";
+                values += ",";
+                types += ",";
+            }
+            keys += this.key;
+            values += this.value;
+            types += this.type;
+        });
+    }
+    $.post('/common/task/complete/' + taskId, {keys: keys, values: values, types: types}, function () {
+        window.location = url;
+    });
+}

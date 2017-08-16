@@ -37,7 +37,8 @@
                 <tr th:each="task:${tasks}">
                     <td class="text-center" style="width: 40px;"><i class="fa fa-globe fa-2x text-muted"></i></td>
                     <td>
-                        <h4><a th:href="${task.detailUrl}" data-toggle="modal" data-target="#remoteModal">
+                        <h4><a th:href="${task.detailUrl+'show/'+task.bussinessId}" data-toggle="modal"
+                               data-target="#remoteModal">
                             [[${task.name}]]
                         </a>
                             <small>[[${task.stage}]] [[${task.taskDefinitionKey}]]</small>
@@ -48,14 +49,20 @@
                         <br>
                         <small>申请时间：<i>[[${task.createDate}]]</i></small>
                     </td>
-                    <td class="text-center" style="width: 40px;">
+                    <td class="text-center" style="width: 180px;">
+                        <a class="btn btn-info btn-sm" th:if="${task.taskDefinitionKey=='adjustApply'}"
+                           th:href="${'/#'+task.detailUrl+'reApply/'+task.bussinessId}">调整申请</a>
+                        <a class="btn btn-info btn-sm" th:if="${task.taskDefinitionKey=='adjustApply'}"
+                           th:attr="onclick='cancel('+${task.taskId}+')'" href="javascript:void(0);">取 消</a>
                         <a class="btn btn-info btn-sm" th:if="${task.assignee==null}"
                            th:attr="onclick='signfor('+${task.taskId}+')'" href="javascript:void(0);">签 收</a>
                         <a class="btn btn-info btn-sm" th:if="${task.assignee==null}"
                            data-toggle="modal" data-target="#remoteModal" href="javascript:void(0);">转 发</a>
                         <a class="btn btn-info btn-sm" th:if="${task.assignee==null}"
                            data-toggle="modal" data-target="#remoteModal" href="javascript:void(0);">会 签</a>
-                        <a class="btn btn-info btn-sm" th:if="${task.assignee}" data-toggle="modal" data-target="#remoteModal" th:href="@{'/common/task/complete/'+${task.taskId}}">办 理</a>
+                        <a class="btn btn-info btn-sm"
+                           th:if="${task.assignee!=null and task.taskDefinitionKey!='adjustApply'}" data-toggle="modal"
+                           data-target="#remoteModal" th:href="@{'/common/task/complete/'+${task.taskId}}">办 理</a>
                     </td>
                 </tr>
                 </tbody>
@@ -76,7 +83,7 @@
     function signfor(id) {
         $.SmartMessageBox({
                 title: "注 意!",
-                content: "确定要签收选定的数据项吗？",
+                content: "确定要签收选定的任务吗？",
                 buttons: '[取 消][确 定]'
             },
             function (ButtonPressed) {
@@ -99,6 +106,18 @@
                             e.preventDefault();
                         }
                     });
+                }
+            });
+    }
+    function cancel(id) {
+        $.SmartMessageBox({
+                title: "注 意!",
+                content: "确定要取消选定的任务吗？",
+                buttons: '[取 消][确 定]'
+            },
+            function (ButtonPressed) {
+                if (ButtonPressed === "确 定") {
+                    completeTask(id, [{key: 'reApply', value: false, type: 'B'}]);
                 }
             });
     }

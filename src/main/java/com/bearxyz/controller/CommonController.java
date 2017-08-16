@@ -155,9 +155,9 @@ public class CommonController {
         return "/common/task/complete";
     }
 
-    @RequestMapping(value = "/task/complete", method = RequestMethod.POST)
+    @RequestMapping(value = "/task/complete/{taskId}", method = RequestMethod.POST)
     @ResponseBody
-    public String doComplete(String taskId, Variable var) throws JsonProcessingException {
+    public String doComplete(@PathVariable("taskId") String taskId, Variable var) throws JsonProcessingException {
         Map<String, Object> variables = var.getVariableMap();
         taskService.complete(taskId, variables);
         ObjectMapper mapper = new ObjectMapper();
@@ -201,10 +201,10 @@ public class CommonController {
         return mapper.writeValueAsString(response);
     }
 
-    @RequestMapping(value = "/task/addUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/task/setAssignee", method = RequestMethod.POST)
     @ResponseBody
-    public String addCandidateUser(String taskId, String uid) throws JsonProcessingException {
-        taskService.addCandidateUser(taskId, uid);
+    public String setAssignee(String taskId, String uid) throws JsonProcessingException {
+        taskService.setAssignee(taskId, uid);
         ObjectMapper mapper = new ObjectMapper();
         ActionResponse response = new ActionResponse();
         response.setSuccess(true);

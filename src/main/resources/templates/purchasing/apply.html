@@ -4,14 +4,14 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
-    <title>领用申请</title>
+    <title>采购申请</title>
 </head>
 <body>
 <div class="row">
     <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
         <h1 class="page-title txt-color-blueDark">
             <i class="fa fa-edit fa-fw "></i>
-            领用申请
+            采购申请
         </h1>
     </div>
 </div>
@@ -24,7 +24,7 @@
                  data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
                 <header>
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                    <h2>领用申请</h2>
+                    <h2>采购申请</h2>
                 </header>
                 <div role="content">
                     <div class="widget-body no-padding">
@@ -41,7 +41,7 @@
                                                 <th>物品名称</th>
                                                 <th>规格</th>
                                                 <th>包装</th>
-                                                <th>领用数量</th>
+                                                <th>采购数量</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -91,11 +91,11 @@
             onsubmit: true,
             submitHandler: function () {
                 $.ajax({
-                    url: '/foruse/apply',
+                    url: '/purchasing/apply',
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function () {
-                        window.location = '#/foruse/index';
+                        window.location = '#/purchasing/index';
                     },
                     error: function (e) {
                         $.bigBox({

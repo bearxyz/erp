@@ -3,13 +3,10 @@ package com.bearxyz.service.business;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
-import com.bearxyz.domain.po.business.Package;
-import com.bearxyz.repository.ForUseItemRepository;
-import com.bearxyz.repository.ForUseRepository;
 import com.bearxyz.repository.GoodsRepository;
-import com.bearxyz.repository.PackageRepository;
+import com.bearxyz.repository.PurchasingDetailRepository;
+import com.bearxyz.repository.PurchasingRepository;
 import com.bearxyz.service.workflow.WorkflowService;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,66 +23,44 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by bearxyz on 2017/8/2.
+ * Created by bearxyz on 2017/8/16.
  */
 @Transactional
 @Service
-public class ForUseService {
+public class PurchasingService {
 
     @Autowired
-    private ForUseRepository repository;
+    private PurchasingRepository repository;
 
     @Autowired
-    private ForUseItemRepository forUseItemRepository;
+    private PurchasingDetailRepository detailRepository;
 
     @Autowired
     private GoodsRepository goodsRepository;
 
     @Autowired
-    private PackageRepository packageRepository;
-
-    @Autowired
     private WorkflowService workflowService;
 
-    public void deleteItemById(String id)
-    {
-        forUseItemRepository.delete(id);
+    public Purchasing getOneById(String id){
+        return repository.findOne(id);
     }
 
-    public ForUse getOneById(String id){
-        ForUse forUse = repository.findOne(id);
-        return forUse;
-    }
-
-    public void apply(ForUse forUse){
-        save(forUse);
+    public void apply(Purchasing purchasing){
+        save(purchasing);
         Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("name","物品领用");
-        variables.put("url","/foruse/");
-        variables.put("bid",forUse.getId());
-        variables.put("applyer", forUse.getCreatedBy());
-        forUse.setProcessInstanceId(workflowService.startWorkflow("for-use",forUse.getId(),forUse.getCreatedBy(),variables));
+        variables.put("name","采购申请");
+        variables.put("url","/purchasing/");
+        variables.put("bid",purchasing.getId());
+        variables.put("applyer", purchasing.getCreatedBy());
+        purchasing.setProcessInstanceId(workflowService.startWorkflow("common-audit",purchasing.getId(),purchasing.getCreatedBy(),variables));
     }
 
-    public void save(ForUse forUse){
-        for(ForUseItem item: forUse.getItems()){
-            Goods goods = goodsRepository.findOne(item.getGoodsId());
-            if(item.getPackageId()!=null&&!item.getPackageId().isEmpty()) {
-                Package pkg = packageRepository.findOne(item.getPackageId());
-                item.setSpec(pkg.getPackageSpec());
-                item.setUnit(pkg.getPackageUnit());
-                item.setAmmount(pkg.getAmmount() * item.getCount());
-            }else{
-                item.setSpec(goods.getSpec());
-                item.setUnit(goods.getUnit());
-                item.setAmmount(item.getCount());
-            }
-        }
-        repository.saveAndFlush(forUse);
+    public void save(Purchasing purchasing){
+        repository.saveAndFlush(purchasing);
     }
 
-    public DataTable<ForUse> getForUse(String uid, PaginationCriteria req){
-        DataTable<ForUse> result = new DataTable<>();
+    public DataTable<Purchasing> getForUse(String uid, PaginationCriteria req){
+        DataTable<Purchasing> result = new DataTable<>();
         String order = "lastUpdated";
         String direction = "desc";
         req.getOrder().get(0).getDir();
@@ -94,7 +69,7 @@ public class ForUseService {
             order = req.getColumns().get(req.getOrder().get(0).getColumn()).getData();
         }
         PageRequest request = new PageRequest(req.getStart()/req.getLength(),req.getLength(), new Sort(Sort.Direction.fromString(direction), order));
-        Specification<ForUse> specification = (root, query, cb)->{
+        Specification<Purchasing> specification = (root, query, cb)->{
             Predicate predicate = cb.conjunction();
             if(!StringUtils.isEmpty(""))
                 predicate.getExpressions().add(cb.like(root.get("title"),"%"+StringUtils.trimAllWhitespace("")+"%"));
@@ -102,23 +77,23 @@ public class ForUseService {
                 predicate.getExpressions().add(cb.equal(root.get("createdBy"), uid));
             return predicate;
         };
-        Page<ForUse> page = repository.findAll(specification, request);
-        List<ForUse> content = page.getContent();
-        for(ForUse forUse: content){
+        Page<Purchasing> page = repository.findAll(specification, request);
+        List<Purchasing> content = page.getContent();
+        for(Purchasing purchasing: content){
             String goods = "";
-            for(ForUseItem item : forUse.getItems()){
+            for(PurchasingDetail item : purchasing.getItems()){
                 Goods g = goodsRepository.findOne(item.getGoodsId());
                 goods+= g.getName()+item.getCount()+item.getUnit()+";";
             }
-            Task task = workflowService.getTaskByBussinessId(forUse.getId());
+            Task task = workflowService.getTaskByBussinessId(purchasing.getId());
             if(task!=null) {
-                forUse.setTaskId(task.getId());
-                forUse.setTaskName(task.getName());
+                purchasing.setTaskId(task.getId());
+                purchasing.setTaskName(task.getName());
             }
             else {
-                forUse.setTaskName("已结束");
+                purchasing.setTaskName("已结束");
             }
-            forUse.setGoods(goods);
+            purchasing.setGoods(goods);
         }
         result.setRecordsTotal(page.getTotalElements());
         result.setRecordsFiltered(page.getTotalElements());
