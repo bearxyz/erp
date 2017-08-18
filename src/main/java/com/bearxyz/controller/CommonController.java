@@ -132,7 +132,7 @@ public class CommonController {
                 vo.setBussinessId(taskService.getVariable(task.getId(),"bid").toString());
             if(taskService.getVariable(task.getId(),"applyer")!=null) {
                 User u = sysService.getUserById(taskService.getVariable(task.getId(), "applyer").toString());
-                vo.setApplyer(u.getUsername());
+                vo.setApplyer(u.getFirstName()+u.getLastName());
             }
             vo.setAssignee(task.getAssignee());
             vo.setStage(task.getName());

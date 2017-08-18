@@ -9,6 +9,7 @@ import com.bearxyz.domain.vo.NoticeVO;
 import com.bearxyz.repository.DictRepository;
 import com.bearxyz.repository.NoticeRepository;
 import com.bearxyz.repository.UserRepository;
+import com.bearxyz.utility.RelativeDateFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,7 +43,7 @@ public class NoticeService {
     private UserRepository userRepository;
 
     public Notice save(Notice notice){
-        return repository.saveAndFlush(notice);
+        return repository.save(notice);
     }
 
     public void deleteById(String id){
@@ -56,7 +57,17 @@ public class NoticeService {
     }
 
     public Notice getById(String id){
-        return repository.findById(id);
+        Notice notice = repository.findById(id);
+        notice.setDatetime(RelativeDateFormat.format(notice.getLastUpdated()));
+        return notice;
+    }
+
+    public List<Notice> getTopAndType(int top, String type){
+        List<Notice> notices = repository.findAllByTopAndType(top, type);
+        for(Notice notice:notices){
+            notice.setDatetime(RelativeDateFormat.format(notice.getLastUpdated()));
+        }
+        return notices;
     }
 
     public DataTable<NoticeVO> getByConditions(PaginationCriteria req){
@@ -86,8 +97,8 @@ public class NoticeService {
             User createBy = userRepository.getOne(notice.getCreatedBy());
             User lastModifiedBy = userRepository.getOne(notice.getLastModifiedBy());
             v.setType(dict.getName());
-            v.setCreatedBy(createBy.getUsername());
-            v.setLastModifiedBy(lastModifiedBy.getUsername());
+            v.setCreatedBy(createBy.getFirstName()+createBy.getLastName());
+            v.setLastModifiedBy(lastModifiedBy.getFirstName()+createBy.getLastName());
             vo.add(v);
         }
         DataTable<NoticeVO> notices = new DataTable<>();

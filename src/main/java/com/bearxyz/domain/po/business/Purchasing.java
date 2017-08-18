@@ -4,6 +4,7 @@ import com.bearxyz.domain.po.BaseDomain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +26,10 @@ public class Purchasing extends BaseDomain {
     private String processInstanceId = "";
     @Column
     private Boolean approved = false;
+    @Column(length = 50)
+    private String operater = "";
+    @Column
+    private Date operationDate;
 
     @Transient
     private String goods = "";
@@ -107,5 +112,21 @@ public class Purchasing extends BaseDomain {
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    public String getOperater() {
+        return operater;
+    }
+
+    public void setOperater(String operater) {
+        this.operater = operater;
+    }
+
+    public Date getOperationDate() {
+        return operationDate;
+    }
+
+    public void setOperationDate(Date operationDate) {
+        this.operationDate = operationDate;
     }
 }

@@ -31,7 +31,7 @@ public class GoodsService {
     private PackageRepository packageRepository;
 
     public Goods save(Goods goods) {
-        return repository.saveAndFlush(goods);
+        return repository.save(goods);
     }
 
     public void deleteById(String id) {

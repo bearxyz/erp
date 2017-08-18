@@ -37,7 +37,7 @@ public class MyShiroRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         String username = token.getUsername();
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByEmail(username);
         if(user==null||!user.getEnabled()||user.getAccountNonExpired()||user.getAccountNonLocked()) throw new AuthenticationException("登录失败");
         return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
     }

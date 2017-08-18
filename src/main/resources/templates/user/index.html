@@ -65,9 +65,10 @@
                             <th class="smart-form" style="padding:5px;"><label class="checkbox"><input name="check-all"
                                                                                                        type="checkbox"/><i> </i></label>
                             </th>
-                            <th>账号</th>
-                            <th>真实姓名</th>
                             <th>邮箱</th>
+                            <th>真实姓名</th>
+                            <th>职务</th>
+                            <th>部门</th>
                             <th>状态</th>
                             <th>操作</th>
                             </thead>
@@ -112,9 +113,10 @@
             },
             "columns": [
                 CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
-                {"data": "username"},
-                {"data": "lastName"},
                 {"data": "email"},
+                {"data": "fullName"},
+                {"data": "post"},
+                {"data": "department"},
                 {"data": "enabled", "sClass": "text-center", render: formatStatus, width: "50px"},
                 {
                     "data": "operate",

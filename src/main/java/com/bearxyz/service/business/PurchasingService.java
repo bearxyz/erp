@@ -74,7 +74,7 @@ public class PurchasingService {
                 item.setAmmount(item.getCount());
             }
         }
-        repository.saveAndFlush(purchasing);
+        repository.save(purchasing);
     }
 
     public DataTable<Purchasing> getForUse(String uid, PaginationCriteria req){

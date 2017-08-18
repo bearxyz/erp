@@ -19,7 +19,8 @@
         <fieldset>
             <section>
                 <label class="input">
-                    <input type="text" name="username" id="username" placeholder="账号"/>
+                    <i class="icon-prepend fa fa-envelope-o"></i>
+                    <input type="email" name="email" id="email" placeholder="邮箱"/>
                 </label>
             </section>
             <section>
@@ -27,14 +28,24 @@
                     <input type="password" name="password" id="password" placeholder="密码"/>
                 </label>
             </section>
+            <div class="row">
+                <section class="col col-4">
+                    <label class="input">
+                        <i class="icon-prepend fa fa-user"></i>
+                        <input type="text" name="firstName" id="firstName" placeholder="姓"/>
+                    </label>
+                </section>
+                <section class="col col-8">
+                    <label class="input">
+                        <i class="icon-prepend fa fa-user"></i>
+                        <input type="text" name="lastName" id="lastName" placeholder="名"/>
+                    </label>
+                </section>
+            </div>
             <section>
                 <label class="input">
-                    <input type="text" name="realname" id="realname" placeholder="真实姓名"/>
-                </label>
-            </section>
-            <section>
-                <label class="input">
-                    <input type="email" name="email" id="email" placeholder="邮箱"/>
+                    <i class="icon-prepend fa fa-phone"></i>
+                    <input type="text" name="mobile" id="mobile" placeholder="手机号码"/>
                 </label>
             </section>
         </fieldset>
@@ -55,15 +66,15 @@
     var pagefunction = function () {
         var $form = $("#form").validate({
             rules: {
-                username: {required: true},
                 password: {required: true},
-                realname: {required: true},
+                firstName: {required: true},
+                lastName: {required: true},
                 email: {required: true}
             },
             messages: {
-                username: {required: '请输入账号'},
                 password: {required: '请输入密码'},
-                realname: {required: '请输入真实姓名'},
+                firstName: {required: '请输入姓名'},
+                lastName: {required: '请输入姓名'},
                 email: {required: '请输入用户邮箱'}
             },
             onsubmit: true,
@@ -74,11 +85,11 @@
                     data: $('#form').serialize(),
                     success: function (e) {
                         var val = $.parseJSON(e);
-                        if(val.success) {
+                        if (val.success) {
                             $('#remoteModal').modal('hide');
                             $('#dt_basic').DataTable().ajax.reload();
                         }
-                        else{
+                        else {
                             $.bigBox({
                                 title: "出错了！",
                                 content: val.msg,

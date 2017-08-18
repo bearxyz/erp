@@ -1,9 +1,16 @@
 package com.bearxyz.controller;
 
+import com.bearxyz.domain.po.business.Notice;
 import com.bearxyz.domain.po.sys.Permission;
 import com.bearxyz.domain.po.sys.Role;
 import com.bearxyz.domain.po.sys.User;
+import com.bearxyz.domain.vo.NoticeVO;
+import com.bearxyz.domain.vo.TaskVO;
+import com.bearxyz.service.business.NoticeService;
 import com.bearxyz.service.sys.SysService;
+import com.bearxyz.utility.RelativeDateFormat;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -26,6 +33,12 @@ public class HomeController {
 
     @Autowired
     private SysService sysService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private NoticeService noticeService;
 
     @RequestMapping(value = "/login.html", method = RequestMethod.GET)
     public String login() {
@@ -53,7 +66,38 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/dashboard.html", method = RequestMethod.GET)
-    public String dashboard() {
+    public String dashboard(Model model) {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        List<Permission> permissions = sysService.getUserPermissions(user.getId());
+        List<Task> tasks = taskService.createTaskQuery().taskCandidateOrAssigned(user.getId()).list();
+        List<TaskVO> taskVOS = new ArrayList<>();
+        List<Notice> notices = noticeService.getTopAndType(5, "NOTICT_TYPE_INTERNAL");
+        for (Task task : tasks) {
+            TaskVO vo = new TaskVO();
+            vo.setTaskId(task.getId());
+            if(taskService.getVariable(task.getId(),"name")!=null)
+                vo.setName(taskService.getVariable(task.getId(),"name").toString());
+            if(taskService.getVariable(task.getId(),"url")!=null)
+                vo.setDetailUrl(taskService.getVariable(task.getId(),"url").toString());
+            if(taskService.getVariable(task.getId(),"bid")!=null)
+                vo.setBussinessId(taskService.getVariable(task.getId(),"bid").toString());
+            if(taskService.getVariable(task.getId(),"applyer")!=null) {
+                User u = sysService.getUserById(taskService.getVariable(task.getId(), "applyer").toString());
+                vo.setApplyer(u.getFirstName()+u.getLastName());
+            }
+            vo.setAssignee(task.getAssignee());
+            vo.setStage(task.getName());
+            vo.setProcessInstanceId(task.getProcessInstanceId());
+            vo.setCreateDate(RelativeDateFormat.format(task.getCreateTime()));
+            vo.setCreateDatetime(task.getCreateTime());
+            vo.setTaskDefinitionKey(task.getTaskDefinitionKey());
+
+            taskVOS.add(vo);
+        }
+        model.addAttribute("tasks", taskVOS);
+        model.addAttribute("permissions", permissions);
+        model.addAttribute("user", user);
+        model.addAttribute("notices", notices);
         return "/dashboard";
     }
 

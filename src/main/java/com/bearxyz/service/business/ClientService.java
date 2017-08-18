@@ -34,7 +34,7 @@ public class ClientService {
 
 
     public Company saveCompany(Company company){
-        return  companyRepository.saveAndFlush(company);
+        return  companyRepository.save(company);
     }
 
     public Company getCompanyById(String id){

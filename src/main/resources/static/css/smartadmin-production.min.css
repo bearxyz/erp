@@ -11561,10 +11561,6 @@ aside {
     z-index: 906
 }
 
-.fixed-header #shortcut {
-    position: fixed
-}
-
 .fixed-header #main {
     margin-top: 49px
 }
@@ -14586,7 +14582,6 @@ img.away {
     right: 4px;
     top: 3px;
     font-family: FontAwesome;
-    z-index: 2
 }
 
 #shortcut .selected:after {
@@ -14594,16 +14589,13 @@ img.away {
     height: 0;
     border-top: 35px solid #0091d9;
     border-left: 35px solid rgba(0, 0, 0, 0);
-    position: absolute;
     display: block;
     right: 0;
     content: "";
     top: 0;
-    z-index: 1
 }
 
 #shortcut {
-    position: absolute;
     top: 0;
     left: 0;
     height: auto;
@@ -14611,7 +14603,6 @@ img.away {
     background-color: #33302F;
     background-color: rgba(0, 0, 0, .85);
     z-index: 907;
-    display: none;
     color: #fff;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;

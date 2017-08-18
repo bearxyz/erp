@@ -13,7 +13,10 @@ import java.util.List;
  */
 public interface UserRepository extends JpaRepository<User, String> {
 
-    User findByUsername(String username);
+    User findByEmail(String email);
+
+    @Query(value = "SELECT * FROM SYS_USER WHERE EMAIL = ?1 OR MOBILE = ?1", nativeQuery = true)
+    User findByPersonEmailOrMobile(String login);
 
     Page<User> findUsersByType(String type, Pageable request);
 

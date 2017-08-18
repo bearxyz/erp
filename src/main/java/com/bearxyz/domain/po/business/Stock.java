@@ -4,12 +4,14 @@ import com.bearxyz.domain.po.BaseDomain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "T_STOCK")
 public class Stock extends BaseDomain {
 
+    private static final long serialVersionUID = 7135568704122702991L;
     @Column(length = 50)
     private String mask = "";
     @Column(length = 50)
@@ -20,6 +22,8 @@ public class Stock extends BaseDomain {
     private String processInstanceId = "";
     @Column(length = 36)
     private String operator = "";
+    @Column
+    private Date operationDate;
     @Column
     private Boolean approved = false;
 
@@ -96,5 +100,29 @@ public class Stock extends BaseDomain {
 
     public void setItems(List<StockItem> items) {
         this.items = items;
+    }
+
+    public String getMask() {
+        return mask;
+    }
+
+    public void setMask(String mask) {
+        this.mask = mask;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    public Date getOperationDate() {
+        return operationDate;
+    }
+
+    public void setOperationDate(Date operationDate) {
+        this.operationDate = operationDate;
     }
 }

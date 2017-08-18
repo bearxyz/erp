@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by bearxyz on 2017/6/3.
@@ -42,9 +43,9 @@ public class SysService {
     private ShiroService shiroService;
 
     public User saveUser(User user) throws NameRepeatedException {
-        User u = userRepository.findByUsername(user.getUsername());
-        if (u != null) throw new NameRepeatedException("用户名重复");
-        return userRepository.saveAndFlush(user);
+        User u = userRepository.findByEmail(user.getEmail());
+        if (u != null) throw new NameRepeatedException("邮箱重复");
+        return userRepository.save(user);
     }
 
     public void deleteUserById(String id) {
@@ -64,6 +65,20 @@ public class SysService {
     public DataTable<User> getUsersByType(String type, int start, int length) {
         PageRequest request = new PageRequest(start / length, length, null);
         Page<User> users = userRepository.findUsersByType(type, request);
+        for (User user : users) {
+            Set<Role> roles = user.getRoles();
+            String post = "";
+            String dep = "";
+            for (Role role : roles) {
+                if (role.getType().equals("ROLE_TYPE_POST"))
+                    post += role.getName() + " ";
+                if (role.getType().equals("ROLE_TYPE_DEPARTMENT"))
+                    dep += role.getName() + " ";
+            }
+            user.setPost(post);
+            user.setDepartment(dep);
+            user.setFullName(user.getFirstName()+user.getLastName());
+        }
         DataTable dt = new DataTable<User>();
         dt.setData(users.getContent());
         dt.setRecordsTotal(users.getTotalElements());
@@ -74,7 +89,7 @@ public class SysService {
     public void setUserStatus(String id) {
         User user = getUserById(id);
         user.setEnabled(!user.getEnabled());
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
     }
 
     public List<RoleListVO> getRoles() {
@@ -97,7 +112,7 @@ public class SysService {
     }
 
     public Role saveRole(Role role) {
-        return roleRepository.saveAndFlush(role);
+        return roleRepository.save(role);
     }
 
     public void deleteRoleById(String id) {
@@ -129,7 +144,7 @@ public class SysService {
             dict.setParentMask(parent.getMask());
         } else
             dict.setParentId(" ");
-        return dictRepository.saveAndFlush(dict);
+        return dictRepository.save(dict);
     }
 
     public void deleteDicts(String[] ids) {
@@ -214,9 +229,9 @@ public class SysService {
     }
 
     public Permission savePermission(Permission permission) {
-        if (permission.getType().equals("PERMISSION_TYPE_MENU")&&(permission.getId() == null || permission.getId().isEmpty()))
+        if (permission.getType().equals("PERMISSION_TYPE_MENU") && (permission.getId() == null || permission.getId().isEmpty()))
             permission.setSeq(permissionRepository.findMaxSeq() + 1);
-        permissionRepository.saveAndFlush(permission);
+        permissionRepository.save(permission);
         shiroService.updatePermission();
         return permission;
     }
@@ -296,7 +311,7 @@ public class SysService {
             Permission perm = getPermissionById(p);
             role.getPermissions().add(perm);
         }
-        roleRepository.saveAndFlush(role);
+        roleRepository.save(role);
     }
 
     public void assignRolesToUser(String userId, String[] roles) {
@@ -306,24 +321,24 @@ public class SysService {
             Role r = getRoleById(role);
             user.getRoles().add(r);
         }
-        userRepository.saveAndFlush(user);
+        userRepository.save(user);
     }
 
     public void movePermission(String id, Integer position, Integer old_position) {
         Permission permission = permissionRepository.findOne(id);
-        List<Permission> permissions = new ArrayList<>();
+        List<Permission> permissions;
         if (position > old_position) {
             permissions = permissionRepository.findAllBySeqSmallToBig(old_position, position);
             for (Permission other : permissions) {
                 other.setSeq(other.getSeq() - 1);
-                permissionRepository.saveAndFlush(other);
+                permissionRepository.save(other);
             }
         }
         if (position < old_position) {
             permissions = permissionRepository.findAllBySeqBigToSmall(position, old_position);
             for (Permission other : permissions) {
                 other.setSeq(other.getSeq() + 1);
-                permissionRepository.saveAndFlush(other);
+                permissionRepository.save(other);
             }
         }
         permission.setSeq(position);

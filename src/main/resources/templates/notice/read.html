@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="well padding-10">
+            <h3 class="margin-top-0"><a href="javascript:void(0);"> [[${notice.title}]] </a><br><small class="font-xs"><i>[[${notice.datetime}]]</i></small></h3>
+            <p th:utext="${notice.content}"></p>
+            <a class="btn btn-primary" href="javascript:window.history.back();"> 返 回 </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    pageSetUp();
+</script>
+</body>
+</html>

@@ -25,6 +25,9 @@ public class Notice extends BaseDomain {
     @Column(columnDefinition = "CLOB")
     private String content;
 
+    @Transient
+    private String datetime="";
+
     public String getTitle() {
         return title;
     }
@@ -47,5 +50,13 @@ public class Notice extends BaseDomain {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
     }
 }

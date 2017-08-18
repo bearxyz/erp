@@ -25,18 +25,19 @@ import java.util.List;
 
 @Controller
 @SessionAttributes("user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private SysService sysService;
 
-    @RequestMapping(value = "/user/index", method = RequestMethod.GET)
+    @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(){
         return "/user/index";
     }
 
     @ResponseBody
-    @RequestMapping(value = "/user/index", method = RequestMethod.POST)
+    @RequestMapping(value = "/index", method = RequestMethod.POST)
     public String getList(@RequestParam("draw") String draw,@RequestParam("start") int start, @RequestParam("length") int length) throws JsonProcessingException {
         DataTable<User> users = sysService.getUsersByType("USER_TYPE_SYSTEM",start,length);
         users.setDraw(Integer.parseInt(draw));
@@ -44,14 +45,14 @@ public class UserController {
         return mapper.writeValueAsString(users);
     }
 
-    @RequestMapping(value = "/user/create", method = RequestMethod.GET)
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
     public String create(Model model) {
         model.addAttribute("user", new User());
         return "/user/create";
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/user/create"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/create"}, method = RequestMethod.POST)
     public String save(User user) throws Exception {
         user.setType("USER_TYPE_SYSTEM");
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
@@ -69,27 +70,27 @@ public class UserController {
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/user/delete"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/delete"}, method = RequestMethod.POST)
     public String delete(@Param("ids") String[] ids){
         sysService.deleteUsers(ids);
         return "{success: true}";
     }
 
     @ResponseBody
-    @RequestMapping(value = {"/user/setStatus"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"/setStatus"}, method = RequestMethod.POST)
     public String setStatus(@RequestParam("id") String id){
         sysService.setUserStatus(id);
         return "{success: true}";
     }
 
-    @RequestMapping(value = "/user/resetPwd", method = RequestMethod.GET)
+    @RequestMapping(value = "/resetPwd", method = RequestMethod.GET)
     public String resetPwd(@RequestParam("id") String id, Model model){
         User user = sysService.getUserById(id);
         model.addAttribute("user", user);
         return "/user/resetPwd";
     }
 
-    @RequestMapping(value = "/user/assign", method = RequestMethod.GET)
+    @RequestMapping(value = "/assign", method = RequestMethod.GET)
     public String assign(@RequestParam("id") String id, Model model){
         List<RoleListVO> vo = sysService.getRoles();
         User user = sysService.getUserById(id);
@@ -106,7 +107,7 @@ public class UserController {
         return "/user/assign";
     }
 
-    @RequestMapping(value = "/user/assign", method = RequestMethod.POST)
+    @RequestMapping(value = "/assign", method = RequestMethod.POST)
     @ResponseBody
     public String assignPermission(@RequestParam("userId") String userId, @RequestParam("role") String[] role) {
         sysService.assignRolesToUser(userId, role);

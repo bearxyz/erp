@@ -77,4 +77,11 @@ public class NoticeController {
         return "{success: true}";
     }
 
+    @RequestMapping(value = "/read/{id}", method = RequestMethod.GET)
+    public String read(@PathVariable(value = "id") String id, Model model) {
+        Notice notice = service.getById(id);
+        model.addAttribute("notice", notice);
+        return "/notice/read";
+    }
+
 }

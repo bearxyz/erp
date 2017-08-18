@@ -12,13 +12,10 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "SYS_USER")
-public class User extends BaseDomain{
+public class User extends BaseDomain {
 
     private static final long serialVersionUID = -2565208102213427133L;
 
-    @Column(length = 50, unique = true)
-    @NotNull(message = "用户名不能为空")
-    private String username;
     @Column
     @NotNull(message = "密码不能为空")
     private String password;
@@ -31,12 +28,14 @@ public class User extends BaseDomain{
     @Column
     private Boolean credentialsNonExpired = false;
     @Column(length = 50)
-    private String firstName;
+    private String firstName = "";
     @Column(length = 50)
-    private String lastName;
+    private String lastName = "";
     @Column(length = 50)
     @NotNull(message = "邮箱不能为空")
     private String email;
+    @Column(length = 50)
+    private String mobile = "";
     @Column(length = 50)
     private String type;
     @Column(length = 36)
@@ -46,20 +45,19 @@ public class User extends BaseDomain{
     @Column(length = 36)
     private String imageId = "";
 
+    @Transient
+    private String post = "";
+    @Transient
+    private String department = "";
+    @Transient
+    private String fullName = "";
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "SYS_ROLE_USER",
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "id")}
     )
     private Set<Role> roles = new HashSet<>();
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getPassword() {
         return password;
@@ -164,5 +162,37 @@ public class User extends BaseDomain{
 
     public void setImageId(String imageId) {
         this.imageId = imageId;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getPost() {
+        return post;
+    }
+
+    public void setPost(String post) {
+        this.post = post;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }

@@ -20,7 +20,7 @@ public class OfficialPartnerService {
     private OfficialPartnerRepository repository;
 
     public OfficialPartner save(OfficialPartner officialPartner) {
-        return repository.saveAndFlush(officialPartner);
+        return repository.save(officialPartner);
     }
 
     public void deleteById(String id) {
