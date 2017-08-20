@@ -28,6 +28,8 @@ public class ForUse extends BaseDomain {
     private String taskId;
     @Transient
     private String taskName;
+    @Transient
+    private String applyer;
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "FOR_USE_ID")
@@ -87,5 +89,13 @@ public class ForUse extends BaseDomain {
 
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    public String getApplyer() {
+        return applyer;
+    }
+
+    public void setApplyer(String applyer) {
+        this.applyer = applyer;
     }
 }

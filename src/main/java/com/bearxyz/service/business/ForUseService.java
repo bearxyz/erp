@@ -4,10 +4,12 @@ import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.business.Package;
+import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.ForUseItemRepository;
 import com.bearxyz.repository.ForUseRepository;
 import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.PackageRepository;
+import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
@@ -43,6 +45,9 @@ public class ForUseService {
 
     @Autowired
     private PackageRepository packageRepository;
+
+    @Autowired
+    private SysService sysService;
 
     @Autowired
     private WorkflowService workflowService;
@@ -84,6 +89,7 @@ public class ForUseService {
         repository.save(forUse);
     }
 
+
     public DataTable<ForUse> getForUse(String uid, PaginationCriteria req){
         DataTable<ForUse> result = new DataTable<>();
         String order = "lastUpdated";
@@ -119,6 +125,8 @@ public class ForUseService {
                 forUse.setTaskName("已结束");
             }
             forUse.setGoods(goods);
+            User user = sysService.getUserById(forUse.getCreatedBy());
+            forUse.setApplyer(user.getFirstName()+user.getLastName());
         }
         result.setRecordsTotal(page.getTotalElements());
         result.setRecordsFiltered(page.getTotalElements());
