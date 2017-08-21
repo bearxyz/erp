@@ -51,7 +51,9 @@
                             <thead>
                             <th>采购物品</th>
                             <th>用途</th>
+                            <th>申请人</th>
                             <th>申请时间</th>
+                            <th>批准时间</th>
                             <th>状态</th>
                             </thead>
                         </table>
@@ -90,7 +92,7 @@
             "processing": true,
             "serverSide": true,
             "ajax": {
-                url: "/purchasing/index",
+                url: "/purchasing/project",
                 "type": "POST",
                 "contentType": "application/json; charset=utf-8",
                 "data": function (d) {
@@ -100,7 +102,9 @@
             "columns": [
                 {"data": "goods"},
                 {"data": "purpose"},
+                {"data": "applyer"},
                 {"data": "dateCeated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
+                {"data": "finishedDate", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
                 {"data": "taskName", "sClass": "text-center", render: formatStatus}
             ],
             "autoWidth": true,

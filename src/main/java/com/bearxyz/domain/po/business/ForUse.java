@@ -5,6 +5,7 @@ import org.activiti.engine.task.Task;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +31,8 @@ public class ForUse extends BaseDomain {
     private String taskName;
     @Transient
     private String applyer;
+    @Transient
+    private Date finishedDate;
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "FOR_USE_ID")
@@ -97,5 +100,13 @@ public class ForUse extends BaseDomain {
 
     public void setApplyer(String applyer) {
         this.applyer = applyer;
+    }
+
+    public Date getFinishedDate() {
+        return finishedDate;
+    }
+
+    public void setFinishedDate(Date finishedDate) {
+        this.finishedDate = finishedDate;
     }
 }

@@ -90,7 +90,7 @@ public class ForUseService {
     }
 
 
-    public DataTable<ForUse> getForUse(String uid, PaginationCriteria req){
+    public DataTable<ForUse> getForUse(String uid, boolean approved, PaginationCriteria req){
         DataTable<ForUse> result = new DataTable<>();
         String order = "lastUpdated";
         String direction = "desc";
@@ -106,6 +106,8 @@ public class ForUseService {
                 predicate.getExpressions().add(cb.like(root.get("title"),"%"+StringUtils.trimAllWhitespace("")+"%"));
             if(!StringUtils.isEmpty(uid))
                 predicate.getExpressions().add(cb.equal(root.get("createdBy"), uid));
+            if(!StringUtils.isEmpty(approved))
+                predicate.getExpressions().add(cb.equal(root.get("approved"), approved));
             return predicate;
         };
         Page<ForUse> page = repository.findAll(specification, request);
@@ -120,6 +122,7 @@ public class ForUseService {
             if(task!=null) {
                 forUse.setTaskId(task.getId());
                 forUse.setTaskName(task.getName());
+                forUse.setFinishedDate(task.getDueDate());
             }
             else {
                 forUse.setTaskName("已结束");

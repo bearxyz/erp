@@ -53,7 +53,7 @@
                             <th>用途</th>
                             <th>申请人</th>
                             <th>申请时间</th>
-                            <th>状态</th>
+                            <th>批准时间</th>
                             </thead>
                         </table>
                     </div>
@@ -103,7 +103,7 @@
                 {"data": "purpose"},
                 {"data": "applyer"},
                 {"data": "dateCeated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
-                {"data": "taskName", "sClass": "text-center", render: formatStatus}
+                {"data": "finishedDate", render: CONSTANT.DATA_TABLES.RENDER.DATETIME}
             ],
             "autoWidth": true,
             "searching": false,
@@ -133,12 +133,6 @@
             });
         });
     });
-
-    function formatStatus(cellValue, options, rowObject) {
-        var css = rowObject.taskName=='已结束'?'label-success':'label-warning';
-        var html = '<lable class="label '+css+'">'+rowObject.taskName+'</lable>';
-        return html;
-    }
 </script>
 </body>
 </html>

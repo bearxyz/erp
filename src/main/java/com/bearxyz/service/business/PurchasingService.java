@@ -4,10 +4,12 @@ import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.business.Package;
+import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.PackageRepository;
 import com.bearxyz.repository.PurchasingDetailRepository;
 import com.bearxyz.repository.PurchasingRepository;
+import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ public class PurchasingService {
     private PurchasingDetailRepository detailRepository;
 
     @Autowired
+    private SysService sysService;
+
+    @Autowired
     private PackageRepository packageRepository;
 
     @Autowired
@@ -57,6 +62,7 @@ public class PurchasingService {
         variables.put("url","/purchasing/");
         variables.put("bid",purchasing.getId());
         variables.put("applyer", purchasing.getCreatedBy());
+        variables.put("applyUserId", purchasing.getCreatedBy());
         purchasing.setProcessInstanceId(workflowService.startWorkflow("purchasing-audit",purchasing.getId(),purchasing.getCreatedBy(),variables));
     }
 
@@ -77,7 +83,7 @@ public class PurchasingService {
         repository.save(purchasing);
     }
 
-    public DataTable<Purchasing> getForUse(String uid, PaginationCriteria req){
+    public DataTable<Purchasing> getPurchasing(String uid, boolean approved, PaginationCriteria req){
         DataTable<Purchasing> result = new DataTable<>();
         String order = "lastUpdated";
         String direction = "desc";
@@ -93,6 +99,8 @@ public class PurchasingService {
                 predicate.getExpressions().add(cb.like(root.get("title"),"%"+StringUtils.trimAllWhitespace("")+"%"));
             if(!StringUtils.isEmpty(uid))
                 predicate.getExpressions().add(cb.equal(root.get("createdBy"), uid));
+            if(approved)
+                predicate.getExpressions().add(cb.equal(root.get("approved"), approved));
             return predicate;
         };
         Page<Purchasing> page = repository.findAll(specification, request);
@@ -107,11 +115,14 @@ public class PurchasingService {
             if(task!=null) {
                 purchasing.setTaskId(task.getId());
                 purchasing.setTaskName(task.getName());
+                purchasing.setFinishedDate(task.getDueDate());
             }
             else {
                 purchasing.setTaskName("已结束");
             }
             purchasing.setGoods(goods);
+            User user = sysService.getUserById(purchasing.getCreatedBy());
+            purchasing.setApplyer(user.getFirstName()+user.getLastName());
         }
         result.setRecordsTotal(page.getTotalElements());
         result.setRecordsFiltered(page.getTotalElements());

@@ -20,10 +20,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Page<User> findUsersByType(String type, Pageable request);
 
-    @Query(value = "select u.* from SYS_USER u inner join SYS_ROLE_USER ru on u.id = ru.USER_ID inner join SYS_ROLE r on ru.ROLE_ID=r.id where r.name like '%经理%' and u.id=?1;", nativeQuery = true)
-    User findDepLeader(String uid);
-
-    @Query(value = "select * from SYS_USER u inner join SYS_ROLE_USER ru on u.id = ru.USER_ID inner join SYS_ROLE r on ru.ROLE_ID=r.id where r.name=(select r.name from SYS_USER u inner join SYS_ROLE_USER ru on u.id = ru.USER_ID inner join SYS_ROLE r on ru.ROLE_ID=r.id where r.type='ROLE_TYPE_DEPARTMENT' and u.id=?1)", nativeQuery = true)
-    List<User> findAllDepPersonByUid(String uid);
+    @Query(value = "select ou.* from SYS_USER ou inner join SYS_ROLE_USER oru on ou.id = oru.USER_ID inner join SYS_ROLE osr on osr.id = oru.ROLE_ID where ou.ID in " +
+            "(select USER_ID from SYS_ROLE_USER where ROLE_ID in " +
+            "(select ru.ROLE_ID from SYS_ROLE_USER ru inner join SYS_ROLE r on ru.ROLE_ID=r.ID where ru.USER_ID = ?1 and r.TYPE='ROLE_TYPE_DEPARTMENT')) and osr.name like '%经理%'", nativeQuery = true)
+    User findManagerByUid(String uid);
 
 }

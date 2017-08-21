@@ -344,4 +344,8 @@ public class SysService {
         permission.setSeq(position);
     }
 
+    public User getManagerByUid(String uid){
+        return userRepository.findManagerByUid(uid);
+    }
+
 }

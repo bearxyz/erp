@@ -36,7 +36,7 @@ public class StockService {
         variables.put("url","/stock/");
         variables.put("bid",stock.getId());
         variables.put("applyer", stock.getCreatedBy());
-        stock.setProcessInstanceId(workflowService.startWorkflow("for-use",stock.getId(),stock.getCreatedBy(),variables));
+        stock.setProcessInstanceId(workflowService.startWorkflow("stock-audit",stock.getId(),stock.getCreatedBy(),variables));
     }
 
     public void applyUnload(Stock stock){
@@ -46,7 +46,7 @@ public class StockService {
         variables.put("url","/stock/");
         variables.put("bid",stock.getId());
         variables.put("applyer", stock.getCreatedBy());
-        stock.setProcessInstanceId(workflowService.startWorkflow("for-use",stock.getId(),stock.getCreatedBy(),variables));
+        stock.setProcessInstanceId(workflowService.startWorkflow("stock-audit",stock.getId(),stock.getCreatedBy(),variables));
     }
 
     public void save(Stock stock){

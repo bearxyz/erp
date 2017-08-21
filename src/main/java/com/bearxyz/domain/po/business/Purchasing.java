@@ -15,21 +15,12 @@ import java.util.List;
 public class Purchasing extends BaseDomain {
 
     private static final long serialVersionUID = -1209347414434373515L;
-    @Column
-    private String code = "";
-
-    @Column
-    private String purchaser = "";
     @Column(length = 200)
     private String purpose = "";
     @Column(length = 50)
     private String processInstanceId = "";
     @Column
     private Boolean approved = false;
-    @Column(length = 50)
-    private String operater = "";
-    @Column
-    private Date operationDate;
 
     @Transient
     private String goods = "";
@@ -37,26 +28,14 @@ public class Purchasing extends BaseDomain {
     private String taskId;
     @Transient
     private String taskName;
+    @Transient
+    private String applyer;
+    @Transient
+    private Date finishedDate;
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "PURCHASING_ID")
     private List<PurchasingDetail> items = new ArrayList<>();
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getPurchaser() {
-        return purchaser;
-    }
-
-    public void setPurchaser(String purchaser) {
-        this.purchaser = purchaser;
-    }
 
     public List<PurchasingDetail> getItems() {
         return items;
@@ -114,19 +93,19 @@ public class Purchasing extends BaseDomain {
         this.taskName = taskName;
     }
 
-    public String getOperater() {
-        return operater;
+    public String getApplyer() {
+        return applyer;
     }
 
-    public void setOperater(String operater) {
-        this.operater = operater;
+    public void setApplyer(String applyer) {
+        this.applyer = applyer;
     }
 
-    public Date getOperationDate() {
-        return operationDate;
+    public Date getFinishedDate() {
+        return finishedDate;
     }
 
-    public void setOperationDate(Date operationDate) {
-        this.operationDate = operationDate;
+    public void setFinishedDate(Date finishedDate) {
+        this.finishedDate = finishedDate;
     }
 }

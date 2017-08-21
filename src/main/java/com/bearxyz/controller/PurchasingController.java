@@ -31,6 +31,17 @@ public class PurchasingController {
         return "/purchasing/project";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/project", method = RequestMethod.POST)
+    public String getProject(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        PaginationCriteria.SearchCriteria sc = new PaginationCriteria.SearchCriteria();
+
+        DataTable<Purchasing> purchasing = service.getPurchasing(null, true, req);
+        purchasing.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(purchasing);
+    }
+
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index(){
         return "/purchasing/index";
@@ -40,7 +51,7 @@ public class PurchasingController {
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     public String getList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
-        DataTable<Purchasing> purchasing = service.getForUse(user.getId(), req);
+        DataTable<Purchasing> purchasing = service.getPurchasing(user.getId(), false, req);
         purchasing.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(purchasing);

@@ -42,12 +42,18 @@
 <script th:inline="javascript">
     pageSetUp();
 
+    var taskKey = $('#taskKey').val();
+    var key = "";
+
+    if (taskKey == "deptLeader") key = "deptLeaderPass";
+    if (taskKey == "manager") key = "managerPass";
+
     var pagefunction = function () {
     };
 
     $('#pass').on('click', function () {
-        var memo = ($('#memo').val()!=null)?$('#memo').val():'';
-        completeTask([[${taskId}]], [{key: 'deptLeaderPass', value: true, type: 'B'}, {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
+        completeTask([[${taskId}]], [{key: key, value: true, type: 'B'}, {
             key: 'deptLeaderMemo',
             value: memo,
             type: 'S'
@@ -55,8 +61,8 @@
     });
 
     $('#deny').on('click', function () {
-        var memo = ($('#memo').val()!=null)?$('#memo').val():'';
-        completeTask([[${taskId}]], [{key: 'deptLeaderPass', value: false, type: 'B'}, {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '不同意';
+        completeTask([[${taskId}]], [{key: key, value: false, type: 'B'}, {
             key: 'deptLeaderMemo',
             value: memo,
             type: 'S'

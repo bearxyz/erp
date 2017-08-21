@@ -44,7 +44,7 @@ public class ForuseController {
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public String getList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
-        DataTable<ForUse> foruses = service.getForUse(null, req);
+        DataTable<ForUse> foruses = service.getForUse(null, true, req);
         foruses.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(foruses);
@@ -59,7 +59,7 @@ public class ForuseController {
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     public String getIndex(@RequestBody PaginationCriteria req) throws JsonProcessingException {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
-        DataTable<ForUse> foruses = service.getForUse(user.getId(), req);
+        DataTable<ForUse> foruses = service.getForUse(user.getId(), false, req);
         foruses.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(foruses);
