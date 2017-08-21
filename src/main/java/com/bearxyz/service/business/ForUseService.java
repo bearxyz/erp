@@ -11,6 +11,7 @@ import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.PackageRepository;
 import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,7 +126,13 @@ public class ForUseService {
                 forUse.setFinishedDate(task.getDueDate());
             }
             else {
-                forUse.setTaskName("已结束");
+                HistoricProcessInstance historicTaskInstance = workflowService.getHistoryProcessByBussinessId(forUse.getId());
+                if((boolean)workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(),"deptLeaderPass"))
+                    forUse.setTaskName("已完成");
+                else
+                    forUse.setTaskName("已取消");
+                forUse.setTaskId(historicTaskInstance.getId());
+                forUse.setFinishedDate(historicTaskInstance.getEndTime());
             }
             forUse.setGoods(goods);
             User user = sysService.getUserById(forUse.getCreatedBy());

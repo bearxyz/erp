@@ -9,7 +9,7 @@ import org.activiti.editor.constants.ModelDataJsonConstants;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -95,6 +95,19 @@ public class WorkflowService {
 
     public Task getTaskByBussinessId(String id){
         return taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
+    }
+
+    public HistoricProcessInstance getHistoryProcessByBussinessId(String id){
+        return historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey(id).singleResult();
+    }
+
+    public Object getHistoryVarByProcessId(String id, String name){
+        List<HistoricVariableInstance> list =  historyService.createHistoricVariableInstanceQuery().processInstanceId(id).list();
+        for(HistoricVariableInstance l : list){
+            if(l.getVariableName().equals(name))
+                return l.getValue();
+        }
+        return null;
     }
 
     public String startWorkflow(String processKey, String key, String uid, Map<String, Object> variables){

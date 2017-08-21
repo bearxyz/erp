@@ -11,6 +11,10 @@ import com.bearxyz.repository.PurchasingDetailRepository;
 import com.bearxyz.repository.PurchasingRepository;
 import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -112,13 +116,20 @@ public class PurchasingService {
                 goods+= g.getName()+item.getCount()+item.getUnit()+";";
             }
             Task task = workflowService.getTaskByBussinessId(purchasing.getId());
+
             if(task!=null) {
                 purchasing.setTaskId(task.getId());
                 purchasing.setTaskName(task.getName());
                 purchasing.setFinishedDate(task.getDueDate());
             }
             else {
-                purchasing.setTaskName("已结束");
+                HistoricProcessInstance historicTaskInstance = workflowService.getHistoryProcessByBussinessId(purchasing.getId());
+                if((boolean)workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(),"managerPass"))
+                    purchasing.setTaskName("已完成");
+                else
+                    purchasing.setTaskName("已取消");
+                purchasing.setTaskId(historicTaskInstance.getId());
+                purchasing.setFinishedDate(historicTaskInstance.getEndTime());
             }
             purchasing.setGoods(goods);
             User user = sysService.getUserById(purchasing.getCreatedBy());
