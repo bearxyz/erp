@@ -8,27 +8,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Created by bearxyz on 2017/8/23.
+ */
 @Entity
-@Table(name = "T_STOCK")
-public class Stock extends BaseDomain {
+@Table(name = "T_PURCHASING_ORDER")
+public class PurchasingOrder extends BaseDomain {
 
-    private static final long serialVersionUID = 7135568704122702991L;
+    private static final long serialVersionUID = 2241285045614790585L;
     @Column(length = 50)
     private String code = "";
-    @Column(length = 50)
-    private String mask = "";
-    @Column(length = 50)
-    private String type = "";
     @Column(length = 200)
     private String purpose = "";
     @Column(length = 50)
     private String processInstanceId = "";
-    @Column(length = 36)
-    private String operator = "";
-    @Column
-    private Date operationDate;
     @Column
     private Boolean approved = false;
+    @Column(length = 36)
+    private String operator = "";
 
     @Transient
     private String goods = "";
@@ -37,12 +34,14 @@ public class Stock extends BaseDomain {
     @Transient
     private String taskName;
     @Transient
-    private String typeName = "";
+    private String applyer;
+    @Transient
+    private Date finishedDate;
 
     @JsonIgnore
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "STOCK_ID")
-    private List<StockItem> items = new ArrayList<>();
+    @OneToMany(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "PURCHASING_ID")
+    private List<PurchasingOrderItem> items = new ArrayList<>();
 
     public String getCode() {
         return code;
@@ -50,14 +49,6 @@ public class Stock extends BaseDomain {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getPurpose() {
@@ -108,20 +99,28 @@ public class Stock extends BaseDomain {
         this.taskName = taskName;
     }
 
-    public List<StockItem> getItems() {
+    public String getApplyer() {
+        return applyer;
+    }
+
+    public void setApplyer(String applyer) {
+        this.applyer = applyer;
+    }
+
+    public Date getFinishedDate() {
+        return finishedDate;
+    }
+
+    public void setFinishedDate(Date finishedDate) {
+        this.finishedDate = finishedDate;
+    }
+
+    public List<PurchasingOrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<StockItem> items) {
+    public void setItems(List<PurchasingOrderItem> items) {
         this.items = items;
-    }
-
-    public String getMask() {
-        return mask;
-    }
-
-    public void setMask(String mask) {
-        this.mask = mask;
     }
 
     public String getOperator() {
@@ -130,21 +129,5 @@ public class Stock extends BaseDomain {
 
     public void setOperator(String operator) {
         this.operator = operator;
-    }
-
-    public Date getOperationDate() {
-        return operationDate;
-    }
-
-    public void setOperationDate(Date operationDate) {
-        this.operationDate = operationDate;
-    }
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
     }
 }

@@ -25,4 +25,7 @@ public interface UserRepository extends JpaRepository<User, String> {
             "(select ru.ROLE_ID from SYS_ROLE_USER ru inner join SYS_ROLE r on ru.ROLE_ID=r.ID where ru.USER_ID = ?1 and r.TYPE='ROLE_TYPE_DEPARTMENT')) and osr.name like '%经理%'", nativeQuery = true)
     User findManagerByUid(String uid);
 
+    @Query(value="select u.* from SYS_USER u inner join SYS_ROLE_USER ru on ru.USER_ID=u.ID inner join SYS_ROLE r on r.ID=ru.ROLE_ID where r.TYPE='ROLE_TYPE_POST' and r.MASK like '%MANAGER%'", nativeQuery = true)
+    List<User> findDepartmentManager();
+
 }

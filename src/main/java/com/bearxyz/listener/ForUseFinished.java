@@ -1,6 +1,9 @@
 package com.bearxyz.listener;
 
 import com.bearxyz.domain.po.business.ForUse;
+import com.bearxyz.domain.po.business.ForUseItem;
+import com.bearxyz.domain.po.business.Stock;
+import com.bearxyz.domain.po.business.StockItem;
 import com.bearxyz.repository.ForUseRepository;
 
 import org.activiti.engine.delegate.DelegateExecution;

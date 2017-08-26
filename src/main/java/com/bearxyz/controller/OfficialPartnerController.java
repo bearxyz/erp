@@ -42,7 +42,7 @@ public class OfficialPartnerController {
     @ResponseBody
     public String list(@RequestParam(value = "pid", required = false) String pid, @RequestParam("draw") String draw) throws JsonProcessingException {
         String mask = "";
-        Dict dict = sysService.getDictById(pid);
+        Dict dict = sysService.getDictByMask(pid);
         if(dict!=null) mask = dict.getMask();
         DataTable<OfficialPartner> partners = service.getByType(mask);
         partners.setDraw(Integer.parseInt(draw));
@@ -61,7 +61,7 @@ public class OfficialPartnerController {
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public String create(@RequestParam("id") String id, Model model) {
-        Dict dict = sysService.getDictById(id);
+        Dict dict = sysService.getDictByMask(id);
         model.addAttribute("type", dict.getMask());
         model.addAttribute("partner", new OfficialPartner());
         return "/partner/create";

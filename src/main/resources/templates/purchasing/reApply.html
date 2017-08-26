@@ -4,14 +4,14 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
-    <title>领用申请</title>
+    <title></title>
 </head>
 <body>
 <div class="row">
     <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
         <h1 class="page-title txt-color-blueDark">
             <i class="fa fa-edit fa-fw "></i>
-            领用申请
+            采购申请
         </h1>
     </div>
 </div>
@@ -24,7 +24,7 @@
                  data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
                 <header>
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                    <h2>领用申请</h2>
+                    <h2>采购申请</h2>
                 </header>
                 <div role="content">
                     <div class="widget-body no-padding">
@@ -42,7 +42,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:each="item,i:${foruse.items}">
+                                            <tr th:each="item,i:${purchasing.items}">
                                                 <td><label class='input'>
                                                     <input th:name='${"items[" + i.index + "].goodsId"}' th:value="${item.goodsId}"  type='hidden'/>
                                                     <input name='name' disabled='disabled' th:value="${item.goods.name}" /></label>
@@ -64,7 +64,7 @@
                                 <section>
                                     <label class="textarea textarea-resizable">
                                         <textarea class="custom-scroll" id="purpose" name="purpose"
-                                                  placeholder="用途">[[${foruse.purpose}]]</textarea>
+                                                  placeholder="用途">[[${purchasing.purpose}]]</textarea>
                                     </label>
                                 </section>
                             </fieldset>
@@ -100,7 +100,7 @@
             onsubmit: true,
             submitHandler: function () {
                 $.ajax({
-                    url: '/foruse/reApply',
+                    url: '/purchasing/reApply',
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function () {

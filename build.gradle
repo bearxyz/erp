@@ -4,6 +4,8 @@ buildscript {
     }
     repositories {
         mavenCentral()
+        jcenter()
+        maven { url "http://vaadin.com/nexus/content/repositories/vaadin-addons" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -13,13 +15,14 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'war'
 
 version = '1.0.0'
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    jcenter()
+    maven { url "http://vaadin.com/nexus/content/repositories/vaadin-addons" }
 }
 
 configurations {
@@ -43,7 +46,7 @@ dependencies {
     compile('org.apache.xmlgraphics:batik-css:1.7')
     compile('org.apache.xmlgraphics:batik-svg-dom:1.7')
     compile('org.apache.xmlgraphics:batik-svggen:1.7')
-    compile('org.activiti:activiti-explorer:5.22.0')
+    compile('org.activiti:activiti-explorer:5.22.0'){exclude(group:'org.slf4j', module:'slf4j-log4j12')}
     compile('org.activiti:activiti-diagram-rest:5.22.0')
     compile('org.activiti:activiti-simple-workflow:5.22.0')
     compile('org.activiti:activiti-spring:5.22.0')

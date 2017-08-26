@@ -20,6 +20,7 @@ public class TaskVO implements Serializable{
     private String createDate;
     private Date createDatetime;
     private String taskDefinitionKey;
+    private String memo;
 
     public String getTaskId() {
         return taskId;
@@ -107,5 +108,13 @@ public class TaskVO implements Serializable{
 
     public void setTaskDefinitionKey(String taskDefinitionKey) {
         this.taskDefinitionKey = taskDefinitionKey;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

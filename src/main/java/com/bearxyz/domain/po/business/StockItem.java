@@ -2,14 +2,15 @@ package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "T_STOCK_ITEM")
 public class StockItem extends BaseDomain{
 
+    private static final long serialVersionUID = 4275561680444080302L;
+    @Column(length = 36)
+    private String purchasingOrderItemId = "";
     @Column(length = 36)
     private String goodsId = "";
     @Column
@@ -24,6 +25,28 @@ public class StockItem extends BaseDomain{
     private Float price = (float)0.0;
     @Column(length = 36)
     private String packageId = "";
+    @Column(length = 50)
+    private String warehouse = "";
+
+    @ManyToOne
+    @JoinColumn(name = "STOCK_ID")
+    private Stock stock;
+
+    public String getPurchasingOrderItemId() {
+        return purchasingOrderItemId;
+    }
+
+    public void setPurchasingOrderItemId(String purchasingOrderId) {
+        this.purchasingOrderItemId = purchasingOrderId;
+    }
+
+    public Float getPrice() {
+        return price;
+    }
+
+    public void setPrice(Float price) {
+        this.price = price;
+    }
 
     public String getGoodsId() {
         return goodsId;
@@ -71,5 +94,21 @@ public class StockItem extends BaseDomain{
 
     public void setPackageId(String packageId) {
         this.packageId = packageId;
+    }
+
+    public String getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(String warehouse) {
+        this.warehouse = warehouse;
+    }
+
+    public Stock getStock() {
+        return stock;
+    }
+
+    public void setStock(Stock stock) {
+        this.stock = stock;
     }
 }

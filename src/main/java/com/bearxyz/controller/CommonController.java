@@ -57,10 +57,10 @@ public class CommonController {
     private RepositoryService repositoryService;
 
     @Autowired
-    ProcessEngine processEngine;
+    private ProcessEngine processEngine;
 
     @Autowired
-    ProcessEngineConfiguration processEngineConfiguration;
+    private ProcessEngineConfiguration processEngineConfiguration;
 
     @RequestMapping(value = "/getDict")
     @ResponseBody
@@ -130,6 +130,10 @@ public class CommonController {
                 vo.setDetailUrl(taskService.getVariable(task.getId(),"url").toString());
             if(taskService.getVariable(task.getId(),"bid")!=null)
                 vo.setBussinessId(taskService.getVariable(task.getId(),"bid").toString());
+            if(taskService.getVariable(task.getId(),"deptLeaderMemo")!=null)
+                vo.setMemo(taskService.getVariable(task.getId(),"deptLeaderMemo").toString());
+            if(taskService.getVariable(task.getId(),"managerMemo")!=null)
+                vo.setMemo(taskService.getVariable(task.getId(),"managerMemo").toString());
             if(taskService.getVariable(task.getId(),"applyer")!=null) {
                 User u = sysService.getUserById(taskService.getVariable(task.getId(), "applyer").toString());
                 vo.setApplyer(u.getFirstName()+u.getLastName());
@@ -219,6 +223,15 @@ public class CommonController {
         ActionResponse response = new ActionResponse();
         response.setSuccess(true);
         return mapper.writeValueAsString(response);
+    }
+
+    @RequestMapping(value = "/task/transfer/{taskId}", method = RequestMethod.GET)
+    public String transfer(@PathVariable("taskId") String taskId, Model model){
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        List<User> managers = sysService.getDeparmentManager();
+        model.addAttribute("taskId", taskId);
+        model.addAttribute("managers", managers);
+        return "/common/task/transfer";
     }
 
 }

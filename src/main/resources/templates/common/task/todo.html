@@ -41,7 +41,7 @@
                                data-target="#remoteModal">
                             [[${task.name}]]
                         </a>
-                            <small>[[${task.stage}]] [[${task.taskDefinitionKey}]]</small>
+                            <small>[[${task.stage}]] [[${task.memo}]]</small>
                         </h4>
                     </td>
                     <td class="text-center">
@@ -56,12 +56,14 @@
                            th:attr="onclick='cancel('+${task.taskId}+')'" href="javascript:void(0);">取 消</a>
                         <a class="btn btn-info btn-sm" th:if="${task.assignee==null}"
                            th:attr="onclick='signfor('+${task.taskId}+')'" href="javascript:void(0);">签 收</a>
-                        <a class="btn btn-info btn-sm" th:if="${task.assignee==null}"
-                           data-toggle="modal" data-target="#remoteModal" href="javascript:void(0);">转 发</a>
-                        <a class="btn btn-info btn-sm" th:if="${task.assignee==null}"
+                        <a class="btn btn-info btn-sm" th:if="${task.assignee!=null and task.taskDefinitionKey!='adjustApply'}"
+                           data-toggle="modal" data-target="#remoteModal" th:href="@{'/common/task/transfer/'+${task.taskId}}">转 发</a>
+                        <a class="btn btn-info btn-sm" th:if="${task.assignee!=null and task.taskDefinitionKey!='adjustApply'}"
                            data-toggle="modal" data-target="#remoteModal" href="javascript:void(0);">会 签</a>
                         <a class="btn btn-info btn-sm"
-                           th:if="${task.assignee!=null and task.taskDefinitionKey!='adjustApply'}" data-toggle="modal"
+                           th:if="${task.assignee!=null and task.taskDefinitionKey=='confirm'}" th:attr="onclick='confirm('+${task.taskId}+')'">确 认</a>
+                        <a class="btn btn-info btn-sm"
+                           th:if="${task.assignee!=null and task.taskDefinitionKey!='adjustApply' and task.taskDefinitionKey!='confirm'}" data-toggle="modal"
                            data-target="#remoteModal" th:href="@{'/common/task/complete/'+${task.taskId}}">办 理</a>
                     </td>
                 </tr>
@@ -117,10 +119,23 @@
             },
             function (ButtonPressed) {
                 if (ButtonPressed === "确 定") {
-                    completeTask(id, [{key: 'reApply', value: false, type: 'B'}]);
+                    completeTask(id, [{key: 'reApply', value: false, type: 'B'},{key: 'cancel', value: true, type: 'B'}]);
                 }
             });
     }
+    function confirm(id) {
+        $.SmartMessageBox({
+                title: "注 意!",
+                content: "确定要该操作吗？",
+                buttons: '[取 消][确 定]'
+            },
+            function (ButtonPressed) {
+                if (ButtonPressed === "确 定") {
+                    completeTask(id);
+                }
+            });
+    }
+</script>
 </script>
 </body>
 </html>

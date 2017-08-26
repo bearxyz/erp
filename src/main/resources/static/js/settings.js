@@ -41,6 +41,7 @@ var CONSTANT = {
                 data: "id",
                 width: "20px",
                 className: 'smart-form',
+                sortable: false,
                 render: function (data, type, row, meta) {
                     return '<label class="checkbox"><input name="check-id" type="checkbox" value="' + data + '" /><i> </i></label>';
                 }

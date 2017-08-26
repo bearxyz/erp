@@ -37,6 +37,10 @@ public class OfficialPartnerService {
         return repository.findOne(id);
     }
 
+    public List<OfficialPartner> getListByType(String type){
+        return repository.findAllByType(type);
+    }
+
     public DataTable<OfficialPartner> getByType(String type){
         List<OfficialPartner> page = repository.findAllByType(type);
         DataTable<OfficialPartner> partners = new DataTable<>();

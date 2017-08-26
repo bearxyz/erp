@@ -5,7 +5,6 @@ import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.ForUse;
 import com.bearxyz.domain.po.business.ForUseItem;
 import com.bearxyz.domain.po.business.Goods;
-import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.service.business.ForUseService;
 import com.bearxyz.service.business.GoodsService;
@@ -105,6 +104,17 @@ public class ForuseController {
     public String delete(String id) {
         service.deleteItemById(id);
         return "{success: true}";
+    }
+
+    @RequestMapping(value = "/show/{id}", method = RequestMethod.GET)
+    public String show(@PathVariable("id") String id, Model model) {
+        ForUse forUse = service.getOneById(id);
+        for(ForUseItem item: forUse.getItems()){
+            Goods goods = goodsService.getById(item.getGoodsId());
+            item.setGoods(goods);
+        }
+        model.addAttribute("foruse", forUse);
+        return "/foruse/show";
     }
 
 }

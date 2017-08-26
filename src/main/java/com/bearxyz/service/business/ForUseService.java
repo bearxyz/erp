@@ -70,6 +70,7 @@ public class ForUseService {
         variables.put("url","/foruse/");
         variables.put("bid",forUse.getId());
         variables.put("applyer", forUse.getCreatedBy());
+        variables.put("applyUserId", forUse.getCreatedBy());
         forUse.setProcessInstanceId(workflowService.startWorkflow("for-use",forUse.getId(),forUse.getCreatedBy(),variables));
     }
 
@@ -107,7 +108,7 @@ public class ForUseService {
                 predicate.getExpressions().add(cb.like(root.get("title"),"%"+StringUtils.trimAllWhitespace("")+"%"));
             if(!StringUtils.isEmpty(uid))
                 predicate.getExpressions().add(cb.equal(root.get("createdBy"), uid));
-            if(!StringUtils.isEmpty(approved))
+            if(approved)
                 predicate.getExpressions().add(cb.equal(root.get("approved"), approved));
             return predicate;
         };

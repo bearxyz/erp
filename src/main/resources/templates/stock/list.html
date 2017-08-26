@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+
+<!-- Bread crumb is created dynamically -->
+<!-- row -->
+<div class="row">
+
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <!-- PAGE HEADER -->
+            <i class="fa-fw fa fa-table"></i>
+            [[${title}]]清单
+        </h1>
+    </div>
+    <!-- end col -->
+
+</div>
+<!-- end row -->
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+
+    <!-- row -->
+    <div class="row">
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon">
+                        <i class="fa fa-table"></i>
+                    </span>
+                    <h2><strong> [[${title}]]清单</strong></h2>
+                </header>
+                <div>
+                    <div class="widget-body no-padding" id="grid-content">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
+                               width="100%">
+                            <thead>
+                            <th>[[${title}]]单号</th>
+                            <th>[[${title}]]类型</th>
+                            <th>备注</th>
+                            <th>时间</th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <!-- WIDGET END -->
+
+    </div>
+
+    <!-- end row -->
+
+</section>
+<!-- end widget grid -->
+
+<script type="text/javascript" th:inline="javascript">
+
+    pageSetUp();
+
+    var pagefunction = function () {
+        var responsiveHelper_dt_basic = undefined;
+        var breakpointDefinition = {tablet: 1024, phone: 480};
+
+        $('#dt_basic').dataTable({
+            "processing": true,
+            "serverSide": true,
+            ajax: {
+                url: "/stock/list?type="+[[${type}]],
+                "contentType": "application/json; charset=utf-8",
+                "type": "POST",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            "columns": [
+                {"data": "code"},
+                {"data": "typeName"},
+                {"data": "purpose"},
+                {
+                    "data": null,
+                    "sClass": "text-center"
+                }
+            ],
+            "autoWidth": true,
+            "searching": false,
+            "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+            "bStateSave": true,
+            "preDrawCallback": function () {
+                if (!responsiveHelper_dt_basic) {
+                    responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_dt_basic.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_dt_basic.respond();
+                $(":checkbox[name='check-all']").prop('checked', false);
+            },
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+    }
+
+    loadScript("js/plugin/datatables/jquery.dataTables.min.js", function () {
+        loadScript("js/plugin/datatables/dataTables.colVis.min.js", function () {
+            loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
+                loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
+                    loadScript("js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+                });
+            });
+        });
+    });
+</script>
+</body>
+</html>

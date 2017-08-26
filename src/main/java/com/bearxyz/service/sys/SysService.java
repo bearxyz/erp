@@ -348,4 +348,8 @@ public class SysService {
         return userRepository.findManagerByUid(uid);
     }
 
+    public List<User> getDeparmentManager(){
+        return userRepository.findDepartmentManager();
+    }
+
 }

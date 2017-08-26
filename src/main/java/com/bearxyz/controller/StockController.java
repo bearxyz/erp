@@ -2,7 +2,8 @@ package com.bearxyz.controller;
 
 
 import com.bearxyz.common.DataTable;
-import com.bearxyz.domain.po.business.Goods;
+import com.bearxyz.common.PaginationCriteria;
+import com.bearxyz.domain.po.business.*;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.StockService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,9 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/stock")
+@SessionAttributes("stock")
 public class StockController {
 
     @Autowired
@@ -23,13 +28,13 @@ public class StockController {
     private StockService service;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
-    public String index(){
+    public String index() {
         return "/stock/index";
     }
 
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ResponseBody
-    public String list(@RequestParam(value = "mask", required = false) String mask, @RequestParam("draw") String draw) throws JsonProcessingException {
+    public String getIndex(@RequestParam(value = "mask", required = false) String mask, @RequestParam("draw") String draw) throws JsonProcessingException {
         DataTable<Goods> goods = goodsService.getByNature(mask);
         goods.setDraw(Integer.parseInt(draw));
         ObjectMapper mapper = new ObjectMapper();
@@ -37,29 +42,77 @@ public class StockController {
     }
 
     @RequestMapping(value = "/list/{type}", method = RequestMethod.GET)
-    public String list(@PathVariable("type")String type, Model model){
+    public String list(@PathVariable("type") String type, Model model) {
+        String title = "";
+        if (type.equals("STOCK-IN")) title = "入库";
+        if (type.equals("STOCK-OUT")) title = "出库";
         model.addAttribute("type", type);
+        model.addAttribute("title",title);
         return "/stock/list";
+    }
+
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @ResponseBody
+    public String getList(@RequestBody PaginationCriteria req, @RequestParam("type")String type) throws JsonProcessingException {
+        DataTable<Stock> stosks=service.getStocks(type,false, req);
+        stosks.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(stosks);
+    }
+
+    @RequestMapping(value = "/purchasing-in-list", method = RequestMethod.GET)
+    public String purchasingInList() {
+        return "/stock/purchasing-in-list";
+    }
+
+    @RequestMapping(value = "/purchasing-in-list", method = RequestMethod.POST)
+    @ResponseBody
+    public String getPurchasingInList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        DataTable<PurchasingOrderItem> purchasing = service.getPurchasingOrderItems(false, req);
+        purchasing.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(purchasing);
     }
 
 
     @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public String detail(){
+    public String detail() {
         return "/stock/detail";
     }
 
+    @RequestMapping(value = "/detail", method = RequestMethod.POST)
+    @ResponseBody
+    public String getDetail(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        DataTable<StockItem> purchasing = service.getStockItems(false, req);
+        purchasing.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(purchasing);
+    }
+
     @RequestMapping(value = "/applyIn", method = RequestMethod.GET)
-    public String applyIn(){
+    public String applyIn(@RequestParam("ids")String ids, Model model) {
+        List<PurchasingOrderItem> list = service.getPurchasingOrderItemsByIds(ids);
+        model.addAttribute("list", list);
+        model.addAttribute("stock", new Stock());
         return "/stock/applyIn";
     }
 
+    @RequestMapping(value = "/applyIn", method = RequestMethod.POST)
+    @ResponseBody
+    public String doApplyIn(@ModelAttribute(name = "stock")Stock stock, SessionStatus status) {
+        stock.setMask("STOCK_IN_PURCHASING");
+        service.applyLoad(stock);
+        status.setComplete();
+        return "{success: true}";
+    }
+
     @RequestMapping(value = "/applyOut", method = RequestMethod.GET)
-    public String applyOut(){
+    public String applyOut() {
         return "/stock/applyOut";
     }
 
     @RequestMapping(value = "/scrapt", method = RequestMethod.GET)
-    public String scrapt(){
+    public String scrapt() {
         return "/stock/scrapt";
     }
 

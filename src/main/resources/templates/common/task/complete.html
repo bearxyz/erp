@@ -43,18 +43,14 @@
     pageSetUp();
 
     var taskKey = $('#taskKey').val();
-    var key = "";
-
-    if (taskKey == "deptLeader") key = "deptLeaderPass";
-    if (taskKey == "manager") key = "managerPass";
 
     var pagefunction = function () {
     };
 
     $('#pass').on('click', function () {
         var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
-        completeTask([[${taskId}]], [{key: key, value: true, type: 'B'}, {
-            key: 'deptLeaderMemo',
+        completeTask([[${taskId}]], [{key: taskKey+'Pass', value: true, type: 'B'}, {
+            key: taskKey+'Memo',
             value: memo,
             type: 'S'
         }]);
@@ -62,8 +58,8 @@
 
     $('#deny').on('click', function () {
         var memo = ($('#memo').val() != "") ? $('#memo').val() : '不同意';
-        completeTask([[${taskId}]], [{key: key, value: false, type: 'B'}, {
-            key: 'deptLeaderMemo',
+        completeTask([[${taskId}]], [{key: taskKey+'Pass', value: false, type: 'B'}, {
+            key: taskKey+'Memo',
             value: memo,
             type: 'S'
         }]);
