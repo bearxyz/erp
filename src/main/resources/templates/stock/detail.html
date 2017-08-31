@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+>
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -50,8 +50,11 @@
                                width="100%">
                             <thead>
                             <th>单号</th>
+                            <th>类型</th>
                             <th>办理人</th>
-                            <th>备注</th>
+                            <th>出入库数量</th>
+                            <th>出入库单价</th>
+                            <th>总金额</th>
                             <th>时间</th>
                             </thead>
                         </table>
@@ -89,12 +92,12 @@
             },
             "columns": [
                 {"data": "stock.code"},
-                {"data": "spec"},
-                {"data": "unit"},
-                {
-                    "data": "stock",
-                    "sClass": "text-center"
-                }
+                {"data": "stock.typeName"},
+                {"data": "stock.operator"},
+                {"data": "ammount"},
+                {"data": "price"},
+                {"data": null, render: formatTotalPrice},
+                {"data": "lastUpdated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
             ],
             "autoWidth": true,
             "searching": false,
@@ -125,6 +128,10 @@
             });
         });
     });
+
+    function formatTotalPrice(cellValue, options, rowObject) {
+        return rowObject.price*rowObject.ammount;
+    }
 </script>
 </body>
 </html>

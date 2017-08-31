@@ -5,6 +5,7 @@ import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
 import com.bearxyz.service.business.GoodsService;
+import com.bearxyz.service.business.OfficialPartnerService;
 import com.bearxyz.service.business.StockService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,9 @@ public class StockController {
     private GoodsService goodsService;
 
     @Autowired
+    private OfficialPartnerService officialPartnerService;
+
+    @Autowired
     private StockService service;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
@@ -35,7 +39,7 @@ public class StockController {
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ResponseBody
     public String getIndex(@RequestParam(value = "mask", required = false) String mask, @RequestParam("draw") String draw) throws JsonProcessingException {
-        DataTable<Goods> goods = goodsService.getByNature(mask);
+        DataTable<Goods> goods = goodsService.getGoods();
         goods.setDraw(Integer.parseInt(draw));
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(goods);
@@ -60,6 +64,14 @@ public class StockController {
         return mapper.writeValueAsString(stosks);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/getItems", method = RequestMethod.POST)
+    public String getItems(@RequestParam("id")String id) throws JsonProcessingException{
+        List<StockItem> results = service.getItemsByStockId(id);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(results);
+    }
+
     @RequestMapping(value = "/purchasing-in-list", method = RequestMethod.GET)
     public String purchasingInList() {
         return "/stock/purchasing-in-list";
@@ -68,7 +80,7 @@ public class StockController {
     @RequestMapping(value = "/purchasing-in-list", method = RequestMethod.POST)
     @ResponseBody
     public String getPurchasingInList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
-        DataTable<PurchasingOrderItem> purchasing = service.getPurchasingOrderItems(false, req);
+        DataTable<PurchasingOrderItem> purchasing = service.getPurchasingOrderItems(true, req);
         purchasing.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(purchasing);
@@ -111,9 +123,31 @@ public class StockController {
         return "/stock/applyOut";
     }
 
-    @RequestMapping(value = "/scrapt", method = RequestMethod.GET)
-    public String scrapt() {
-        return "/stock/scrapt";
+    @RequestMapping(value = "/selectTransport/{id}", method = RequestMethod.GET)
+    public String selectTransport(@PathVariable("id")String id, Model model) {
+        List<OfficialPartner> officialPartners = officialPartnerService.getListByType("LOGISTICS_COMPANY");
+        Stock stock = service.getStockById(id);
+        model.addAttribute("stock", stock);
+        model.addAttribute("transport", officialPartners);
+        return "/stock/selectTransport";
+    }
+
+    @RequestMapping(value = "/selectTransport", method = RequestMethod.POST)
+    @ResponseBody
+    public String doSelectTransport(@ModelAttribute(name = "stock")Stock stock, SessionStatus status) {
+        stock.setApproved(true);
+        for(StockItem item: stock.getItems())
+            item.setApproved(true);
+        service.save(stock);
+        status.setComplete();
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/print/{id}", method = RequestMethod.GET)
+    public String print(@PathVariable("id")String id, Model model) {
+        Stock stock = service.getStockById(id);
+        model.addAttribute("stock", stock);
+        return "/stock/print";
     }
 
 }

@@ -19,6 +19,20 @@
     <form id="form" class="smart-form" novalidate="novalidate">
         <fieldset>
             <div class="row">
+                <section class="col col-6">
+                    <label class="label">商品项目：</label>
+                    <label class="select">
+                        <select name="project" id="project"></select><i></i>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">商品分类：</label>
+                    <label class="select">
+                        <select id="type" name="type"></select><i></i>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
                 <section class="col col-4">
                     <label class="input">
                         <input type="text" name="name" placeholder="商品名称" th:value="${goods.name}"/>
@@ -26,7 +40,7 @@
                 </section>
                 <section class="col col-4">
                     <label class="input">
-                        <input type="text" name="spec" placeholder="型号规格" th:value="${goods.spec}"/>
+                        <input type="text" name="model" placeholder="型号规格" th:value="${goods.model}"/>
                     </label>
                 </section>
                 <section class="col col-4">
@@ -50,14 +64,18 @@
                         </thead>
                         <tbody>
                         <tr th:each="package, pStat:${goods.packages}">
-                            <td><a class="btn btn-danger btn-sm" href="javascript:void(0);" th:onclick="'del(this,\''+${package.id}+'\')'"><i
+                            <td><a class="btn btn-danger btn-sm" href="javascript:void(0);"
+                                   th:onclick="'del(this,\''+${package.id}+'\')'"><i
                                     class="fa fa-minus-circle"></i></a></td>
                             <td><label class="input"><input th:name="'packages['+${pStat.index}+'].packageSpec'"
-                                                            th:value="${package.packageSpec}" required="required"/></label></td>
+                                                            th:value="${package.packageSpec}"
+                                                            required="required"/></label></td>
                             <td><label class="input"><input th:name="'packages['+${pStat.index}+'].ammount'"
-                                                            th:value="${package.ammount}" required="required" class="number"/></label></td>
+                                                            th:value="${package.ammount}" required="required"
+                                                            class="number"/></label></td>
                             <td><label class="input"><input th:name="'packages['+${pStat.index}+'].packageUnit'"
-                                                            th:value="${package.packageUnit}" required="required"/></label></td>
+                                                            th:value="${package.packageUnit}"
+                                                            required="required"/></label></td>
                         </tr>
                         </tbody>
                     </table>
@@ -85,6 +103,8 @@
     var i = [[${#lists.size(goods.packages)}]];
 
     pageSetUp();
+
+    BindDictItem("project", "PROJECT_TYPE", "项目类型",[[${goods.project}]]);
 
     var pagefunction = function () {
 
@@ -134,9 +154,9 @@
                 error.insertAfter(element.parent());
             }
         });
-        if(!$("#form").valid()){
+        if (!$("#form").valid()) {
             $(".ammount").each(function () {
-                $(this.rules("add",{number:true, messages:{number:"请输入数字"}}));
+                $(this.rules("add", {number: true, messages: {number: "请输入数字"}}));
             });
         }
     };

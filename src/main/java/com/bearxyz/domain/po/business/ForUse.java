@@ -1,7 +1,6 @@
 package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
-import org.activiti.engine.task.Task;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -22,6 +21,10 @@ public class ForUse extends BaseDomain {
     private String processInstanceId = "";
     @Column
     private Boolean approved = false;
+    @Column(length = 50)
+    private String type = "";
+    @Column(length = 200)
+    private String deliverAddress = "";
 
     @Transient
     private String goods = "";
@@ -108,5 +111,21 @@ public class ForUse extends BaseDomain {
 
     public void setFinishedDate(Date finishedDate) {
         this.finishedDate = finishedDate;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getDeliverAddress() {
+        return deliverAddress;
+    }
+
+    public void setDeliverAddress(String deliverAddress) {
+        this.deliverAddress = deliverAddress;
     }
 }

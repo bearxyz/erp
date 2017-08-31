@@ -6,9 +6,10 @@ import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.*;
-import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
 import com.bearxyz.utility.OrderUtils;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -61,6 +62,24 @@ public class StockService {
     @Autowired
     private WorkflowService workflowService;
 
+    public Stock getStockById(String id){
+        return stockRepository.findOne(id);
+    }
+
+    public List<StockItem> getItemsByStockId(String id){
+        Stock stock = stockRepository.findOne(id);
+        for(StockItem item: stock.getItems()){
+            Goods goods = goodsRepository.findOne(item.getGoodsId());
+            item.setGoods(goods);
+            if(item.getSupplier()!=null) {
+                OfficialPartner partner = officialPartnerRepository.findOne(item.getSupplier());
+                item.setSupplierName(partner.getName());
+            }
+
+        }
+        return stock.getItems();
+    }
+
     public List<PurchasingOrderItem> getPurchasingOrderItemsByIds(String ids){
         List<PurchasingOrderItem> items = new ArrayList<>();
         String[] str = ids.split(",");
@@ -91,6 +110,12 @@ public class StockService {
         };
         Page<StockItem> page = stockItemRepository.findAll(specification, request);
         List<StockItem> content = page.getContent();
+        for(StockItem item: content){
+            Dict dict = dictRepository.findByMask(item.getStock().getMask());
+            item.getStock().setTypeName(dict.getName());
+            User user = userRepository.findOne(item.getStock().getLastModifiedBy());
+            item.getStock().setOperator(user.getFirstName()+user.getLastName());
+        }
         result.setRecordsTotal(page.getTotalElements());
         result.setRecordsFiltered(page.getTotalElements());
         result.setData(content);
@@ -120,6 +145,27 @@ public class StockService {
         for(Stock stock:content){
             Dict dict = dictRepository.findByMask(stock.getMask());
             stock.setTypeName(dict.getName());
+            User user = userRepository.findOne(stock.getCreatedBy());
+            if(stock.getType().equals("STOCK-OUT"))
+                user=userRepository.findOne(stock.getLastModifiedBy());
+            stock.setOperator(user.getFirstName()+user.getLastName());
+            Task task = workflowService.getTaskByBussinessId(stock.getId());
+            if (task != null) {
+                stock.setTaskId(task.getId());
+                stock.setTaskName(task.getName());
+                stock.setFinishedDate(task.getDueDate());
+            } else {
+                HistoricProcessInstance historicTaskInstance = workflowService.getHistoryProcessByBussinessId(stock.getId());
+                if (historicTaskInstance != null) {
+                    stock.setTaskName("已完成");
+                    stock.setTaskId(historicTaskInstance.getId());
+                    stock.setFinishedDate(historicTaskInstance.getEndTime());
+                }
+                else {
+                    stock.setTaskName("已完成");
+                    stock.setFinishedDate(stock.getLastUpdated());
+                }
+            }
         }
         result.setRecordsTotal(page.getTotalElements());
         result.setRecordsFiltered(page.getTotalElements());
@@ -146,11 +192,15 @@ public class StockService {
         Page<PurchasingOrderItem> page = purchasingOrderItemRepository.findAll(specification, request);
         List<PurchasingOrderItem> content = page.getContent();
         for(PurchasingOrderItem item: content){
-            OfficialPartner partner = officialPartnerRepository.findOne(item.getSupplier());
-            item.setSupplierName(partner.getName());
-            User user = userRepository.findOne(item.getOrder().getOperator());
+            if(item.getSupplier()!=null) {
+                OfficialPartner partner = officialPartnerRepository.findOne(item.getSupplier());
+                item.setSupplierName(partner.getName());
+            }
+            if(item.getOrder().getOperator()!=null) {
+                User user = userRepository.findOne(item.getOrder().getOperator());
+                item.getOrder().setApplyer(user.getFirstName()+user.getLastName());
+            }
             Goods goods = goodsRepository.findOne(item.getGoodsId());
-            item.getOrder().setApplyer(user.getFirstName()+user.getLastName());
             item.setGoods(goods);
         }
         result.setRecordsTotal(page.getTotalElements());

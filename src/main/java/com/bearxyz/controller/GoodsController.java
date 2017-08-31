@@ -1,7 +1,9 @@
 package com.bearxyz.controller;
 
 import com.bearxyz.common.DataTable;
+import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.Goods;
+import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.service.business.GoodsService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+
+import java.util.List;
 
 
 /**
@@ -23,6 +27,9 @@ public class GoodsController {
     @Autowired
     private GoodsService service;
 
+    @Autowired
+    private GoodsRepository repository;
+
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index() {
         return "/goods/index";
@@ -30,16 +37,15 @@ public class GoodsController {
 
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ResponseBody
-    public String list(@RequestParam(value = "mask", required = false) String mask, @RequestParam("draw") String draw) throws JsonProcessingException {
-        DataTable<Goods> goods = service.getByNature(mask);
-        goods.setDraw(Integer.parseInt(draw));
+    public String list(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        DataTable<Goods> goods = service.getGoods();
+        goods.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(goods);
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.GET)
-    public String create(@RequestParam("id") String id, Model model) {
-        model.addAttribute("nature", id);
+    public String create(Model model) {
         model.addAttribute("goods", new Goods());
         return "/goods/create";
     }

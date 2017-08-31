@@ -5,6 +5,7 @@ import com.bearxyz.domain.po.BaseDomain;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Created by bearxyz on 2017/6/3.
@@ -30,6 +31,9 @@ public class Dict extends BaseDomain {
 
     @Column(length = 50)
     private String value;
+
+    @Transient
+    private boolean has = false;
 
     public String getParentId() {
         return parentId;
@@ -69,5 +73,13 @@ public class Dict extends BaseDomain {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public boolean isHas() {
+        return has;
+    }
+
+    public void setHas(boolean has) {
+        this.has = has;
     }
 }

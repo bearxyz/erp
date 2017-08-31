@@ -7,249 +7,305 @@
     <title>新增客户</title>
 </head>
 <body>
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-        &times;
-    </button>
-    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 客户资料</h4>
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-edit fa-fw "></i>
+            客户资料
+        </h1>
+    </div>
 </div>
 
 
-<div class="modal-body no-padding">
-    <form id="form" class="smart-form" novalidate="novalidate" method="post">
-        <ul id="myTab" class="nav nav-tabs bordered">
-            <li class="active">
-                <a href="#ss1" data-toggle="tab"><i class="fa fa-info"></i> 基本信息</a>
-            </li>
-            <li>
-                <a href="#ss2" data-toggle="tab"><i class="fa fa-money"></i> 财务情况</a>
-            </li>
-            <li>
-                <a href="#ss5" data-toggle="tab"><i class="fa fa-info"></i> 主观信息</a>
-            </li>
-        </ul>
-        <div id="myTabContent" class="tab-content">
-            <div class="tab-pane fade in active" id="ss1">
-                <fieldset>
-                    <div class="row">
-                        <section class="col col-4">
-                            <label class="input">
-                                <input type="text" name="name" id="name" placeholder="学校名称"/>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="type" id="type"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="managementModel"
-                                        id="managementModel"></select><i></i>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-2">
-                            <label class="select"><select name="province" id="s1">
-                                <option></option>
-                            </select><i></i></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="select"><select name="city" id="s2">
-                                <option></option>
-                            </select><i></i></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="select"><select name="district" id="s3">
-                                <option></option>
-                            </select><i></i></label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="input">
-                                <input type="text" name="address" id="address" placeholder="详细地址"/>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-2">
-                            <label class="input"><input type="text" name="numberOfTeacher"
-                                                        id="numberOfTeacher" placeholder="员工人数"/></label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="input"><input type="text" name="numberOfFulltime"
-                                                        id="numberOfFulltime"
-                                                        placeholder="专职作文教师人数"/></label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="input"><input type="text" name="numberOfParttime"
-                                                        id="numberOfParttime"
-                                                        placeholder="兼职作文教师人数"/></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="input"><input type="text" name="numberOfOtherTeacher"
-                                                        id="numberOfOtherTeacher"
-                                                        placeholder="其他教师人数"/></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="input"><input type="text" name="numberOfOther" id="numberOfOther"
-                                                        placeholder="其他岗位人数"/></label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-3">
-                            <label class="select">
-                                <select type="text" name="position" id="position"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="select">
-                                <select type="text" name="planning" id="planning"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="select">
-                                <select type="text" name="scale" id="scale"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="input"><input type="text" name="license" id="license"
-                                                        placeholder="办学许可证"/></label>
-                        </section>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="input"><input id="consultArea" name="consultArea" type="text"
-                                                        placeholder="咨询区域"/></label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="input"><input id="consultProject" name="consultProject" type="text"
-                                                        placeholder="咨询项目"/></label>
-                        </section>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="tab-pane fade" id="ss2">
-                <fieldset>
-                    <div class="row">
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="payment" id="payment"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="bank" id="bank"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="credit" id="credit"></select><i></i>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="fund" id="fund"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="attitudeOfPayment" id="attitudeOfPayment"></select><i></i>
-                            </label>
-                        </section>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="tab-pane fade" id="ss5">
-                <fieldset>
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget well" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>领用申请</h2>
+                </header>
+                <div role="content">
+                    <div class="widget-body">
+                        <form id="form" class="smart-form" novalidate="novalidate" method="post">
+                            <ul id="myTab" class="nav nav-tabs bordered">
+                                <li class="active">
+                                    <a href="#ss1" data-toggle="tab"><i class="fa fa-info"></i> 基本信息</a>
+                                </li>
+                                <li>
+                                    <a href="#ss2" data-toggle="tab"><i class="fa fa-money"></i> 财务情况</a>
+                                </li>
+                                <li>
+                                    <a href="#ss5" data-toggle="tab"><i class="fa fa-info"></i> 主观信息</a>
+                                </li>
+                            </ul>
+                            <div id="myTabContent" class="tab-content">
+                                <div class="tab-pane fade in active" id="ss1">
+                                    <fieldset>
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="input">
+                                                    <input type="text" name="name" id="name" placeholder="学校名称"/>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="select">
+                                                    <select type="text" name="type" id="type"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="select">
+                                                    <select type="text" name="managementModel"
+                                                            id="managementModel"></select><i></i>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row" id="dist1">
+                                            <section class="col col-2">
+                                                <label class="select"><select name="province" data-province="---- 选择省 ----">
+                                                </select><i></i></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="select"><select name="city" data-city="---- 选择市 ----">
+                                                </select><i></i></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="select"><select name="district" data-district="---- 选择区 ----">
+                                                </select><i></i></label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="input">
+                                                    <input type="text" name="address" id="address" placeholder="详细地址"/>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-2">
+                                                <label class="input"><input type="text" name="numberOfTeacher"
+                                                                            id="numberOfTeacher"
+                                                                            placeholder="员工人数"/></label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="input"><input type="text" name="numberOfFulltime"
+                                                                            id="numberOfFulltime"
+                                                                            placeholder="专职作文教师人数"/></label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="input"><input type="text" name="numberOfParttime"
+                                                                            id="numberOfParttime"
+                                                                            placeholder="兼职作文教师人数"/></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="input"><input type="text" name="numberOfOtherTeacher"
+                                                                            id="numberOfOtherTeacher"
+                                                                            placeholder="其他教师人数"/></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="input"><input type="text" name="numberOfOther"
+                                                                            id="numberOfOther"
+                                                                            placeholder="其他岗位人数"/></label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-3">
+                                                <label class="select">
+                                                    <select type="text" name="position" id="position"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="select">
+                                                    <select type="text" name="planning" id="planning"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="select">
+                                                    <select type="text" name="scale" id="scale"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="input"><input type="text" name="license" id="license"
+                                                                            placeholder="办学许可证"/></label>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="row" id="dist2">
+                                            <section class="col col-2">
+                                                <label class="select"><select name="consultProvince" data-province="咨询省份">
+                                                </select><i></i></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="select"><select name="consultCity" data-city="咨询城市">
+                                                </select><i></i></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="select"><select name="consultDistrict" data-district="咨询地区">
+                                                </select><i></i></label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="input"><input id="consultProject" name="consultProject"
+                                                                            type="text"
+                                                                            placeholder="咨询项目"/></label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="input"><input id="contactor" name="contactor"
+                                                                            type="text"
+                                                                            placeholder="联系人"/></label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="input"><input id="contactPhone" name="contactPhone"
+                                                                            type="text"
+                                                                            placeholder="联系电话"/></label>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="tab-pane fade" id="ss2">
+                                    <fieldset>
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="select">
+                                                    <select type="text" name="payment" id="payment"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="select">
+                                                    <select type="text" name="bank" id="bank"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="select">
+                                                    <select type="text" name="credit" id="credit"></select><i></i>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="select">
+                                                    <select type="text" name="fund" id="fund"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="select">
+                                                    <select type="text" name="attitudeOfPayment"
+                                                            id="attitudeOfPayment"></select><i></i>
+                                                </label>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="tab-pane fade" id="ss5">
+                                    <fieldset>
 
-                    <section>
-                        <label class="textarea textarea-resizable">
-                            <textarea class="custom-scroll" id="relationReason" name="relationReason" placeholder="原因"></textarea>
-                        </label>
-                    </section>
+                                        <section>
+                                            <label class="textarea textarea-resizable">
+                                                <textarea class="custom-scroll" id="relationReason"
+                                                          name="relationReason" placeholder="原因"></textarea>
+                                            </label>
+                                        </section>
 
-                    <div class="row">
-                    <section class="col col-6">
-                        <label class="textarea textarea-resizable">
-                            <textarea class="custom-scroll" placeholder="对客户的了解程度" name="understandingLevel" id="understandingLevel"></textarea>
-                        </label>
-                    </section>
-                    <section class="col col-6">
-                        <label class="textarea textarea-resizable">
-                            <textarea class="custom-scroll" placeholder="客户对总部的态度"></textarea>
-                        </label>
-                    </section>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll" placeholder="对客户的了解程度"
+                                                              name="understandingLevel"
+                                                              id="understandingLevel"></textarea>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll" placeholder="客户对总部的态度"></textarea>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll" placeholder="客户长期事业目标"></textarea>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll" placeholder="客户短期事业目标"></textarea>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll" placeholder="客户目前最关切的"></textarea>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll" placeholder="客户更多思考的"></textarea>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll" placeholder="客户对什么特别有意见"></textarea>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll" placeholder="客户最热衷"></textarea>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll"
+                                                              placeholder="在客户眼中最关键的问题"></textarea>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll"
+                                                              placeholder="客户面临竞争（主要对手、竞争状况、客户对策）"></textarea>
+                                                </label>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    保 存
+                                </button>
+                                <a class="btn btn-danger" href="#/clientres/index">
+                                    取 消
+                                </a>
+                            </footer>
+                        </form>
                     </div>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户长期事业目标"></textarea>
-                            </label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户短期事业目标"></textarea>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户目前最关切的"></textarea>
-                            </label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户更多思考的"></textarea>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户对什么特别有意见"></textarea>
-                            </label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户最热衷"></textarea>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="在客户眼中最关键的问题"></textarea>
-                            </label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户面临竞争（主要对手、竞争状况、客户对策）"></textarea>
-                            </label>
-                        </section>
-                    </div>
-                </fieldset>
+                </div>
             </div>
+        </article>
+    </div>
+</section>
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
         </div>
-        <footer>
-            <button type="submit" class="btn btn-primary">
-                保 存
-            </button>
-            <button class="btn btn-danger" data-dismiss="modal">
-                取 消
-            </button>
-        </footer>
-    </form>
+    </div>
 </div>
-<script th:src="@{js/geo_utf-8.js}"></script>
+<!-- /.modal -->
+<script th:src="@{js/distpicker.js}"></script>
 <script type="text/javascript">
     pageSetUp();
     var pagefunction = function () {
+
+        $("#dist1").distpicker();
+        $("#dist2").distpicker();
 
         BindDictItem("type", "COMPANY_TYPE", "学校类型");
         BindDictItem("managementModel", "MANAGEMENT_MODEL", "经营模式");
@@ -276,8 +332,7 @@
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function () {
-                        $('#remoteModal').modal('hide');
-                        $('#dt_basic').DataTable().ajax.reload();
+                        window.location.href="#/clientres/index";
                     },
                     error: function (e) {
                         $.bigBox({
@@ -298,15 +353,6 @@
         });
     };
     loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
-    $(document).ready(function () {
-        setup();
-        promptinfo();
-    });
-    function promptinfo() {
-        var s1 = document.getElementById('s1');
-        var s2 = document.getElementById('s2');
-        var s3 = document.getElementById('s3');
-    }
 </script>
 </body>
 </html>

@@ -10,5 +10,4 @@ import java.util.List;
  */
 public interface GoodsRepository extends JpaRepository<Goods, String> {
 
-    List<Goods> findAllByNature(String nature);
 }

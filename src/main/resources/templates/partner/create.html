@@ -20,7 +20,7 @@
         <fieldset>
             <section>
                 <label class="input">
-                    <input type="text" name="name" id="name" placeholder="公司名称"/>
+                    <input type="text" name="name" id="name" placeholder="名称"/>
                 </label>
             </section>
             <div class="row">
@@ -67,16 +67,10 @@
     var pagefunction = function () {
         var $form = $("#form").validate({
             rules: {
-                name: {required: true},
-                address: {required: true},
-                contact: {required: true},
-                phone: {required: true}
+                name: {required: true}
             },
             messages: {
-                name: {required: '请输入公司名称'},
-                address: {required: '请输入地址'},
-                contact: {required: '请输入联系人'},
-                phone: {required: '请输入联系电话'}
+                name: {required: '请输入公司名称'}
             },
             onsubmit: true,
             submitHandler: function () {

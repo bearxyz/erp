@@ -23,10 +23,19 @@ public class StockItem extends BaseDomain{
     private String unit = "";
     @Column
     private Float price = (float)0.0;
+    @Column(length = 50)
+    private String supplier = "";
     @Column(length = 36)
     private String packageId = "";
     @Column(length = 50)
     private String warehouse = "";
+    @Column
+    private boolean approved = false;
+
+    @Transient
+    private Goods goods;
+    @Transient
+    private String supplierName = "";
 
     @ManyToOne
     @JoinColumn(name = "STOCK_ID")
@@ -110,5 +119,37 @@ public class StockItem extends BaseDomain{
 
     public void setStock(Stock stock) {
         this.stock = stock;
+    }
+
+    public Goods getGoods() {
+        return goods;
+    }
+
+    public void setGoods(Goods goods) {
+        this.goods = goods;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public String getSupplier() {
+        return supplier;
+    }
+
+    public void setSupplier(String supplier) {
+        this.supplier = supplier;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
     }
 }

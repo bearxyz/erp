@@ -62,15 +62,26 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
                                width="100%">
                             <thead>
+                            <tr>
+                                <th class="hasinput"></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"></th>
+                            </tr>
+                            <tr>
                             <th class="smart-form" style="padding:5px;"><label class="checkbox"><input name="check-all"
                                                                                                        type="checkbox"/><i> </i></label>
                             </th>
-                            <th>邮箱</th>
+                            <th>账号</th>
                             <th>真实姓名</th>
                             <th>职务</th>
                             <th>部门</th>
                             <th>状态</th>
-                            <th>操作</th>
+                            <th></th>
+                            </tr>
                             </thead>
                         </table>
                     </div>
@@ -104,12 +115,16 @@
         var responsiveHelper_dt_basic = undefined;
         var breakpointDefinition = {tablet: 1024, phone: 480};
 
-        $('#dt_basic').dataTable({
+        var otable = $('#dt_basic').DataTable({
             "processing": true,
-            "serverSide": true,
+
             "ajax": {
                 url: "/user/index",
-                "type": "POST"
+                "type": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
             },
             "columns": [
                 CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
@@ -126,9 +141,8 @@
                 }
             ],
             "autoWidth": true,
-            "ordering": false,
-            "searching": false,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+            "bStateSave": true,
             "preDrawCallback": function () {
                 if (!responsiveHelper_dt_basic) {
                     responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
@@ -142,6 +156,13 @@
                 $(":checkbox[name='check-all']").prop('checked', false);
             },
             "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'l><'col-sm-6 col-xs-12 hidden-xs'>r>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+
+        $("#dt_basic thead th input[type=text]").on('keyup change', function () {
+            otable.column($(this).parent().index() + ':visible')
+                .search(this.value)
+                .draw();
+
         });
 
     }

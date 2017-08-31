@@ -33,28 +33,8 @@
     <!-- row -->
     <div class="row">
 
-        <article class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
-            <div class="jarviswidget jarviswidget-color-orange" id="wid-id-0" data-widget-editbutton="false"
-                 data-widget-deletebutton="false"
-                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
-                <header>
-                    <span class="widget-icon">
-                        <i class="fa fa-sitemap"></i>
-                    </span>
-                    <h2><strong>商品分类</strong></h2>
-
-                </header>
-                <div>
-                    <!-- widget content -->
-                    <div class="widget-body">
-                        <div id="jstree"></div>
-                    </div>
-                </div>
-            </div>
-        </article>
-
         <!-- NEW WIDGET START -->
-        <article class="col-xs-12 col-sm-12 col-md-8 col-lg-10">
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false"
                  data-widget-deletebutton="false"
                  data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
@@ -71,7 +51,7 @@
                         </a>
                     </div>
                     <div class="widget-toolbar" shiro:hasPermission="/goods/create">
-                        <a class="btn btn-primary" href="javascript:void(0);" id="create">
+                        <a class="btn btn-primary" href="goods/create" data-toggle="modal" data-target="#remoteModal">
                             <i class="fa fa-edit"> </i>
                             <span class="hidden-mobile">新 增</span>
                         </a>
@@ -82,13 +62,27 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
                                width="100%">
                             <thead>
-                            <th class="smart-form" style="padding:5px;"><label class="checkbox"><input name="check-all"
-                                                                                                       type="checkbox"/><i> </i></label>
-                            </th>
-                            <th>商品名称</th>
-                            <th>规格型号</th>
-                            <th>单位</th>
-                            <th>操作</th>
+                            <tr>
+                                <th class="hasinput"></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"></th>
+                            </tr>
+                            <tr>
+                                <th class="smart-form" style="padding:5px;"><label class="checkbox"><input
+                                        name="check-all"
+                                        type="checkbox"/><i> </i></label>
+                                </th>
+                                <th>项目</th>
+                                <th>类型</th>
+                                <th>商品名称</th>
+                                <th>型号</th>
+                                <th>单位</th>
+                                <th></th>
+                            </tr>
                             </thead>
                         </table>
                     </div>
@@ -119,56 +113,35 @@
 
     var pagefunction = function () {
 
-        loadScript("js/plugin/jstree/jstree.min.js", run_jstree_function);
-
-        function run_jstree_function() {
-            jQuery('#jstree').jstree({
-                'core': {
-                    'data': {
-                        'url': "/common/getDictTree",
-                        'data': function (node) {
-                            var mask = (node.id == "#") ? "GOODS_NATURE" : node.id;
-                            return {"mask": mask};
-                        }
-                    },
-                    'check_callback': true
-                }
-            });
-        }
-
         var responsiveHelper_dt_basic = undefined;
         var breakpointDefinition = {tablet: 1024, phone: 480};
 
-        $('#dt_basic').dataTable({
+        var otable = $('#dt_basic').DataTable({
             "processing": true,
-            "serverSide": true,
             ajax: {
                 url: "/goods/index",
                 "type": "POST",
-                "data": {
-                    mask: function () {
-                        return $('#id').val();
-                    }
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
                 }
             },
             "columns": [
                 CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                {"data": "project"},
+                {"data": "type"},
                 {"data": "name"},
-                {"data": "spec"},
+                {"data": "model"},
                 {"data": "unit"},
                 {
                     "data": "operate",
                     "sClass": "text-center",
-                    width: "160px",
+                    width: "80px",
                     orderable: false,
                     render: formatAction
                 }
             ],
             "autoWidth": true,
-            "paging": false,
-            "lengthChange": false,
-            "ordering": false,
-            "searching": false,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
             "bStateSave": true,
             "preDrawCallback": function () {
@@ -184,6 +157,13 @@
                 $(":checkbox[name='check-all']").prop('checked', false);
             },
             "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+
+        $("#dt_basic thead th input[type=text]").on('keyup change', function () {
+            otable.column($(this).parent().index() + ':visible')
+                .search(this.value)
+                .draw();
+
         });
 
     }
@@ -206,7 +186,10 @@
     });
     function formatAction(cellValue, options, rowObject) {
         var html = '<div class="btn-group btn-group-justified">';
-        try {if (setEditBtn) html += setEditBtn(rowObject.id);} catch (e) {}
+        try {
+            if (setEditBtn) html += setEditBtn(rowObject.id);
+        } catch (e) {
+        }
         html += '</div>';
         return html;
     }
@@ -214,21 +197,6 @@
         var id = data.node.id;
         $('#id').val(id);
         $('#dt_basic').DataTable().ajax.reload();
-    });
-</script>
-<script type="text/javascript" shiro:hasPermission="/goods/create">
-    $('#create').on('click', function () {
-        var id = $("#id").val();
-        if (id != "") {
-            $('#remoteModal').modal({remote: '/goods/create?id=' + id});
-        }
-        else {
-            $.SmartMessageBox({
-                title: "注 意!",
-                content: "请先选择合作商类别！",
-                buttons: '[确 定]'
-            });
-        }
     });
 </script>
 <script type="text/javascript" shiro:hasPermission="/goods/edit">

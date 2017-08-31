@@ -50,8 +50,15 @@ var CONSTANT = {
         // 常用render可以抽取出来，如日期时间、头像等
         RENDER: {
             DATETIME: function (data, type, row, meta) {
-                if(data!=null&&data!="") {
-                    return moment(data).format("YYYY/MM/DD HH:mm");
+                if (data != null && data != "") {
+                    return moment(data).format("YYYY-MM-DD HH:mm");
+                }
+                else
+                    return "";
+            },
+            DATE: function (data, type, row, meta) {
+                if (data != null && data != "") {
+                    return moment(data).format("YYYY-MM-DD");
                 }
                 else
                     return "";
@@ -68,7 +75,7 @@ function BindSelect(ctrlName, url, placeholder, selected) {
         control.empty();
         control.append("<option value=''>&nbsp;" + placeholder + "</option>");
         $.each(data, function (i, item) {
-            if(selected&&selected==item.id)
+            if (selected && selected == item.id)
                 control.append("<option value='" + item.id + "' selected>&nbsp;" + item.text + "</option>");
             else
                 control.append("<option value='" + item.id + "'>&nbsp;" + item.text + "</option>");
@@ -81,29 +88,29 @@ function BindDictItem(ctrlName, mask, placeholder, selected) {
     BindSelect(ctrlName, url, placeholder, selected);
 }
 
-function getRowObj(obj)
-{
+function getRowObj(obj) {
     var i = 0;
-    while(obj.tagName.toLowerCase() != "tr"){
+    while (obj.tagName.toLowerCase() != "tr") {
         obj = obj.parentNode;
-        if(obj.tagName.toLowerCase() == "table")return null;
+        if (obj.tagName.toLowerCase() == "table")return null;
     }
     return obj;
 }
-function getRowNo(obj){
+function getRowNo(obj) {
     var trObj = getRowObj(obj);
     var trArr = trObj.parentNode.children;
-    for(var trNo= 0; trNo < trArr.length; trNo++){
-        if(trObj == trObj.parentNode.children[trNo]){
-            alert(trNo+1);
+    for (var trNo = 0; trNo < trArr.length; trNo++) {
+        if (trObj == trObj.parentNode.children[trNo]) {
+            alert(trNo + 1);
         }
     }
 }
-function delRow(obj){
+function delRow(obj) {
     var tr = this.getRowObj(obj);
-    if(tr != null){
+    if (tr != null) {
         tr.parentNode.removeChild(tr);
-    }else{
+        item_count--;
+    } else {
         throw new Error("the given object is not contained by the table");
     }
 }
@@ -123,7 +130,7 @@ function completeTask(taskId, variables) {
         });
     }
     $.post('/common/task/complete/' + taskId, {keys: keys, values: values, types: types}, function () {
-        window.location.reload();
+        window.location ='#/common/task/todo';
     });
 }
 

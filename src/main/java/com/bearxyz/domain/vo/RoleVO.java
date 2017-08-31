@@ -1,10 +1,6 @@
 package com.bearxyz.domain.vo;
 
-import com.bearxyz.domain.po.sys.Dict;
-import com.bearxyz.domain.po.sys.Role;
-
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by bearxyz on 2017/6/22.

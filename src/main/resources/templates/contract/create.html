@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 加盟合同</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form_1" class="smart-form" novalidate="novalidate" enctype="multipart/form-data">
+        <input type="hidden" id="companyId" name="companyId" th:value="${companyId}">
+        <fieldset>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="select">
+                        <select name="project" id="project"></select><i></i>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="input">
+                        <input type="text" name="title" id="title" placeholder="合同名称"/>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="select">
+                        <select name="agentType" id="agentType"></select><i></i>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="select">
+                        <select name="agentLevel" id="agentLevel"></select><i></i>
+                    </label>
+                </section>
+            </div>
+            <section>
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="input">
+                            <i class="icon-append fa fa-calendar"></i>
+                            <input id="startDate" class="hasDatepicker" name="startDate" placeholder="合同生效日期"
+                                   type="text">
+                        </label>
+                    </section>
+                    <section class="col col-6">
+                        <label class="input">
+                            <i class="icon-append fa fa-calendar"></i>
+                            <input id="endDate" class="hasDatepicker" name="endDate" placeholder="合同到期日期" type="text">
+                        </label>
+                    </section>
+                </div>
+            </section>
+            <section>
+                <input type="file" class="file-loading" id="attachment" name="attachment" multiple/>
+            </section>
+            <section>
+                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll"
+                                                              placeholder="备注" name="memo"></textarea>
+                </label>
+            </section>
+        </fieldset>
+        <footer>
+            <button type="submit" class="btn btn-primary">
+                保 存
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                取 消
+            </button>
+        </footer>
+    </form>
+</div>
+
+<script>
+    pageSetUp();
+
+    var pagefunction = function () {
+
+        BindDictItem("project", "PROJECT_TYPE", "代理项目");
+        BindDictItem("agentType", "CONTRACT_TYPE", "签约类型");
+        BindDictItem("agentLevel", "CLIENT_LEVEL_TYPE", "代理级别");
+
+        var $form1 = $("#form_1").validate({
+            rules: {
+                project: {required: true},
+                title: {required: true},
+                startDate: {required: true},
+                endDate: {required: true},
+                attachment: {required: true}
+            },
+            messages: {
+                project: {required: '请选择代理项目'},
+                title: {required: '请输入合同名称'},
+                startDate: {required: '请输入合同有效期'},
+                endDate: {required: '请输入合同有效期'},
+                attachment: {required: '请上传合同附件'}
+            },
+            onsubmit: true,
+            submitHandler: function () {
+                var formData = new FormData($('#form_1')[0]);
+                $.ajax({
+                    url: '/contract/create',
+                    type: 'post',
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    data: formData,
+                    success: function () {
+                        $('#remoteModal').modal('hide');
+                        $('#dt_basic').DataTable().ajax.reload();
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+        // START AND FINISH DATE
+        $('#startDate').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: 'month',
+            language: 'zh-CN',
+            autoclose: true
+        }).on("click", function () {
+            $("#startDate").datetimepicker("setEndDate", $("#endDate").val())
+        });
+
+        $('#endDate').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: 'month',
+            language: 'zh-CN',
+            autoclose: true
+        }).on("click", function () {
+            $("#endDate").datetimepicker("setStartDate", $("#startDate").val())
+        });
+
+        $("#attachment").fileinput({
+            language: 'zh',
+            showCaption: false,
+            showUpload: false
+        });
+
+    };
+
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+
+</script>
+</body>
+</html>

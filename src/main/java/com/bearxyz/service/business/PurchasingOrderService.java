@@ -18,8 +18,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.criteria.Predicate;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +48,9 @@ public class PurchasingOrderService {
     @Autowired
     private WorkflowService workflowService;
 
+    @Autowired
+    private PurchasingOrderAttachmentService attachmentService;
+
     public void apply(PurchasingOrder order) {
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("name", "采购单审核");
@@ -58,6 +63,21 @@ public class PurchasingOrderService {
     }
 
     public void save(PurchasingOrder order) {
+        repository.save(order);
+    }
+
+    public void save(PurchasingOrder order, List<MultipartFile> files) throws IOException {
+        if(files!=null) {
+            if (order.getAttachments() != null) {
+                for (PurchasingOrderAttachment attachment : order.getAttachments()) {
+                    attachmentService.delete(attachment.getId());
+                }
+            }
+            for (MultipartFile file : files) {
+                PurchasingOrderAttachment attachment = attachmentService.save(file);
+                order.getAttachments().add(attachment);
+            }
+        }
         repository.save(order);
     }
 
@@ -93,8 +113,10 @@ public class PurchasingOrderService {
         List<PurchasingOrder> content = page.getContent();
         for (PurchasingOrder purchasingOrder : content) {
             giveValueToItems(purchasingOrder);
-            User user = userRepository.findOne(purchasingOrder.getOperator());
-            purchasingOrder.setApplyer(user.getFirstName() + user.getLastName());
+            if (purchasingOrder.getOperator() != null) {
+                User user = userRepository.findOne(purchasingOrder.getOperator());
+                purchasingOrder.setApplyer(user.getFirstName() + user.getLastName());
+            }
             Task task = workflowService.getTaskByBussinessId(purchasingOrder.getId());
             if (task != null) {
                 purchasingOrder.setTaskId(task.getId());
@@ -103,7 +125,10 @@ public class PurchasingOrderService {
             } else {
                 HistoricProcessInstance historicTaskInstance = workflowService.getHistoryProcessByBussinessId(purchasingOrder.getId());
                 if (historicTaskInstance != null) {
-                    purchasingOrder.setTaskName("已完成");
+                    if(purchasingOrder.getApproved())
+                        purchasingOrder.setTaskName("已完成");
+                    else
+                        purchasingOrder.setTaskName("入库中");
                     purchasingOrder.setTaskId(historicTaskInstance.getId());
                     purchasingOrder.setFinishedDate(historicTaskInstance.getEndTime());
                 }

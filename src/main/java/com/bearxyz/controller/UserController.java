@@ -2,6 +2,7 @@ package com.bearxyz.controller;
 
 import com.bearxyz.common.ActionResponse;
 import com.bearxyz.common.DataTable;
+import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.common.exception.NameRepeatedException;
 import com.bearxyz.domain.po.sys.Role;
 import com.bearxyz.domain.po.sys.User;
@@ -38,9 +39,9 @@ public class UserController {
 
     @ResponseBody
     @RequestMapping(value = "/index", method = RequestMethod.POST)
-    public String getList(@RequestParam("draw") String draw,@RequestParam("start") int start, @RequestParam("length") int length) throws JsonProcessingException {
-        DataTable<User> users = sysService.getUsersByType("USER_TYPE_SYSTEM",start,length);
-        users.setDraw(Integer.parseInt(draw));
+    public String getList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        DataTable<User> users = sysService.getUsersByType("USER_TYPE_SYSTEM");
+        users.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(users);
     }

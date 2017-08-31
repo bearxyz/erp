@@ -27,11 +27,29 @@ function change(v) {
         if (++v < s.length) {change(v);}
     }
 }
+function change1(v) {
+    var str = "0";
+    for (i = 0; i < v; i++) { str += ("_" + (document.getElementById(ss[i]).selectedIndex - 1));}
+    ;
+    var sss = document.getElementById(ss[v]);
+    with (sss) {
+        length = 0;
+        options1[0] = new Option(opt1[v], '');
+        if (v && document.getElementById(ss[v - 1]).selectedIndex > 0 || !v) {
+            if (dsy.Exists(str)) {
+                ar = dsy.Items[str];
+                for (i = 0; i < ar.length; i++)options1[length] = new Option(ar[i], ar[i]);
+                if (v)options1[0].selected = true;
+            }
+        }
+        if (++v < ss.length) {change1(v);}
+    }
+}
 function preselect(p_key) {
     //alert(p_key);
     var index;
 
-    var provinces = new Array("北京市", "天津市", "上海市", "重庆市", "河北省", "山西省", "内蒙古", "辽宁省", "吉林省", "黑龙江省", "江苏省", "浙江省", "安徽省", "福建省", "江西省", "山东省", "河南省", "湖北省", "湖南省", "广东省", "广西", "海南省", "四川省", "贵州省", "云南省", "西藏", "陕西省", "甘肃省", "青海省", "宁夏", "新疆", "香港", "澳门", "台湾省");
+    var provinces = new Array("北京市", "天津市", "上海市", "重庆市", "河北省", "山西省", "内蒙古", "辽宁省", "吉林省", "黑龙江省", "江苏省", "浙江省", "安徽省", "福建省", "江西省", "山东省", "河南省", "湖北省", "湖南省", "广东省", "广西省", "海南省", "四川省", "贵州省", "云南省", "西藏", "陕西省", "甘肃省", "青海省", "宁夏", "新疆", "香港", "澳门", "台湾省");
     var cnt = provinces.length;
     //alert(cnt);
     for (i = 0; i < cnt; i++) {
@@ -43,6 +61,8 @@ function preselect(p_key) {
     if (index < provinces.length) {
         document.getElementById(s[0]).selectedIndex = index + 1;
         change(1);
+        document.getElementById(ss[0]).selectedIndex = index + 1;
+        change1(1);
     }
 }
 
@@ -424,9 +444,16 @@ dsy.add("0_33", ["台北", "高雄", "台中", "花莲", "基隆", "嘉义", "�
 dsy.add("0", ["北京市", "天津市", "上海市", "重庆市", "河北省", "山西省", "内蒙古", "辽宁省", "吉林省", "黑龙江省", "江苏省", "浙江省", "安徽省", "福建省", "江西省", "山东省", "河南省", "湖北省", "湖南省", "广东省", "广西", "海南省", "四川省", "贵州省", "云南省", "西藏", "陕西省", "甘肃省", "青海省", "宁夏", "新疆", "香港", "澳门", "台湾省"]);
 
 var s = ["s1", "s2", "s3"];
+var ss = ["ss1", "ss2", "ss3"];
 var opt0 = ["省份", "地级市", "市、县级市、县"];
+var opt1 = ["咨询省份", "咨询地级市", "咨询市、县级市、县"];
 function setup() {
     for (i = 0; i < s.length - 1; i++)
         document.getElementById(s[i]).onchange = new Function("change(" + (i + 1) + ");promptinfo();");
     change(0);
+}
+function setup1() {
+    for (i = 0; i < ss.length - 1; i++)
+        document.getElementById(ss[i]).onchange = new Function("change(" + (i + 1) + ");promptinfo1();");
+    change1(0);
 }

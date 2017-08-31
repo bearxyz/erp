@@ -1,13 +1,19 @@
 package com.bearxyz.service.sys;
 
 import com.bearxyz.common.DataTable;
-import com.bearxyz.common.exception.NameRepeatedException;
-import com.bearxyz.domain.po.sys.*;
-import com.bearxyz.domain.vo.PermissionVO;
 import com.bearxyz.common.TreeNode;
+import com.bearxyz.common.exception.NameRepeatedException;
+import com.bearxyz.domain.po.sys.Dict;
+import com.bearxyz.domain.po.sys.Permission;
+import com.bearxyz.domain.po.sys.Role;
+import com.bearxyz.domain.po.sys.User;
+import com.bearxyz.domain.vo.PermissionVO;
 import com.bearxyz.domain.vo.RoleListVO;
 import com.bearxyz.domain.vo.RoleVO;
-import com.bearxyz.repository.*;
+import com.bearxyz.repository.DictRepository;
+import com.bearxyz.repository.PermissionRepository;
+import com.bearxyz.repository.RoleRepository;
+import com.bearxyz.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -62,9 +68,17 @@ public class SysService {
         return userRepository.findOne(id);
     }
 
-    public DataTable<User> getUsersByType(String type, int start, int length) {
-        PageRequest request = new PageRequest(start / length, length, null);
-        Page<User> users = userRepository.findUsersByType(type, request);
+    public DataTable<User> getUserByRole(String mask){
+        DataTable<User> users = new DataTable<>();
+        List<User> u =userRepository.findUsersByRolesMask(mask);
+        users.setData(u);
+        users.setRecordsTotal((long)u.size());
+        users.setRecordsFiltered((long)u.size());
+        return users;
+    }
+
+    public DataTable<User> getUsersByType(String type) {
+        List<User> users = userRepository.findUsersByType(type);
         for (User user : users) {
             Set<Role> roles = user.getRoles();
             String post = "";
@@ -80,9 +94,9 @@ public class SysService {
             user.setFullName(user.getFirstName()+user.getLastName());
         }
         DataTable dt = new DataTable<User>();
-        dt.setData(users.getContent());
-        dt.setRecordsTotal(users.getTotalElements());
-        dt.setRecordsFiltered(users.getTotalElements());
+        dt.setData(users);
+        dt.setRecordsTotal((long)users.size());
+        dt.setRecordsFiltered((long)users.size());
         return dt;
     }
 
@@ -322,6 +336,10 @@ public class SysService {
             user.getRoles().add(r);
         }
         userRepository.save(user);
+    }
+
+    public void assignProvinceToUser(String uid, String[] province){
+
     }
 
     public void movePermission(String id, Integer position, Integer old_position) {

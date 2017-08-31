@@ -2,9 +2,7 @@ package com.bearxyz.controller;
 
 import com.bearxyz.domain.po.business.Notice;
 import com.bearxyz.domain.po.sys.Permission;
-import com.bearxyz.domain.po.sys.Role;
 import com.bearxyz.domain.po.sys.User;
-import com.bearxyz.domain.vo.NoticeVO;
 import com.bearxyz.domain.vo.TaskVO;
 import com.bearxyz.service.business.NoticeService;
 import com.bearxyz.service.sys.SysService;
@@ -21,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

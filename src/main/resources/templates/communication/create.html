@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 沟通记录</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form_1" class="smart-form" novalidate="novalidate">
+        <input type="hidden" id="companyId" name="companyId" th:value="${companyId}">
+        <fieldset>
+            <section>
+                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll"
+                                                              placeholder="存在的问题" name="question"></textarea>
+                </label>
+            </section>
+            <section>
+                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll"
+                                                              placeholder="解决方案" name="solution"></textarea>
+                </label>
+            </section>
+            <section>
+                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll"
+                                                              placeholder="备注" name="memo"></textarea>
+                </label>
+            </section>
+        </fieldset>
+        <footer>
+            <button type="submit" class="btn btn-primary">
+                保 存
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                取 消
+            </button>
+        </footer>
+    </form>
+</div>
+
+<script>
+    pageSetUp();
+
+    var pagefunction = function () {
+        var $form1 = $("#form_1").validate({
+            rules: {
+                question: {required: true},
+                solution: {required: true}
+            },
+            messages: {
+                question: {required: '请输入存在的问题'},
+                solution: {required: '请输入解决方案'}
+            },
+            onsubmit: true,
+            submitHandler: function () {
+                $.ajax({
+                    url: '/communication/create',
+                    type: 'post',
+                    data: $('#form_1').serialize(),
+                    success: function () {
+                        $('#remoteModal').modal('hide');
+                        $('#dt_basic').DataTable().ajax.reload();
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+    };
+
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+</body>
+</html>

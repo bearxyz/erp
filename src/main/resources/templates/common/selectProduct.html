@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+>
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -25,27 +25,8 @@
         <!-- row -->
         <div class="row">
 
-            <article class="col-xs-12 col-sm-12 col-md-4 col-lg-3">
-                <div class="jarviswidget jarviswidget-color-orange" id="wid-id-0" data-widget-editbutton="false"
-                     data-widget-deletebutton="false"
-                     data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
-                    <header>
-                    <span class="widget-icon">
-                        <i class="fa fa-sitemap"></i>
-                    </span>
-                        <h2><strong>物品分类</strong></h2>
-                    </header>
-                    <div>
-                        <!-- widget content -->
-                        <div class="widget-body">
-                            <div id="jstree"></div>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
             <!-- NEW WIDGET START -->
-            <article class="col-xs-12 col-sm-12 col-md-8 col-lg-9">
+            <article class="col-sm-12">
                 <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false"
                      data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
                     <header>
@@ -60,12 +41,22 @@
                             <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
                                    width="100%">
                                 <thead>
-                                <th class="smart-form" style="padding:5px;"><label class="checkbox"><input
-                                        name="check-all" type="checkbox"/><i> </i></label>
-                                </th>
-                                <th>物品名称</th>
-                                <th>规格型号</th>
-                                <th>库存数量</th>
+                                <tr>
+                                    <th class="hasinput"></th>
+                                    <th class="hasinput"><input type="text" class="form-control"/></th>
+                                    <th class="hasinput"><input type="text" class="form-control"/></th>
+                                    <th class="hasinput"><input type="text" class="form-control"/></th>
+                                    <th class="hasinput"><input type="text" class="form-control"/></th>
+                                </tr>
+                                <tr>
+                                    <th class="smart-form" style="padding:5px;"><label class="checkbox"><input
+                                            name="check-all" type="checkbox"/><i> </i></label>
+                                    </th>
+                                    <th>项目</th>
+                                    <th>分类</th>
+                                    <th>物品名称</th>
+                                    <th>规格型号</th>
+                                </tr>
                                 </thead>
                             </table>
                         </div>
@@ -94,49 +85,29 @@
     pageSetUp();
 
     var pagefunction = function () {
-        loadScript("js/plugin/jstree/jstree.min.js", run_jstree_function);
-
-        function run_jstree_function() {
-            jQuery('#jstree').jstree({
-                'core': {
-                    'data': {
-                        'url': "/common/getDictTree",
-                        'data': function (node) {
-                            var mask = (node.id == "#") ? "GOODS_NATURE" : node.id;
-                            return {"mask": mask};
-                        }
-                    },
-                    'check_callback': true
-                }
-            });
-        }
 
         var responsiveHelper_dt_basic = undefined;
         var breakpointDefinition = {tablet: 1024, phone: 480};
 
         $('#dt_basic').dataTable({
             "processing": true,
-            "serverSide": true,
             "ajax": {
                 url: "/common/selectProduct",
                 "type": "POST",
-                "data": {
-                    mask: function () {
-                        return $('#id').val();
-                    }
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
                 }
             },
             "columns": [
                 CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                {"data": "project"},
+                {"data": "type"},
                 {"data": "name"},
-                {"data": "spec"},
-                {"data": "stock"}
+                {"data": "model"}
             ],
             "autoWidth": true,
-            "paging": false,
-            "lengthChange": false,
-            "ordering": false,
-            "searching": false,
+            "bStateSave": true,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
             "preDrawCallback": function () {
                 if (!responsiveHelper_dt_basic) {
@@ -196,18 +167,19 @@
 
                     $.each(products, function (i, item) {
                         var html = "<tr><td><a class='btn btn-danger btn-sm' href='javascript:void(0);' onclick='delRow(this);'><i class='fa fa-minus-circle'></i></a></td>" +
-                            "<td><label class='input'><input name='items[" + i + "].goodsId' value='" + item.id + "' type='hidden' />" +
+                            "<td><label class='input'><input name='items[" + item_count + "].goodsId' value='" + item.id + "' type='hidden' />" +
                             "<input name='name' value='" + item.name + "' disabled='disabled' /></label></td>" +
-                            "<td><label class='input'><input name='spec' value='" + item.spec + "' disabled='disabled' /></label></td>" +
-                            "<td><label class='select'><select name='items[" + i + "].packageId'>" +
+                            "<td><label class='input'><input name='items[" + item_count + "].spec' value='" + item.model + "' disabled='disabled' /></label></td>" +
+                            "<td><label class='select'><select name='items[" + item_count + "].packageId'>" +
                             "<option value=''>无包装[单位:" + item.unit + "]</option>";
                         for (n = 0; n < item.packages.length; n++) {
                             html += "<option value='" + item.packages[n].id + "'>" + item.packages[n].packageSpec + "[单位:" + item.packages[n].packageUnit + "]</option>";
                         }
                         html += "</select><i></i></label></td>" +
-                            "<td><label class='input'><input name='items[" + i + "].count' class='' value='0' class='number' />" +
+                            "<td><label class='input'><input name='items[" + item_count + "].count' class='' value='0' class='number' />" +
                             "</label></td></tr>";
                         $('#productTarget').append(html);
+                        item_count++;
                     });
                 }
             });

@@ -1,7 +1,6 @@
 package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
-import sun.security.util.Length;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

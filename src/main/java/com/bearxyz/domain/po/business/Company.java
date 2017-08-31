@@ -1,9 +1,9 @@
 package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +16,10 @@ public class Company extends BaseDomain {
 
     private static final long serialVersionUID = -1264316047321649030L;
 
+    @Column
+    private Boolean isAssigned = false;
+    @Column
+    private Boolean autoAssigned = false;
     @Column(length = 50)
     private String comeFrom = "";
     @Column(length = 100)
@@ -30,6 +34,10 @@ public class Company extends BaseDomain {
     private String address = "";
     @Column(length = 50)
     private String type = "";
+    @Column(length = 50)
+    private String contactor = "";
+    @Column(length = 50)
+    private String contactPhone = "";
     @Column(length = 50)
     private String managementModel = "";
     @Column
@@ -88,7 +96,11 @@ public class Company extends BaseDomain {
     private String competition = "";
 
     @Column(length = 50)
-    private String consultArea = "";
+    private String consultProvince = "";
+    @Column(length = 50)
+    private String consultCity = "";
+    @Column(length = 50)
+    private String consultDistrict = "";
     @Column(length = 50)
     private String consultProject = "";
 
@@ -98,6 +110,9 @@ public class Company extends BaseDomain {
     private String salerId = "";
     @Column(length = 36)
     private String serviceId = "";
+
+    @Column
+    private boolean signed = false;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "company")
     private List<Person> persons = new ArrayList<>();
@@ -406,12 +421,28 @@ public class Company extends BaseDomain {
         this.serviceId = serviceId;
     }
 
-    public String getConsultArea() {
-        return consultArea;
+    public String getConsultProvince() {
+        return consultProvince;
     }
 
-    public void setConsultArea(String consultArea) {
-        this.consultArea = consultArea;
+    public void setConsultProvince(String consultProvince) {
+        this.consultProvince = consultProvince;
+    }
+
+    public String getConsultCity() {
+        return consultCity;
+    }
+
+    public void setConsultCity(String consultCity) {
+        this.consultCity = consultCity;
+    }
+
+    public String getConsultDistrict() {
+        return consultDistrict;
+    }
+
+    public void setConsultDistrict(String consultDistrict) {
+        this.consultDistrict = consultDistrict;
     }
 
     public String getConsultProject() {
@@ -420,5 +451,45 @@ public class Company extends BaseDomain {
 
     public void setConsultProject(String consultProject) {
         this.consultProject = consultProject;
+    }
+
+    public boolean isSigned() {
+        return signed;
+    }
+
+    public void setSigned(boolean signed) {
+        this.signed = signed;
+    }
+
+    public String getContactor() {
+        return contactor;
+    }
+
+    public void setContactor(String contactor) {
+        this.contactor = contactor;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
+    }
+
+    public Boolean getAutoAssigned() {
+        return autoAssigned;
+    }
+
+    public void setAutoAssigned(Boolean autoAssigned) {
+        this.autoAssigned = autoAssigned;
+    }
+
+    public Boolean getAssigned() {
+        return isAssigned;
+    }
+
+    public void setAssigned(Boolean assigned) {
+        isAssigned = assigned;
     }
 }

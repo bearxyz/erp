@@ -3,8 +3,6 @@ package com.bearxyz.config;
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.bearxyz.domain.po.sys.Permission;
 import com.bearxyz.repository.PermissionRepository;
-import com.bearxyz.service.sys.ShiroService;
-import com.bearxyz.service.sys.SysService;
 import org.apache.shiro.authc.credential.SimpleCredentialsMatcher;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.mgt.SecurityManager;

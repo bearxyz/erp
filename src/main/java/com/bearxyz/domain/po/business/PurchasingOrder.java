@@ -26,6 +26,8 @@ public class PurchasingOrder extends BaseDomain {
     private Boolean approved = false;
     @Column(length = 36)
     private String operator = "";
+    @Column
+    private Float advance = (float)0.0;
 
     @Transient
     private String goods = "";
@@ -37,6 +39,10 @@ public class PurchasingOrder extends BaseDomain {
     private String applyer;
     @Transient
     private Date finishedDate;
+
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "BUSINESS_ID")
+    private List<PurchasingOrderAttachment> attachments = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(cascade = {CascadeType.ALL})
@@ -129,5 +135,21 @@ public class PurchasingOrder extends BaseDomain {
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public Float getAdvance() {
+        return advance;
+    }
+
+    public void setAdvance(Float advance) {
+        this.advance = advance;
+    }
+
+    public List<PurchasingOrderAttachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<PurchasingOrderAttachment> attachments) {
+        this.attachments = attachments;
     }
 }

@@ -1,11 +1,11 @@
 package com.bearxyz.controller;
 
 import com.bearxyz.common.DataTable;
+import com.bearxyz.common.TreeNode;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.Permission;
 import com.bearxyz.domain.po.sys.Role;
 import com.bearxyz.domain.vo.PermissionVO;
-import com.bearxyz.common.TreeNode;
 import com.bearxyz.service.sys.SysService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

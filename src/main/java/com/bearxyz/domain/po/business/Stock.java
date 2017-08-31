@@ -23,13 +23,21 @@ public class Stock extends BaseDomain {
     private String purpose = "";
     @Column(length = 50)
     private String processInstanceId = "";
-    @Column(length = 36)
-    private String operator = "";
     @Column
     private Date operationDate;
     @Column
     private Boolean approved = false;
+    @Column(length = 200)
+    private String deliverAddress = "";
+    @Column(length = 36)
+    private String deliverCompany = "";
+    @Column(length = 50)
+    private String transportFee = "";
 
+    @Transient
+    private String deliverCompanyName = "";
+    @Transient
+    private String operator = "";
     @Transient
     private String goods = "";
     @Transient
@@ -38,6 +46,8 @@ public class Stock extends BaseDomain {
     private String taskName;
     @Transient
     private String typeName = "";
+    @Transient
+    private Date finishedDate;
 
     @JsonIgnore
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
@@ -146,5 +156,45 @@ public class Stock extends BaseDomain {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public Date getFinishedDate() {
+        return finishedDate;
+    }
+
+    public void setFinishedDate(Date finishedDate) {
+        this.finishedDate = finishedDate;
+    }
+
+    public String getDeliverAddress() {
+        return deliverAddress;
+    }
+
+    public void setDeliverAddress(String deliverAddress) {
+        this.deliverAddress = deliverAddress;
+    }
+
+    public String getDeliverCompany() {
+        return deliverCompany;
+    }
+
+    public void setDeliverCompany(String deliverCompany) {
+        this.deliverCompany = deliverCompany;
+    }
+
+    public String getDeliverCompanyName() {
+        return deliverCompanyName;
+    }
+
+    public void setDeliverCompanyName(String deliverCompanyName) {
+        this.deliverCompanyName = deliverCompanyName;
+    }
+
+    public String getTransportFee() {
+        return transportFee;
+    }
+
+    public void setTransportFee(String transportFee) {
+        this.transportFee = transportFee;
     }
 }

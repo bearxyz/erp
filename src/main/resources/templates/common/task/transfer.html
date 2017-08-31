@@ -46,7 +46,7 @@
             type: 'post',
             data: $('#form').serialize(),
             success: function () {
-                window.location = '#/common/task/todo';
+                window.location.reload();
             },
             error: function (e) {
                 $.bigBox({

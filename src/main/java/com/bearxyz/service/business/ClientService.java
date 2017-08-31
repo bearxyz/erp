@@ -41,28 +41,19 @@ public class ClientService {
         return companyRepository.findOne(id);
     }
 
-    public DataTable<Company> getCompanyByConditions(PaginationCriteria req){
-        String order = "lastUpdated";
-        String direction = "desc";
-        req.getOrder().get(0).getDir();
-        if(req.getOrder()!=null&&req.getOrder().get(0)!=null&&req.getOrder().get(0).getColumn()>0){
-            direction = req.getOrder().get(0).getDir();
-            order = req.getColumns().get(req.getOrder().get(0).getColumn()).getData();
-        }
-        PageRequest request = new PageRequest(req.getStart()/req.getLength(),req.getLength(), new Sort(Sort.Direction.fromString(direction), order));
+    public DataTable<Company> getCompanyByConditions(String uid, Boolean signed){
         Specification<Company> specification = (root, query, cb)->{
             Predicate predicate = cb.conjunction();
-            if(!StringUtils.isEmpty(""))
-                predicate.getExpressions().add(cb.like(root.get("title"),"%"+StringUtils.trimAllWhitespace("")+"%"));
-            if(!StringUtils.isEmpty(""))
-                predicate.getExpressions().add(cb.equal(root.get("mask"), ""));
+            if(!StringUtils.isEmpty(uid))
+                predicate.getExpressions().add(cb.equal(root.get("createdBy"), uid));
+            if(signed!=null)
+                predicate.getExpressions().add(cb.equal(root.get("signed"),signed));
             return predicate;
         };
-        Page<Company> page = companyRepository.findAll(specification, request);
-        List<Company> content = page.getContent();
+        List<Company> content = companyRepository.findAll(specification);
         DataTable<Company> companies = new DataTable<>();
-        companies.setRecordsTotal(page.getTotalElements());
-        companies.setRecordsFiltered(page.getTotalElements());
+        companies.setRecordsTotal((long)content.size());
+        companies.setRecordsFiltered((long)content.size());
         companies.setData(content);
         return companies;
     }

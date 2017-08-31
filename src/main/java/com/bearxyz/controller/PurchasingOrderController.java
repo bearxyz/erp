@@ -3,8 +3,8 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
-import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
+import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.OfficialPartnerService;
 import com.bearxyz.service.business.PurchasingOrderService;
 import com.bearxyz.service.sys.SysService;
@@ -18,7 +18,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -35,6 +39,10 @@ public class PurchasingOrderController {
     private OfficialPartnerService officialPartnerService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private SysService sysService;
+    @Autowired
+    private GoodsService goodsService;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index() {
@@ -69,11 +77,12 @@ public class PurchasingOrderController {
 
     @RequestMapping(value = "/apply", method = RequestMethod.POST)
     @ResponseBody
-    public String doCreate(@ModelAttribute("purchasingOrder") PurchasingOrder order, SessionStatus status) {
-        User user = (User) SecurityUtils.getSubject().getPrincipal();
-        order.setOperator(user.getId());
+    public String doCreate(@RequestParam("id")String id,@RequestParam("uid")String uid) {
+        PurchasingOrder order = service.getOneById(id);
+        order.setOperator(uid);
         service.apply(order);
-        status.setComplete();
+        Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
+        taskService.setAssignee(task.getId(), uid);
         return "{success: true}";
     }
 
@@ -90,8 +99,9 @@ public class PurchasingOrderController {
 
     @RequestMapping(value = "/reApply", method = RequestMethod.POST)
     @ResponseBody
-    public String doReApply(@ModelAttribute("purchasingOrder")PurchasingOrder order, SessionStatus status) {
-        service.save(order);
+    public String doReApply(@ModelAttribute("purchasingOrder")PurchasingOrder order, SessionStatus status, HttpServletRequest request) throws IOException {
+        List<MultipartFile> files = ((MultipartHttpServletRequest)request).getFiles("attachment");
+        service.save(order,files);
         status.setComplete();
         return "{success: true}";
     }
@@ -106,6 +116,34 @@ public class PurchasingOrderController {
         model.addAttribute("purchasingOrder", order);
         model.addAttribute("totalPrice",totalPrice);
         return "/purchasingorder/show";
+    }
+
+    @RequestMapping(value = "/assign/{id}", method = RequestMethod.GET)
+    public String man(@PathVariable(value = "id") String id, Model model) {
+        DataTable<User> users =sysService.getUserByRole("ROLE_DEPARTMENT_ADMINISTRATION");
+        model.addAttribute("users", users.getData());
+        model.addAttribute("id", id);
+        return "/purchasingorder/assign";
+    }
+
+    @RequestMapping(value = "/complete")
+    public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
+        PurchasingOrder order = service.getOneById(bid);
+        Float totalPrice = (float) 0.0;
+        for (PurchasingOrderItem item : order.getItems()) {
+            totalPrice += item.getPrice() * item.getCount();
+        }
+        model.addAttribute("purchasingOrder", order);
+        model.addAttribute("totalPrice",totalPrice);
+        String memo = "";
+        model.addAttribute("applyer", applyer);
+        Task task = taskService.createTaskQuery().taskId(tid).singleResult();
+        if (!task.getTaskDefinitionKey().equals("deptLeader")&&taskService.getVariable(task.getId(), "deptLeaderMemo") != null)
+            memo = taskService.getVariable(task.getId(), "deptLeaderMemo").toString();
+        model.addAttribute("taskId", tid);
+        model.addAttribute("taskKey", task.getTaskDefinitionKey());
+        model.addAttribute("memo", memo);
+        return "/purchasingorder/complete";
     }
 
 }

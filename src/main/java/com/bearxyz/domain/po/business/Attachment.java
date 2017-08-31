@@ -2,9 +2,7 @@ package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by bearxyz on 2017/7/27.
@@ -16,10 +14,12 @@ public class Attachment extends BaseDomain {
     @Column(length = 200)
     private String name = "";
     @Column
-    private Float fileSize = (float)0.0;
+    private Long fileSize = (long)0;
     @Column(length = 50)
     private String fileType = "";
-    @Column
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "BLOB")
     private byte[] fileContent;
 
     public String getName() {
@@ -30,11 +30,11 @@ public class Attachment extends BaseDomain {
         this.name = name;
     }
 
-    public Float getFileSize() {
+    public Long getFileSize() {
         return fileSize;
     }
 
-    public void setFileSize(Float fileSize) {
+    public void setFileSize(Long fileSize) {
         this.fileSize = fileSize;
     }
 

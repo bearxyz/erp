@@ -1,13 +1,14 @@
 package com.bearxyz.listener;
 
-import com.bearxyz.domain.po.business.*;
+import com.bearxyz.domain.po.business.Purchasing;
+import com.bearxyz.domain.po.business.PurchasingDetail;
+import com.bearxyz.domain.po.business.PurchasingOrder;
+import com.bearxyz.domain.po.business.PurchasingOrderItem;
 import com.bearxyz.repository.PurchasingOrderRepository;
 import com.bearxyz.repository.PurchasingRepository;
-import com.bearxyz.repository.StockRepository;
 import com.bearxyz.utility.OrderUtils;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +33,6 @@ public class PurchasingFinished implements ExecutionListener {
         PurchasingOrder order = new PurchasingOrder();
         order.setCode(OrderUtils.genSerialnumber("CG"));
         order.setApproved(false);
-        order.setPurpose(purchasing.getPurpose());
         for(PurchasingDetail item : purchasing.getItems()){
             PurchasingOrderItem si = new PurchasingOrderItem();
             si.setGoodsId(item.getGoodsId());

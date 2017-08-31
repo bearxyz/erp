@@ -1,7 +1,6 @@
 package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
-import org.springframework.stereotype.Controller;
 
 import javax.persistence.*;
 

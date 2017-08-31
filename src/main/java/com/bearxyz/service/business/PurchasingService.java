@@ -2,8 +2,10 @@ package com.bearxyz.service.business;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
-import com.bearxyz.domain.po.business.*;
+import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.business.Package;
+import com.bearxyz.domain.po.business.Purchasing;
+import com.bearxyz.domain.po.business.PurchasingDetail;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.PackageRepository;
@@ -11,10 +13,7 @@ import com.bearxyz.repository.PurchasingDetailRepository;
 import com.bearxyz.repository.PurchasingRepository;
 import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -75,11 +74,11 @@ public class PurchasingService {
             Goods goods = goodsRepository.findOne(item.getGoodsId());
             if (item.getPackageId() != null && !item.getPackageId().isEmpty()) {
                 Package pkg = packageRepository.findOne(item.getPackageId());
-                item.setSpec(pkg.getPackageSpec());
+                item.setSpec(goods.getModel());
                 item.setUnit(pkg.getPackageUnit());
                 item.setAmmount(pkg.getAmmount() * item.getCount());
             } else {
-                item.setSpec(goods.getSpec());
+                item.setSpec(goods.getModel());
                 item.setUnit(goods.getUnit());
                 item.setAmmount(item.getCount());
             }

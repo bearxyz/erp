@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+>
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -49,10 +49,13 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
                                width="100%">
                             <thead>
+                            <th></th>
                             <th>[[${title}]]单号</th>
                             <th>[[${title}]]类型</th>
+                            <th>操作人</th>
                             <th>备注</th>
-                            <th>时间</th>
+                            <th>完成时间</th>
+                            <th></th>
                             </thead>
                         </table>
                     </div>
@@ -68,6 +71,16 @@
 </section>
 <!-- end widget grid -->
 
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+
 <script type="text/javascript" th:inline="javascript">
 
     pageSetUp();
@@ -76,11 +89,38 @@
         var responsiveHelper_dt_basic = undefined;
         var breakpointDefinition = {tablet: 1024, phone: 480};
 
-        $('#dt_basic').dataTable({
+        function format(d) {
+            var html = '';
+            $.ajax({
+                url: '/stock/getItems',
+                type: 'POST',
+                async: false,
+                data: {id: d.id},
+                success: function (data) {
+                    var items = eval(data);
+                    html = '<table cellpadding="5" cellspacing="0" border="0" class="table table-hover table-condensed">';
+                    html += "<thead><th>商品名称</th><th>" + [[${title}]] + "数量</th><th>单位</th><th>规格</th><th>供应商</th><th>" + [[${title}]] + "单价</th></thead>";
+                    for (i = 0; i < items.length; i++) {
+                        html += "<tr>";
+                        html += "<td>" + items[i].goods.name + "</td>";
+                        html += "<td>" + items[i].ammount + "</td>";
+                        html += "<td>" + items[i].unit + "</td>";
+                        html += "<td>" + items[i].spec + "</td>";
+                        html += "<td>" + items[i].supplierName + "</td>";
+                        html += "<td>" + items[i].price + "</td>";
+                        html += "</tr>";
+                    }
+                    html += '</table>';
+                }
+            });
+            return html;
+        }
+
+        var dt = $('#dt_basic').DataTable({
             "processing": true,
             "serverSide": true,
             ajax: {
-                url: "/stock/list?type="+[[${type}]],
+                url: "/stock/list?type=" + [[${type}]],
                 "contentType": "application/json; charset=utf-8",
                 "type": "POST",
                 "data": function (d) {
@@ -88,13 +128,18 @@
                 }
             },
             "columns": [
+                {
+                    "class": 'details-control',
+                    "orderable": false,
+                    "data": null,
+                    "defaultContent": ''
+                },
                 {"data": "code"},
                 {"data": "typeName"},
+                {"data": "operator"},
                 {"data": "purpose"},
-                {
-                    "data": null,
-                    "sClass": "text-center"
-                }
+                {"data": "finishedDate", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
+                {"data": "taskName", "sClass": "text-center", render: formatStatus}
             ],
             "autoWidth": true,
             "searching": false,
@@ -114,6 +159,23 @@
             },
             "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
         });
+
+        // Add event listener for opening and closing details
+        $('#dt_basic tbody').on('click', 'td.details-control', function () {
+            var tr = $(this).closest('tr');
+            var row = dt.row(tr);
+
+            if (row.child.isShown()) {
+                // This row is already open - close it
+                row.child.hide();
+                tr.removeClass('shown');
+            }
+            else {
+                // Open this row
+                row.child(format(row.data())).show();
+                tr.addClass('shown');
+            }
+        });
     }
 
     loadScript("js/plugin/datatables/jquery.dataTables.min.js", function () {
@@ -125,6 +187,23 @@
             });
         });
     });
+    function formatStatus(cellValue, options, rowObject) {
+        var html = "";
+        if (rowObject.processInstanceId == null && rowObject.type == "STOCK-IN") {
+            html = "<a href='#/purchasingorder/apply/" + rowObject.id + "' class='btn btn-primary btn-sm'>采购单</a>";
+        }
+        else if (rowObject.type == "STOCK-OUT") {
+            if (!rowObject.approved)
+                html = "<a href='stock/selectTransport/" + rowObject.id + "' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#remoteModal'>物流</a>";
+            else
+                html = "<a href='stock/print/" + rowObject.id + "' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#remoteModal'>打印</a>";
+        }
+        else {
+            var css = rowObject.taskName == '已结束' ? 'label-success' : 'label-warning';
+            html = '<lable class="label ' + css + '">' + rowObject.taskName + '</lable>';
+        }
+        return html;
+    }
 </script>
 </body>
 </html>

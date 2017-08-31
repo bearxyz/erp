@@ -2,17 +2,17 @@ package com.bearxyz.service.business;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
-import com.bearxyz.domain.po.business.*;
+import com.bearxyz.domain.po.business.ForUse;
+import com.bearxyz.domain.po.business.ForUseItem;
+import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.ForUseItemRepository;
 import com.bearxyz.repository.ForUseRepository;
-import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.PackageRepository;
 import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -66,12 +66,22 @@ public class ForUseService {
     public void apply(ForUse forUse){
         save(forUse);
         Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("name","物品领用");
-        variables.put("url","/foruse/");
-        variables.put("bid",forUse.getId());
-        variables.put("applyer", forUse.getCreatedBy());
-        variables.put("applyUserId", forUse.getCreatedBy());
-        forUse.setProcessInstanceId(workflowService.startWorkflow("for-use",forUse.getId(),forUse.getCreatedBy(),variables));
+        if(forUse.getType().equals("OFFICE")) {
+            variables.put("name", "物品领用");
+            variables.put("url", "/foruse/");
+            variables.put("bid",forUse.getId());
+            variables.put("applyer", forUse.getCreatedBy());
+            variables.put("applyUserId", forUse.getCreatedBy());
+            forUse.setProcessInstanceId(workflowService.startWorkflow("for-use",forUse.getId(),forUse.getCreatedBy(),variables));
+        }
+        else {
+            variables.put("name", "礼品申请");
+            variables.put("url", "/present/");
+            variables.put("bid",forUse.getId());
+            variables.put("applyer", forUse.getCreatedBy());
+            variables.put("applyUserId", forUse.getCreatedBy());
+            forUse.setProcessInstanceId(workflowService.startWorkflow("present_apply",forUse.getId(),forUse.getCreatedBy(),variables));
+        }
     }
 
     public void save(ForUse forUse){
@@ -83,7 +93,7 @@ public class ForUseService {
                 item.setUnit(pkg.getPackageUnit());
                 item.setAmmount(pkg.getAmmount() * item.getCount());
             }else{
-                item.setSpec(goods.getSpec());
+                item.setSpec(goods.getModel());
                 item.setUnit(goods.getUnit());
                 item.setAmmount(item.getCount());
             }
@@ -92,7 +102,7 @@ public class ForUseService {
     }
 
 
-    public DataTable<ForUse> getForUse(String uid, boolean approved, PaginationCriteria req){
+    public DataTable<ForUse> getForUse(String uid, String type, boolean approved, PaginationCriteria req){
         DataTable<ForUse> result = new DataTable<>();
         String order = "lastUpdated";
         String direction = "desc";
@@ -104,8 +114,8 @@ public class ForUseService {
         PageRequest request = new PageRequest(req.getStart()/req.getLength(),req.getLength(), new Sort(Sort.Direction.fromString(direction), order));
         Specification<ForUse> specification = (root, query, cb)->{
             Predicate predicate = cb.conjunction();
-            if(!StringUtils.isEmpty(""))
-                predicate.getExpressions().add(cb.like(root.get("title"),"%"+StringUtils.trimAllWhitespace("")+"%"));
+            if(!StringUtils.isEmpty(type))
+                predicate.getExpressions().add(cb.equal(root.get("type"),type));
             if(!StringUtils.isEmpty(uid))
                 predicate.getExpressions().add(cb.equal(root.get("createdBy"), uid));
             if(approved)

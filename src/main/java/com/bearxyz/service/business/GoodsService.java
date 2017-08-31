@@ -2,8 +2,6 @@ package com.bearxyz.service.business;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.domain.po.business.Goods;
-import com.bearxyz.domain.po.business.Package;
-import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.repository.DictRepository;
 import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.PackageRepository;
@@ -52,8 +50,8 @@ public class GoodsService {
         return repository.findOne(id);
     }
 
-    public DataTable<Goods> getByNature(String nature) {
-        List<Goods> goods = (nature.isEmpty()) ? repository.findAll() : repository.findAllByNature(nature);
+    public DataTable<Goods> getGoods() {
+        List<Goods> goods = repository.findAll();
         DataTable<Goods> partners = new DataTable<>();
         partners.setRecordsTotal((long) goods.size());
         partners.setRecordsFiltered((long) goods.size());

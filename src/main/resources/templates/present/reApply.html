@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-edit fa-fw "></i>
+            礼品申请
+        </h1>
+    </div>
+</div>
+
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>礼品申请</h2>
+                </header>
+                <div role="content">
+                    <div class="widget-body no-padding">
+                        <form id="form" class="smart-form">
+                            <fieldset>
+                                <section>
+                                    <div class="table-responsive">
+                                        <table class="table" id="productTarget">
+                                            <thead>
+                                            <tr>
+                                                <th>礼品名称</th>
+                                                <th>规格</th>
+                                                <th>包装</th>
+                                                <th>领用数量</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="item,i:${foruse.items}">
+                                                <td><label class='input'>
+                                                    <input th:name='${"items[" + i.index + "].goodsId"}' th:value="${item.goodsId}"  type='hidden'/>
+                                                    <input name='name' disabled='disabled' th:value="${item.goods.name}" /></label>
+                                                </td>
+                                                <td><label class='input'><input name='spec' th:value="${item.spec}" disabled='disabled' /></label></td>
+                                                <td><label class='select'><select th:name='${"items[" + i.index + "].packageId"}'>
+                                                    <option value="" th:selected="${item.packageId==''}">无包装[单位:[[${item.goods.unit}]]]</option>
+                                                    <option th:each="package: ${item.goods.packages}" th:value="${package.id}" th:selected="${item.packageId==package.id}">[[${package.packageSpec}]][单位:[[${package.packageUnit}]]]</option>
+                                                </select><i></i></label></td>
+                                                <td><label class='input'><input th:name='${"items[" + i.index + "].count"}' th:value="${item.count}" class='number' /></label></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </section>
+                            </fieldset>
+                            <fieldset>
+                                <section>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" id="purpose" name="purpose"
+                                                  placeholder="用途">[[${foruse.purpose}]]</textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    重新申请
+                                </button>
+                                <a href="/#/common/task/todo" class="btn btn-danger">
+                                    取 消
+                                </a>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+<script>
+    pageSetUp();
+
+    var pagefunction = function () {
+        $("#form").validate({
+            onsubmit: true,
+            submitHandler: function () {
+                $.ajax({
+                    url: '/present/reApply',
+                    type: 'post',
+                    data: $('#form').serialize(),
+                    success: function () {
+                        completeTaskRedirect([[${taskId}]], [{key: 'reApply', value: true, type: 'B'}], "#/common/task/todo");
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+
+    };
+
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+</body>
+</html>

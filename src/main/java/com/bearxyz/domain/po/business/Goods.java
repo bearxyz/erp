@@ -20,9 +20,9 @@ public class Goods extends BaseDomain {
     @Column(length = 50)
     private String type = "";
     @Column(length = 50)
-    private String nature = "";
+    private String project = "";
     @Column(length = 50)
-    private String spec = "";
+    private String model = "";
     @Column(length = 10)
     private String unit = "";
     @Column
@@ -35,11 +35,6 @@ public class Goods extends BaseDomain {
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "GOODS_ID")
     private List<Package> packages;
-
-    @Transient
-    private String typeName = "";
-    @Transient
-    private String natureName = "";
 
     public String getName() {
         return name;
@@ -65,12 +60,12 @@ public class Goods extends BaseDomain {
         this.brief = brief;
     }
 
-    public String getSpec() {
-        return spec;
+    public String getModel() {
+        return model;
     }
 
-    public void setSpec(String spec) {
-        this.spec = spec;
+    public void setModel(String model) {
+        this.model = model;
     }
 
     public Integer getStock() {
@@ -81,12 +76,12 @@ public class Goods extends BaseDomain {
         this.stock = stock;
     }
 
-    public String getNature() {
-        return nature;
+    public String getProject() {
+        return project;
     }
 
-    public void setNature(String nature) {
-        this.nature = nature;
+    public void setProject(String project) {
+        this.project = project;
     }
 
     public String getUnit() {
@@ -95,22 +90,6 @@ public class Goods extends BaseDomain {
 
     public void setUnit(String unit) {
         this.unit = unit;
-    }
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-    public String getNatureName() {
-        return natureName;
-    }
-
-    public void setNatureName(String natureName) {
-        this.natureName = natureName;
     }
 
     public List<Package> getPackages() {

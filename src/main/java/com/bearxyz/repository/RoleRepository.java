@@ -1,8 +1,6 @@
 package com.bearxyz.repository;
 
 import com.bearxyz.domain.po.sys.Role;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

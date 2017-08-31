@@ -17,25 +17,41 @@
 
 <div class="modal-body no-padding">
     <form id="form" class="smart-form" novalidate="novalidate">
-        <input type="hidden" id="nature" name="nature" th:value="${nature}">
         <fieldset>
             <div class="row">
+                <section class="col col-6">
+                    <label class="label">商品项目：</label>
+                    <label class="select">
+                        <select name="project" id="project"></select><i></i>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">商品分类：</label>
+                    <label class="select">
+                        <select id="type" name="type"></select><i></i>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
                 <section class="col col-4">
+                    <label class="label">商品名称：</label>
                     <label class="input">
-                        <input type="text" name="name" placeholder="商品名称"/>
+                        <input type="text" name="name" />
                     </label>
                 </section>
                 <section class="col col-4">
+                    <label class="label">商品型号：</label>
                     <label class="input">
-                        <input type="text" name="spec" placeholder="型号规格"/>
+                        <input type="text" name="model" />
                     </label>
                 </section>
                 <section class="col col-4">
-                    <label class="input"><input type="text" name="unit" placeholder="单位"/></label>
+                    <label class="label">单品单位：</label>
+                    <label class="input"><input type="text" name="unit" /></label>
                 </section>
             </div>
             <section>
-                <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="add">新增包装信息</a>
+                <a href="javascript:void(0);" class="btn btn-primary btn-sm" id="add">新增包装规格</a>
             </section>
             <section>
                 <div class="table-responsive">
@@ -44,7 +60,7 @@
                         <tr>
                             <th></th>
                             <th>包装规格</th>
-                            <th>包装数量</th>
+                            <th>单品数量</th>
                             <th>包装单位</th>
                         </tr>
                         </thead>
@@ -66,7 +82,10 @@
             </section>
 
             <section>
+                <label class="label">描述：</label>
+                <label class="textarea">
                 <textarea id="brief" name="brief" class="summernote"></textarea>
+                </label>
             </section>
         </fieldset>
         <footer>
@@ -84,6 +103,8 @@
 <script>
     var i = 0;
     pageSetUp();
+
+    BindDictItem("project", "PROJECT_TYPE", "项目类型");
 
     var pagefunction = function () {
 
@@ -134,6 +155,10 @@
             errorPlacement: function (error, element) {
                 error.insertAfter(element.parent());
             }
+        });
+
+        var project = $("#project").on("change", function () {
+            alert(this.options[this.options.selectedIndex].value);
         });
 
     };

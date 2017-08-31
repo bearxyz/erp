@@ -51,6 +51,8 @@ public class CheckStockInComplete implements JavaDelegate {
                     break;
                 }
             }
+            order.setApproved(approved);
+            purchasingOrderRepository.save(order);
             execution.setVariable("complete", approved);
         }
         stock.setApproved(true);

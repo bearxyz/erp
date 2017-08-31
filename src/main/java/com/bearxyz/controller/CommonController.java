@@ -1,15 +1,17 @@
 package com.bearxyz.controller;
 
-import com.bearxyz.common.ActionResponse;
-import com.bearxyz.common.DataTable;
-import com.bearxyz.common.Select;
-import com.bearxyz.common.TreeNode;
+import com.bearxyz.common.*;
+import com.bearxyz.domain.po.business.Attachment;
 import com.bearxyz.domain.po.business.Goods;
+import com.bearxyz.domain.po.business.PurchasingOrderAttachment;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.domain.vo.TaskVO;
 import com.bearxyz.domain.vo.Variable;
+import com.bearxyz.repository.GoodsRepository;
+import com.bearxyz.service.business.AttachmentService;
 import com.bearxyz.service.business.GoodsService;
+import com.bearxyz.service.business.PurchasingOrderAttachmentService;
 import com.bearxyz.service.sys.SysService;
 import com.bearxyz.utility.RelativeDateFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,8 +30,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +45,12 @@ import java.util.Map;
 @Controller
 @RequestMapping("/common")
 public class CommonController {
+
+    @Autowired
+    private AttachmentService attachmentService;
+
+    @Autowired
+    private PurchasingOrderAttachmentService purchasingOrderAttachmentService;
 
     @Autowired
     private SysService sysService;
@@ -91,9 +102,9 @@ public class CommonController {
 
     @RequestMapping(value = "/selectProduct", method = RequestMethod.POST)
     @ResponseBody
-    public String selectProductList(@RequestParam(value = "mask", required = false) String mask, @RequestParam("draw") String draw) throws JsonProcessingException {
-        DataTable<Goods> goods = goodsService.getByNature(mask);
-        goods.setDraw(Integer.parseInt(draw));
+    public String selectProductList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        DataTable<Goods> goods = goodsService.getGoods();
+        goods.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(goods);
     }
@@ -101,7 +112,11 @@ public class CommonController {
     @RequestMapping(value = "/listProduct", method = RequestMethod.POST)
     @ResponseBody
     public String getProduct(String[] ids) throws JsonProcessingException {
-        List<Goods> goods = goodsService.getByIds(ids);
+        List<Goods> goods = new ArrayList<>();
+        for(String id: ids){
+            Goods g = goodsService.getById(id);
+            goods.add(g);
+        }
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(goods);
     }
@@ -232,6 +247,38 @@ public class CommonController {
         model.addAttribute("taskId", taskId);
         model.addAttribute("managers", managers);
         return "/common/task/transfer";
+    }
+
+    @RequestMapping(value = "/download/{id}")
+    public void download(@PathVariable("id")String id, final HttpServletResponse response) throws IOException {
+        Attachment attachment = attachmentService.getById(id);
+        String fileName = attachment.getName()+"."+attachment.getFileType();
+        fileName = URLEncoder.encode(fileName, "UTF-8");
+        byte[] data = attachment.getFileContent();
+        response.reset();
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        response.addHeader("Content-Length", "" + data.length);
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+        outputStream.write(data);
+        outputStream.flush();
+        outputStream.close();
+    }
+
+    @RequestMapping(value = "/downloadp/{id}")
+    public void downloadPurchasing(@PathVariable("id")String id, final HttpServletResponse response) throws IOException {
+        PurchasingOrderAttachment attachment = purchasingOrderAttachmentService.getById(id);
+        String fileName = attachment.getName()+"."+attachment.getFileType();
+        fileName = URLEncoder.encode(fileName, "UTF-8");
+        byte[] data = attachment.getFileContent();
+        response.reset();
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        response.addHeader("Content-Length", "" + data.length);
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+        outputStream.write(data);
+        outputStream.flush();
+        outputStream.close();
     }
 
 }

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+>
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -65,7 +64,6 @@
                             <th>误差</th>
                             <th>到货时间</th>
                             <th>采购人</th>
-                            <th></th>
                             </thead>
                         </table>
                     </div>
@@ -111,7 +109,13 @@
                 }
             },
             "columns": [
-                CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                {
+                    data: "id",
+                    width: "20px",
+                    className: 'smart-form',
+                    sortable: false,
+                    render: renderCheckbox
+                },
                 {"data": "order.code"},
                 {"data": "supplierName"},
                 {"data": "goods.name"},
@@ -120,8 +124,7 @@
                 {"data": "finishedAmmount", "sClass": "text-center"},
                 {"data": null, "sClass": "text-center", render: formatMinus},
                 {"data": "finishedDate", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
-                {"data": "order.applyer"},
-                {"data": "approved", "sClass": "text-center", render: formatStatus, sortable: false}
+                {"data": "order.applyer"}
             ],
             "autoWidth": true,
             "searching": false,
@@ -152,6 +155,17 @@
         });
     });
 
+    function renderCheckbox(cellValue, options, rowObject) {
+        html = "";
+        if (rowObject.finishedAmmount < rowObject.ammount) {
+            var id = rowObject.id;
+            var code = rowObject.order.code;
+            var ids = id+','+code;
+            html = '<label class="checkbox"><input name="check-id" type="checkbox" value="'+ids+'" /><i> </i></label>';
+        }
+        return html;
+    }
+
     function formatMinus(cellValue, options, rowObject) {
         var minus = rowObject.finishedAmmount - rowObject.ammount;
         if (minus < 0)
@@ -160,24 +174,29 @@
             return "<span class='txt-color-green'>" + minus + "</span>";
     }
 
-    function formatStatus(cellValue, options, rowObject) {
-        var html = "";
-        if (rowObject.approved) {
-            html = "<span class='label label-success'>已完成</span>";
-        }
-        else {
-            html = '<lable class="label label-warning">进行中</lable>';
-        }
-        return html;
-    }
-
     $('#apply').on('click', function () {
         var ids = [];
         $('input[name="check-id"]:checked').each(function () {
             ids.push($(this).val());
         });
         if (ids != "") {
-            $('#remoteModal').modal({remote: '/stock/applyIn?ids=' + ids.toString()});
+            var param = [];
+            var ok = true;
+            var temp = ids[0].split(',')[1];
+            for (var i = 0; i < ids.length; i++) {
+                if (temp != ids[i].split(',')[1]) ok = false;
+                param.push(ids[i].split(',')[0]);
+            }
+            if (ok) {
+                $('#remoteModal').modal({remote: '/stock/applyIn?ids=' + param.toString()});
+            }
+            else {
+                $.SmartMessageBox({
+                    title: "注 意!",
+                    content: "不同的采购单不能生成同一入库单！",
+                    buttons: '[确 定]'
+                });
+            }
         }
         else {
             $.SmartMessageBox({

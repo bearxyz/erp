@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+>
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -99,16 +98,16 @@
                 success:function (data) {
                     var items = eval(data);
                     html = '<table cellpadding="5" cellspacing="0" border="0" class="table table-hover table-condensed">';
-                    html += "<thead><th>商品名称</th><th>采购数量</th><th>单位</th><th>规格</th><th>单品数量</th><th>供应商</th><th>采购单价</th></thead>";
+                    html += "<thead><th>商品名称</th><th>规格</th><th>采购数量</th><th>单位</th><th>采购单价</th><th>供应商</th><th>单品数量</th></thead>";
                     for (i = 0; i < items.length; i++) {
                         html += "<tr>";
                         html += "<td>" + items[i].goods.name + "</td>";
+                        html += "<td>" + items[i].spec + "</td>";
                         html += "<td>" + items[i].count + "</td>";
                         html += "<td>" + items[i].unit + "</td>";
-                        html += "<td>" + items[i].spec + "</td>";
-                        html += "<td>" + items[i].ammount + "</td>";
-                        html += "<td>" + items[i].supplierName + "</td>";
                         html += "<td>" + items[i].price + "</td>";
+                        html += "<td>" + items[i].supplierName + "</td>";
+                        html += "<td>" + items[i].ammount + "</td>";
                         html += "</tr>";
                     }
                     html += '</table>';
@@ -191,10 +190,10 @@
     function formatStatus(cellValue, options, rowObject) {
         var html = "";
         if (rowObject.processInstanceId == null) {
-            html = "<a href='#/purchasingorder/apply/" + rowObject.id + "' class='btn btn-primary btn-sm'>采购单</a>";
+            html = "<a href='/purchasingorder/assign/" + rowObject.id + "' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#remoteModal'>派单</a>";
         }
         else {
-            var css = rowObject.taskName == '已结束' ? 'label-success' : 'label-warning';
+            var css = rowObject.taskName == '已完成' ? 'label-success' : 'label-warning';
             html = '<lable class="label ' + css + '">' + rowObject.taskName + '</lable>';
         }
         return html;

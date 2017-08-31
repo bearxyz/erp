@@ -30,15 +30,29 @@
                     <div class="widget-body no-padding">
                         <form id="form" class="smart-form">
                             <fieldset>
+                                <section th:if="${deptMemo!=null and deptMemo!=''}">
+                                    <label class="label">部门经理意见：</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" disabled="disabled">[[${deptMemo}]]</textarea>
+                                    </label>
+                                </section>
+                                <section th:if="${managerMemo!=null and managerMemo!=''}">
+                                    <label class="label">总经理意见：</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" disabled="disabled">[[${managerMemo}]]</textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <fieldset>
                                 <section>
                                     <div class="table-responsive">
                                         <table class="table" id="productTarget">
                                             <thead>
                                             <tr>
                                                 <th>物品名称</th>
-                                                <th>规格</th>
+                                                <th>型号</th>
                                                 <th>包装</th>
-                                                <th>领用数量</th>
+                                                <th>采购数量(以包装单位为准)</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -59,8 +73,6 @@
 
                                     </div>
                                 </section>
-                            </fieldset>
-                            <fieldset>
                                 <section>
                                     <label class="textarea textarea-resizable">
                                         <textarea class="custom-scroll" id="purpose" name="purpose"

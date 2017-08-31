@@ -1,7 +1,5 @@
 package com.bearxyz.domain.vo;
 
-import java.io.Serializable;
-
 /**
  * Created by bearxyz on 2017/6/24.
  */

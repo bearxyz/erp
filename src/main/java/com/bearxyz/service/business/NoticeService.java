@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
