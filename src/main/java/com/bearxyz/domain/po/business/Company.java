@@ -114,6 +114,9 @@ public class Company extends BaseDomain {
     @Column
     private boolean signed = false;
 
+    @Transient
+    private boolean hasAccount = false;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "company")
     private List<Person> persons = new ArrayList<>();
 
@@ -491,5 +494,13 @@ public class Company extends BaseDomain {
 
     public void setAssigned(Boolean assigned) {
         isAssigned = assigned;
+    }
+
+    public boolean isHasAccount() {
+        return hasAccount;
+    }
+
+    public void setHasAccount(boolean hasAccount) {
+        this.hasAccount = hasAccount;
     }
 }

@@ -86,6 +86,14 @@ public class PresentController {
             item.setGoods(goods);
         }
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
+        String deptMemo = "";
+        String managerMemo = "";
+        if (taskService.getVariable(task.getId(), "deptLeaderMemo") != null)
+            deptMemo = taskService.getVariable(task.getId(), "deptLeaderMemo").toString();
+        if (taskService.getVariable(task.getId(), "managerMemo") != null)
+            managerMemo = taskService.getVariable(task.getId(), "managerMemo").toString();
+        model.addAttribute("deptMemo", deptMemo);
+        model.addAttribute("managerMemo", managerMemo);
         model.addAttribute("foruse", forUse);
         model.addAttribute("taskId", task.getId());
         return "/present/reApply";
@@ -115,6 +123,25 @@ public class PresentController {
         }
         model.addAttribute("foruse", forUse);
         return "/present/show";
+    }
+
+    @RequestMapping(value = "/complete")
+    public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
+        ForUse forUse = service.getOneById(bid);
+        for(ForUseItem item: forUse.getItems()){
+            Goods goods = goodsService.getById(item.getGoodsId());
+            item.setGoods(goods);
+        }
+        model.addAttribute("foruse", forUse);
+        String memo = "";
+        model.addAttribute("applyer", applyer);
+        Task task = taskService.createTaskQuery().taskId(tid).singleResult();
+        if (!task.getTaskDefinitionKey().equals("deptLeader")&&taskService.getVariable(task.getId(), "deptLeaderMemo") != null)
+            memo = taskService.getVariable(task.getId(), "deptLeaderMemo").toString();
+        model.addAttribute("taskId", tid);
+        model.addAttribute("taskKey", task.getTaskDefinitionKey());
+        model.addAttribute("memo", memo);
+        return "/foruse/complete";
     }
 
 }

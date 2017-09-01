@@ -3,6 +3,9 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.Contract;
+import com.bearxyz.domain.po.business.Goods;
+import com.bearxyz.domain.po.business.Purchasing;
+import com.bearxyz.domain.po.business.PurchasingDetail;
 import com.bearxyz.service.business.ContractService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +36,21 @@ public class ContractController {
     private ContractService service;
     @Autowired
     private TaskService taskService;
+
+    @RequestMapping(value = "/complete")
+    public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
+        Contract purchasing = service.getById(bid);
+        String memo = "";
+        model.addAttribute("contract", purchasing);
+        model.addAttribute("applyer", applyer);
+        Task task = taskService.createTaskQuery().taskId(tid).singleResult();
+        if (!task.getTaskDefinitionKey().equals("deptLeader")&&taskService.getVariable(task.getId(), "deptLeaderMemo") != null)
+            memo = taskService.getVariable(task.getId(), "deptLeaderMemo").toString();
+        model.addAttribute("taskId", tid);
+        model.addAttribute("taskKey", task.getTaskDefinitionKey());
+        model.addAttribute("memo", memo);
+        return "/contract/complete";
+    }
 
     @RequestMapping(value = "/index/{id}", method = RequestMethod.POST)
     @ResponseBody

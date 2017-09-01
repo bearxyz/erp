@@ -91,6 +91,14 @@ public class PurchasingOrderController {
         PurchasingOrder order = service.getOneById(id);
         List<OfficialPartner> officialPartners = officialPartnerService.getListByType("SUPPLIER_COMPANY");
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
+        String deptMemo = "";
+        String managerMemo = "";
+        if (taskService.getVariable(task.getId(), "deptLeaderMemo") != null)
+            deptMemo = taskService.getVariable(task.getId(), "deptLeaderMemo").toString();
+        if (taskService.getVariable(task.getId(), "managerMemo") != null)
+            managerMemo = taskService.getVariable(task.getId(), "managerMemo").toString();
+        model.addAttribute("deptMemo", deptMemo);
+        model.addAttribute("managerMemo", managerMemo);
         model.addAttribute("taskId", task.getId());
         model.addAttribute("purchasingOrder", order);
         model.addAttribute("suppliers", officialPartners);

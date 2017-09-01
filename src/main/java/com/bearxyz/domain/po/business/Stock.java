@@ -48,6 +48,8 @@ public class Stock extends BaseDomain {
     private String typeName = "";
     @Transient
     private Date finishedDate;
+    @Transient
+    private Float totalPrice = (float)0.0;
 
     @JsonIgnore
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
@@ -196,5 +198,13 @@ public class Stock extends BaseDomain {
 
     public void setTransportFee(String transportFee) {
         this.transportFee = transportFee;
+    }
+
+    public Float getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Float totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

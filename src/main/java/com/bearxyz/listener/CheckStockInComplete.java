@@ -40,6 +40,7 @@ public class CheckStockInComplete implements JavaDelegate {
             goodsRepository.save(goods);
             PurchasingOrderItem orderItem = purchasingOrderItemRepository.findOne(item.getPurchasingOrderItemId());
             orderItem.setFinishedAmmount(orderItem.getFinishedAmmount() + item.getAmmount());
+            orderItem.setFinishedCount(orderItem.getFinishedCount() + item.getCount());
             if(orderItem.getFinishedAmmount()>=orderItem.getAmmount())
                 orderItem.setApproved(true);
             purchasingOrderItemRepository.save(orderItem);

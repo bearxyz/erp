@@ -138,7 +138,7 @@
                 {"data": "name"},
                 {"data": "price"},
                 {"data": "unit"},
-                {"data": null, "sClass": "text-center", render: formatStatus}
+                {"data": "onSale", "sClass": "text-center", render: formatStatus}
             ],
             "autoWidth": true,
             "searching": false,
@@ -186,10 +186,20 @@
         });
     });
 
-    function formatStatus(cellValue, options, rowObject) {
-        var css = rowObject.taskName=='已结束'?'label-success':'label-warning';
-        var html = '<lable class="label '+css+'">'+rowObject.taskName+'</lable>';
+    function formatStatus(cellValue, options, rowObject){
+        var html = "<span class='onoffswitch'>";
+        html += '<input name="checkbox-toggle" id="' + rowObject.id + '" class="onoffswitch-checkbox" onclick="setStatus(&quot;' +rowObject.id + '&quot;)"';
+        if (cellValue) html += "checked='checked' ";
+        html += "type='checkbox' />";
+        html += "<label class='onoffswitch-label' for='" + rowObject.id + "'><span class='onoffswitch-inner' data-swchon-text='上架' data-swchoff-text='下架'></span><span class='onoffswitch-switch'></span></label></span>";
         return html;
+    }
+    function setStatus(id) {
+        $.ajax({
+            type: "POST",
+            url: "/sale/setStatus",
+            data: {id: id}
+        });
     }
 </script>
 </body>

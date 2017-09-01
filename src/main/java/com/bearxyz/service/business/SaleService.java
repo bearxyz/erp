@@ -101,4 +101,10 @@ public class SaleService {
         return repository.findOne(id);
     }
 
+    public void setStatus(String id){
+        Sale sale = getById(id);
+        sale.setOnSale(!sale.getOnSale());
+        repository.save(sale);
+    }
+
 }

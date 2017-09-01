@@ -106,4 +106,11 @@ public class SaleController {
         return "{success: true}";
     }
 
+    @ResponseBody
+    @RequestMapping(value = {"/setStatus"}, method = RequestMethod.POST)
+    public String setStatus(@RequestParam("id") String id){
+        service.setStatus(id);
+        return "{success: true}";
+    }
+
 }

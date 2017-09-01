@@ -32,6 +32,8 @@ public class PurchasingOrderItem extends BaseDomain {
     private boolean approved = false;
     @Column
     private Integer finishedAmmount = 0;
+    @Column
+    private Integer finishedCount = 0;
 
     @Transient
     private Goods goods;
@@ -144,5 +146,13 @@ public class PurchasingOrderItem extends BaseDomain {
 
     public void setOrder(PurchasingOrder order) {
         this.order = order;
+    }
+
+    public Integer getFinishedCount() {
+        return finishedCount;
+    }
+
+    public void setFinishedCount(Integer finishedCount) {
+        this.finishedCount = finishedCount;
     }
 }

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-edit fa-fw "></i>
+            合同审批
+        </h1>
+    </div>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form_1" class="smart-form" novalidate="novalidate" enctype="multipart/form-data">
+        <fieldset>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="select">
+                        <select name="project" id="project" disabled="disabled"></select><i></i>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="input">
+                        <input type="text" name="title" id="title" placeholder="合同名称" th:value="${contract.title}"
+                               disabled="disabled"/>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="select">
+                        <select name="agentType" id="agentType" disabled="disabled"></select><i></i>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="select">
+                        <select name="agentLevel" id="agentLevel" disabled="disabled"></select><i></i>
+                    </label>
+                </section>
+            </div>
+            <section>
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="input">
+                            <i class="icon-append fa fa-calendar"></i>
+                            <input id="startDate" class="hasDatepicker" name="startDate" placeholder="合同生效日期"
+                                   type="text" th:value="${contract.startDate}" disabled="disabled">
+                        </label>
+                    </section>
+                    <section class="col col-6">
+                        <label class="input">
+                            <i class="icon-append fa fa-calendar"></i>
+                            <input id="endDate" class="hasDatepicker" name="endDate" placeholder="合同到期日期" type="text"
+                                   th:value="${contract.endDate}" disabled="disabled">
+                        </label>
+                    </section>
+                </div>
+            </section>
+            <section>
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="input">
+                            <i class="icon-append fa fa-calendar"></i>
+                            <input id="signDate" class="hasDatepicker" name="signDate" placeholder="签约日期" type="text"
+                                   th:value="${contract.signDate}" disabled="disabled">
+                        </label>
+                    </section>
+                </div>
+            </section>
+            <section>
+                <label class="label">合同：</label>
+                <table>
+                    <tr th:each="attachment: ${contract.attachments}">
+                        <td><a th:href="@{'/common/download/'+${attachment.id}}" target="_blank">[[${attachment.name +'.'+attachment.fileType}]]</a>
+                        </td>
+                    </tr>
+                </table>
+
+            </section>
+            <section>
+                <label class="textarea textarea-resizable">
+                                                    <textarea class="custom-scroll"
+                                                              placeholder="备注"
+                                                              name="memo"
+                                                              disabled="disabled">[[${contract.memo}]]</textarea>
+                </label>
+            </section>
+        </fieldset>
+        <fieldset th:if="${memo!=null and memo!=''}">
+            <section>
+                <label class="label">部门经理意见：</label>
+                <label class="textarea textarea-resizable">
+                    <textarea class="custom-scroll" disabled="disabled">[[${memo}]]</textarea>
+                </label>
+            </section>
+        </fieldset>
+        <input type="hidden" id="taskId" name="taskId" th:value="${taskId}">
+        <input type="hidden" id="taskKey" name="taskKey" th:value="${taskKey}">
+        <fieldset>
+            <section>
+                <label class="label">办理意见：</label>
+                <label class="textarea textarea-resizable">
+                    <textarea class="custom-scroll" id="memo" name="memo"></textarea>
+                </label>
+            </section>
+        </fieldset>
+        <footer>
+            <button type="button" class="btn btn-primary" id="pass" th:if="${taskKey!='confirm'}">
+                同 意
+            </button>
+            <button type="button" class="btn btn-primary" id="pass" th:if="${taskKey=='confirm'}">
+                已支付
+            </button>
+            <button type="button" class="btn btn-danger" id="deny" th:if="${taskKey!='confirm'}">
+                驳 回
+            </button>
+            <a type="button" class="btn btn-danger" href="#/common/task/todo">
+                取 消
+            </a>
+        </footer>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    pageSetUp();
+
+    var taskKey = $('#taskKey').val();
+
+    var pagefunction = function () {
+        BindDictItem("project", "PROJECT_TYPE", "代理项目", [[${contract.project}]]);
+        BindDictItem("agentType", "CONTRACT_TYPE", "签约类型", [[${contract.agentType}]]);
+        BindDictItem("agentLevel", "CLIENT_LEVEL_TYPE", "代理级别", [[${contract.agentLevel}]]);
+    };
+
+    $('#pass').on('click', function () {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
+        completeTask([[${taskId}]], [{key: taskKey + 'Pass', value: true, type: 'B'}, {
+            key: taskKey + 'Memo',
+            value: memo,
+            type: 'S'
+        }]);
+    });
+
+    $('#deny').on('click', function () {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '不同意';
+        completeTask([[${taskId}]], [{key: taskKey + 'Pass', value: false, type: 'B'}, {
+            key: taskKey + 'Memo',
+            value: memo,
+            type: 'S'
+        }]);
+    });
+
+</script>
+</body>
+</html>

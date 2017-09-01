@@ -65,7 +65,7 @@ public class ScraptService {
             Goods goods = goodsRepository.findOne(item.getGoodsId());
             if(item.getPackageId()!=null&&!item.getPackageId().isEmpty()) {
                 Package pkg = packageRepository.findOne(item.getPackageId());
-                item.setSpec(pkg.getPackageSpec());
+                item.setSpec(goods.getModel());
                 item.setUnit(pkg.getPackageUnit());
                 item.setAmmount(pkg.getAmmount() * item.getCount());
             }else{
@@ -75,6 +75,10 @@ public class ScraptService {
             }
         }
         repository.save(scrapt);
+    }
+
+    public Scrapt getById(String id){
+        return repository.findOne(id);
     }
 
     public DataTable<ScraptItem> getScraptItems(boolean approved, PaginationCriteria req) {

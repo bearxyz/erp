@@ -193,7 +193,6 @@
         return rowObject.consultProvince + "-" + rowObject.consultCity + "-" + rowObject.consultDistrict;
     }
     function formatAction(cellValue, options, rowObject) {
-        alert(rowObject.signed);
         var html = '<div class="btn-group btn-group-justified">';
         try {
             if (rowObject.assigned) {
@@ -213,7 +212,7 @@
 </script>
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASING_EXECUTIVE">
     function setSignBtn(id) {
-        return html += '<a data-toggle="modal" data-target="#remoteModal" href="contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">签约</span></a>';
+        return '<a data-toggle="modal" data-target="#remoteModal" href="contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">签约</span></a>';
     }
 </script>
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASE_MANAGER,ROLE_LEASING_EXECUTIVE">

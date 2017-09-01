@@ -20,6 +20,8 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findUsersByType(String type);
 
+    List<User> findUsersByTypeAndCompanyId(String type, String companyId);
+
     @Query(value = "select ou.* from SYS_USER ou inner join SYS_ROLE_USER oru on ou.id = oru.USER_ID inner join SYS_ROLE osr on osr.id = oru.ROLE_ID where ou.ID in " +
             "(select USER_ID from SYS_ROLE_USER where ROLE_ID in " +
             "(select ru.ROLE_ID from SYS_ROLE_USER ru inner join SYS_ROLE r on ru.ROLE_ID=r.ID where ru.USER_ID = ?1 and r.TYPE='ROLE_TYPE_DEPARTMENT')) and osr.mask like '%MANAGER%'", nativeQuery = true)
@@ -30,5 +32,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query(value = "SELECT u.* FROM SYS_USER u INNER JOIN SYS_ROLE_USER ru on ru.USER_ID=u.ID INNER JOIN SYS_ROLE r on r.ID=ru.ROLE_ID where r.MASK=?1", nativeQuery = true)
     List<User> findUsersByRolesMask(String mask);
+
+    Integer countUsersByCompanyId(String id);
 
 }

@@ -65,7 +65,7 @@
                            data-toggle="modal" data-target="#remoteModal" href="javascript:void(0);">会 签</a>-->
                         <a class="btn btn-info btn-sm"
                            th:if="${task.assignee!=null and task.taskDefinitionKey!='adjustApply' and task.taskDefinitionKey!='adjustApply_1' and task.taskDefinitionKey!='apply'}"
-                           th:href="@{'/#'+${task.detailUrl}+'complete?applyer='+${task.applyer}+'&bid='+${task.bussinessId}+'&tid='+${task.taskId}}">办 理</a>
+                           th:href="@{'/#'+${task.detailUrl}+'complete?key='+${task.taskDefinitionKey}+'&applyer='+${task.applyer}+'&bid='+${task.bussinessId}+'&tid='+${task.taskId}}">办 理</a>
                     </td>
                 </tr>
                 </tbody>

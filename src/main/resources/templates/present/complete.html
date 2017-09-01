@@ -29,14 +29,6 @@
                 <div role="content">
                     <div class="widget-body no-padding">
                         <form id="form" class="smart-form">
-                            <fieldset th:if="${deptMemo!=null and deptMemo!=''}">
-                                <section>
-                                    <label class="label">部门经理意见：</label>
-                                    <label class="textarea textarea-resizable">
-                                        <textarea class="custom-scroll" disabled="disabled">[[${deptMemo}]]</textarea>
-                                    </label>
-                                </section>
-                            </fieldset>
                             <fieldset>
                                 <section>
                                     <div class="table-responsive">
@@ -76,11 +68,41 @@
                                     </label>
                                 </section>
                             </fieldset>
+                            <fieldset th:if="${memo!=null and memo!=''}">
+                                <section>
+                                    <label class="label">部门经理意见：</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" disabled="disabled">[[${memo}]]</textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <input type="hidden" id="taskId" name="taskId" th:value="${taskId}">
+                            <input type="hidden" id="taskKey" name="taskKey" th:value="${taskKey}">
+                            <fieldset>
+                                <section>
+                                    <label class="label">办理意见：</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" id="memo" name="memo"></textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <input type="hidden" id="taskId" name="taskId" th:value="${taskId}">
+                            <input type="hidden" id="taskKey" name="taskKey" th:value="${taskKey}">
+                            <fieldset>
+                                <section>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" placeholder="备注" id="memo" name="memo"></textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
                             <footer>
-                                <button type="submit" class="btn btn-primary">
-                                    重新申请
+                                <button type="button" class="btn btn-primary" id="pass"th:if="${taskKey!='confirm'}">
+                                    同 意
                                 </button>
-                                <a href="/#/common/task/todo" class="btn btn-danger">
+                                <button type="button" class="btn btn-danger" id="deny" th:if="${taskKey!='confirm'}">
+                                    驳 回
+                                </button>
+                                <a type="button" class="btn btn-danger" href="#/common/task/todo">
                                     取 消
                                 </a>
                             </footer>
@@ -100,42 +122,32 @@
     </div>
 </div>
 <!-- /.modal -->
-<script>
+<script th:inline="javascript">
     pageSetUp();
 
+    var taskKey = $('#taskKey').val();
+
     var pagefunction = function () {
-        $("#form").validate({
-            onsubmit: true,
-            submitHandler: function () {
-                $.ajax({
-                    url: '/present/reApply',
-                    type: 'post',
-                    data: $('#form').serialize(),
-                    success: function () {
-                        completeTaskRedirect([[${taskId}]], [{key: 'reApply', value: true, type: 'B'}], "#/common/task/todo");
-                    },
-                    error: function (e) {
-                        $.bigBox({
-                            title: "系统内部错误！",
-                            content: "该错误已被记录，请联系管理员，并稍后重试！",
-                            color: "#C46A69",
-                            icon: "fa fa-warning shake animated",
-                            timeout: 6000
-                        });
-                        e.preventDefault();
-                    }
-                });
-            },
-
-            // Do not change code below
-            errorPlacement: function (error, element) {
-                error.insertAfter(element.parent());
-            }
-        });
-
     };
 
-    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+    $('#pass').on('click', function () {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
+        completeTask([[${taskId}]], [{key: taskKey+'Pass', value: true, type: 'B'}, {
+            key: taskKey+'Memo',
+            value: memo,
+            type: 'S'
+        }]);
+    });
+
+    $('#deny').on('click', function () {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '不同意';
+        completeTask([[${taskId}]], [{key: taskKey+'Pass', value: false, type: 'B'}, {
+            key: taskKey+'Memo',
+            value: memo,
+            type: 'S'
+        }]);
+    });
+
 </script>
 </body>
 </html>

@@ -3,6 +3,7 @@ package com.bearxyz.service.business;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
+import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.*;
@@ -58,6 +59,9 @@ public class StockService {
 
     @Autowired
     private StockItemRepository itemRepository;
+
+    @Autowired
+    private PackageRepository packageRepository;
 
     @Autowired
     private WorkflowService workflowService;
@@ -233,6 +237,19 @@ public class StockService {
     }
 
     public void save(Stock stock) {
+        for (StockItem item : stock.getItems()) {
+            Goods goods = goodsRepository.findOne(item.getGoodsId());
+            if (item.getPackageId() != null && !item.getPackageId().isEmpty()) {
+                Package pkg = packageRepository.findOne(item.getPackageId());
+                item.setSpec(goods.getModel());
+                item.setUnit(pkg.getPackageUnit());
+                item.setAmmount(pkg.getAmmount() * item.getCount());
+            } else {
+                item.setSpec(goods.getModel());
+                item.setUnit(goods.getUnit());
+                item.setAmmount(item.getCount());
+            }
+        }
         repository.save(stock);
     }
 

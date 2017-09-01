@@ -50,7 +50,7 @@ public class SysService {
 
     public User saveUser(User user) throws NameRepeatedException {
         User u = userRepository.findByEmail(user.getEmail());
-        if (u != null) throw new NameRepeatedException("邮箱重复");
+        if (u != null) throw new NameRepeatedException("账号重复");
         return userRepository.save(user);
     }
 
@@ -91,6 +91,18 @@ public class SysService {
             }
             user.setPost(post);
             user.setDepartment(dep);
+            user.setFullName(user.getFirstName()+user.getLastName());
+        }
+        DataTable dt = new DataTable<User>();
+        dt.setData(users);
+        dt.setRecordsTotal((long)users.size());
+        dt.setRecordsFiltered((long)users.size());
+        return dt;
+    }
+
+    public DataTable<User> getUsersByCompanyId(String id, String type) {
+        List<User> users = userRepository.findUsersByTypeAndCompanyId(type,id);
+        for (User user : users) {
             user.setFullName(user.getFirstName()+user.getLastName());
         }
         DataTable dt = new DataTable<User>();

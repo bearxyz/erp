@@ -77,13 +77,13 @@
                                 <section>
                                     <label class="label">预付款：</label>
                                     <label class="input col-2">
-                                        <input type="text" id="advance" name="advance" class="number" />
+                                        <input type="text" id="advance" name="advance" class="number" th:value="${purchasingOrder.advance}" />
                                     </label>
                                 </section>
                                 <section>
                                     <label class="clabel">上传合同:</label>
                                     <div class="input">
-                                        <input type="file" class="file-loading" id="attachment" name="attachment" multiple/>
+                                        <input type="file" class="file-loading" id="attachment" name="attachment" multiple required/>
                                     </div>
 
                                 </section>

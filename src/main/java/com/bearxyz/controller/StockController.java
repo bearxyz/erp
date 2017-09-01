@@ -4,11 +4,14 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
+import com.bearxyz.repository.PurchasingOrderItemRepository;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.OfficialPartnerService;
 import com.bearxyz.service.business.StockService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +30,12 @@ public class StockController {
 
     @Autowired
     private OfficialPartnerService officialPartnerService;
+
+    @Autowired
+    private PurchasingOrderItemRepository purchasingOrderItemRepository;
+
+    @Autowired
+    private TaskService taskService;
 
     @Autowired
     private StockService service;
@@ -148,6 +157,32 @@ public class StockController {
         Stock stock = service.getStockById(id);
         model.addAttribute("stock", stock);
         return "/stock/print";
+    }
+
+    @RequestMapping(value = "/complete")
+    public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
+        Stock order = service.getStockById(bid);
+        Float totalPrice = (float) 0.0;
+        String pid = "";
+        for (StockItem item : order.getItems()) {
+            totalPrice += item.getPrice() * item.getCount();
+            Goods goods = goodsService.getById(item.getGoodsId());
+            item.setGoods(goods);
+            pid = item.getPurchasingOrderItemId();
+        }
+        PurchasingOrderItem poi = purchasingOrderItemRepository.findOne(pid);
+        model.addAttribute("advance", poi.getOrder().getAdvance());
+        model.addAttribute("stock", order);
+        model.addAttribute("totalPrice",totalPrice);
+        String memo = "";
+        model.addAttribute("applyer", applyer);
+        Task task = taskService.createTaskQuery().taskId(tid).singleResult();
+        if (!task.getTaskDefinitionKey().equals("deptLeader")&&taskService.getVariable(task.getId(), "deptLeaderMemo") != null)
+            memo = taskService.getVariable(task.getId(), "deptLeaderMemo").toString();
+        model.addAttribute("taskId", tid);
+        model.addAttribute("taskKey", task.getTaskDefinitionKey());
+        model.addAttribute("memo", memo);
+        return "/stock/complete";
     }
 
 }
