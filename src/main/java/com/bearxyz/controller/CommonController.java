@@ -4,11 +4,13 @@ import com.bearxyz.common.*;
 import com.bearxyz.domain.po.business.Attachment;
 import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.business.PurchasingOrderAttachment;
+import com.bearxyz.domain.po.business.SaleAttachment;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.domain.vo.TaskVO;
 import com.bearxyz.domain.vo.Variable;
 import com.bearxyz.repository.GoodsRepository;
+import com.bearxyz.repository.SaleAttachmentRepository;
 import com.bearxyz.service.business.AttachmentService;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.PurchasingOrderAttachmentService;
@@ -51,6 +53,9 @@ public class CommonController {
 
     @Autowired
     private PurchasingOrderAttachmentService purchasingOrderAttachmentService;
+
+    @Autowired
+    private SaleAttachmentRepository saleAttachmentRepository;
 
     @Autowired
     private SysService sysService;
@@ -268,6 +273,22 @@ public class CommonController {
     @RequestMapping(value = "/downloadp/{id}")
     public void downloadPurchasing(@PathVariable("id")String id, final HttpServletResponse response) throws IOException {
         PurchasingOrderAttachment attachment = purchasingOrderAttachmentService.getById(id);
+        String fileName = attachment.getName()+"."+attachment.getFileType();
+        fileName = URLEncoder.encode(fileName, "UTF-8");
+        byte[] data = attachment.getFileContent();
+        response.reset();
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        response.addHeader("Content-Length", "" + data.length);
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+        outputStream.write(data);
+        outputStream.flush();
+        outputStream.close();
+    }
+
+    @RequestMapping(value = "/downloadr/{id}")
+    public void downloadResource(@PathVariable("id")String id, final HttpServletResponse response) throws IOException {
+        SaleAttachment attachment = saleAttachmentRepository.findOne(id);
         String fileName = attachment.getName()+"."+attachment.getFileType();
         fileName = URLEncoder.encode(fileName, "UTF-8");
         byte[] data = attachment.getFileContent();

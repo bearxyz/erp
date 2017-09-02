@@ -3,9 +3,9 @@ package com.bearxyz.service.business;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
+import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.domain.po.sys.Dict;
-import com.bearxyz.repository.SaleItemRepository;
-import com.bearxyz.repository.SaleRepository;
+import com.bearxyz.repository.*;
 import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,19 +35,25 @@ public class SaleService {
     @Autowired
     private SaleItemRepository itemRepository;
     @Autowired
+    private SaleAttachmentService saleAttachmentService;
+    @Autowired
     private PictureService pictureService;
     @Autowired
     private SysService sysService;
     @Autowired
     private WorkflowService workflowService;
+    @Autowired
+    private GoodsRepository goodsRepository;
+    @Autowired
+    private PackageRepository packageRepository;
 
-    public List<SaleItem> getItemsBySaleId(String id){
+    public List<SaleItem> getItemsBySaleId(String id) {
         Sale sale = repository.findOne(id);
         return sale.getItems();
     }
 
-    public void apply(Sale sale, List<MultipartFile> files) throws IOException {
-        save(sale, files);
+    public void apply(Sale sale, List<MultipartFile> pics, List<MultipartFile> files) throws IOException {
+        save(sale, pics, files);
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("name", "商品包装审批");
         variables.put("url", "/sale/");
@@ -57,15 +63,48 @@ public class SaleService {
         sale.setProcessInstanceId(workflowService.startWorkflow("product-sale", sale.getId(), sale.getCreatedBy(), variables));
     }
 
-    public void save(Sale sale, List<MultipartFile> files) throws IOException {
-        for (MultipartFile file : files) {
-            Picture attachment = pictureService.save(file);
-            sale.getImages().add(attachment);
+    public void save(Sale sale, List<MultipartFile> pics, List<MultipartFile> files) throws IOException {
+        if (pics != null&&pics.size()>0) {
+            if(sale.getImages()!=null){
+                for(Picture pic : sale.getImages()){
+                    pictureService.delete(pic.getId());
+                }
+            }
+            for (MultipartFile file : pics) {
+                Picture attachment = pictureService.save(file);
+                if (attachment != null)
+                    sale.getImages().add(attachment);
+            }
+        }
+        if (files != null&&files.size()>0) {
+            if(sale.getResources()!=null){
+                for(SaleAttachment attachment: sale.getResources()){
+                    saleAttachmentService.delete(attachment.getId());
+                }
+            }
+            for (MultipartFile file : files) {
+                SaleAttachment attachment = saleAttachmentService.save(file);
+                if (attachment != null)
+                    sale.getResources().add(attachment);
+            }
+        }
+        for (SaleItem item : sale.getItems()) {
+            Goods goods = goodsRepository.findOne(item.getGoodsId());
+            if (item.getPackageId() != null && !item.getPackageId().isEmpty()) {
+                Package pkg = packageRepository.findOne(item.getPackageId());
+                item.setSpec(goods.getModel());
+                item.setUnit(pkg.getPackageUnit());
+                item.setAmmount(pkg.getAmmount() * item.getCount());
+            } else {
+                item.setSpec(goods.getModel());
+                item.setUnit(goods.getUnit());
+                item.setAmmount(item.getCount());
+            }
         }
         repository.save(sale);
     }
 
-    public DataTable<Sale> getSales(Boolean approved, PaginationCriteria req){
+    public DataTable<Sale> getSales(Boolean approved, PaginationCriteria req) {
         DataTable<Sale> result = new DataTable<>();
         String order = "lastUpdated";
         String direction = "desc";
@@ -77,18 +116,18 @@ public class SaleService {
         PageRequest request = new PageRequest(req.getStart() / req.getLength(), req.getLength(), new Sort(Sort.Direction.fromString(direction), order));
         Specification<Sale> specification = (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
-            if (approved!=null)
+            if (approved != null)
                 predicate.getExpressions().add(cb.equal(root.get("approved"), approved));
             return predicate;
         };
         Page<Sale> page = repository.findAll(specification, request);
         List<Sale> content = page.getContent();
-        for(Sale sale: content){
-            Dict dict=sysService.getDictByMask(sale.getProject());
-            if(dict!=null)
+        for (Sale sale : content) {
+            Dict dict = sysService.getDictByMask(sale.getProject());
+            if (dict != null)
                 sale.setProjectName(dict.getName());
             dict = sysService.getDictByMask(sale.getType());
-            if(dict!=null)
+            if (dict != null)
                 sale.setTypeName(dict.getName());
         }
         result.setRecordsTotal(page.getTotalElements());
@@ -97,11 +136,11 @@ public class SaleService {
         return result;
     }
 
-    public Sale getById(String id){
+    public Sale getById(String id) {
         return repository.findOne(id);
     }
 
-    public void setStatus(String id){
+    public void setStatus(String id) {
         Sale sale = getById(id);
         sale.setOnSale(!sale.getOnSale());
         repository.save(sale);

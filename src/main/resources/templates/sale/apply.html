@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
     <title></title>
-    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/summernote/summernote.css}"/>
 </head>
 <body>
 <div class="row">
@@ -31,39 +30,43 @@
                     <div class="widget-body no-padding">
                         <form id="form_1" class="smart-form" novalidate="novalidate" enctype="multipart/form-data">
                             <fieldset>
-                                <section class="col col-6">
+                                <div class="row">
+                                <section class="col col-3">
                                     <label class="select">
                                         <select id="category" name="category">
-                                            <option>实物商品</option>
-                                            <option>虚拟商品</option>
-                                            <option>扶持项目</option>
                                         </select><i></i>
                                     </label>
                                 </section>
-                                <section class="col col-6">
-                                    <label class="input">
-                                        <input type="text" name="name" id="name" placeholder="名称"/><i></i>
+                                <section class="col col-3">
+                                    <label class="select">
+                                        <select name="project" id="project"></select><i></i>
                                     </label>
                                 </section>
-                            </fieldset>
-                            <fieldset>
-                                <div class="row">
-                                    <section class="col col-6">
-                                        <label class="select">
-                                            <select name="project" id="project"></select><i></i>
-                                        </label>
-                                    </section>
-                                    <section class="col col-6">
-                                        <label class="select">
-                                            <select name="type" id="type"></select><i></i>
-                                        </label>
-                                    </section>
-                                </div>
-                                <section>
-                                    <input type="file" class="file-loading" id="attachment" name="attachment" multiple/>
+                                <section class="col col-3">
+                                    <label class="select">
+                                        <select name="type" id="type"></select><i></i>
+                                    </label>
                                 </section>
+                                <section class="col col-3">
+                                    <label class="select">
+                                        <select name="subtype" id="subtype"></select><i></i>
+                                    </label>
+                                </section>
+                                </div>
+                                <div class="row">
+                                <section class="col col-3">
+                                    <label class="input">
+                                        <input name="name" id="name" placeholder="名称" /><i></i>
+                                    </label>
+                                </section>
+                                </div>
+                                    <section>
+                                        <label class="textarea textarea-resizable">
+                                            <textarea placeholder="简介" id="memo" name="memo" class="custom-scroll"></textarea>
+                                        </label>
+                                    </section>
                             </fieldset>
-                            <fieldset style="display: none;">
+                            <fieldset id="products" style="display: none;">
                                 <section>
                                     <a href="/common/selectProduct" data-toggle="modal" data-target="#remoteModal"
                                        class="btn btn-primary btn-sm">选择物品</a>
@@ -74,25 +77,45 @@
                                                 <th></th>
                                                 <th>物品名称</th>
                                                 <th>规格</th>
-                                                <th>包装</th>
+                                                <th>单位</th>
                                                 <th>数量</th>
                                             </tr>
                                             </thead>
                                             <tbody>
+
                                             </tbody>
                                         </table>
 
                                     </div>
                                 </section>
                             </fieldset>
-
+                            <fieldset id="supports" style="display: none;">
+                                    <section class="col col-6">
+                                        <label class="input">
+                                            <i class="icon-append fa fa-calendar"></i>
+                                            <input id="startDate" class="hasDatepicker" name="startDate" placeholder="开始日期"
+                                                   type="text">
+                                        </label>
+                                    </section>
+                                    <section class="col col-6">
+                                        <label class="input">
+                                            <i class="icon-append fa fa-calendar"></i>
+                                            <input id="endDate" class="hasDatepicker" name="endDate" placeholder="结束日期" type="text">
+                                        </label>
+                                    </section>
+                            </fieldset>
+                            <fieldset id="resources" style="display: none;">
+                                <section>
+                                    <input type="file" class="file-loading" id="attachment" name="attachment" multiple/>
+                                </section>
+                            </fieldset>
                             <footer>
                                 <button type="submit" class="btn btn-primary">
                                     保 存
                                 </button>
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                <a class="btn btn-danger" href="#/sale/index">
                                     取 消
-                                </button>
+                                </a>
                             </footer>
                         </form>
                     </div>
@@ -110,37 +133,49 @@
     </div>
 </div>
 <script>
+    var item_count = 0;
     pageSetUp();
 
     var pagefunction = function () {
 
-        BindDictItem("category", "GOODS_NATURE", "商品性质");
-        BindDictItem("project", "PROJECT_TYPE", "项目类别");
-        BindDictItem("type", "CONTRACT_TYPE", "商品类别");
+        BindDictItem("category", "GOODS_NATURE", "商品分类");
+        $('#category').on('change', function () {
+            var c = this.value;
+            $('#project').empty();
+            $('#type').empty();
+            $('#subtype').empty();
+            BindDictItem("project", c, null);
+            if (c == "GOODS_NORMAL") {$('#products').show();$('#resources').hide();$('#supports').hide();}
+            if (c == "GOODS_SUPPORT") {$('#products').hide();$('#resources').hide();$('#supports').show();}
+            if (c == "GOODS_VIRTUAL") {$('#products').hide();$('#resources').show();$('#supports').hide();}
 
-        $('.summernote').summernote({
-            height: 400,
-            focus: false,
-            tabsize: 2,
-            lang: 'zh-CN',
-            dialogsInBody: true,
-            dialogsFade: true,
+        });
+        $('#project').on('change', function () {
+            var c = this.value;
+
+            $('#type').empty();
+            $('#subtype').empty();
+
+            BindDictItem("type", c, null);
+        });
+        $('#type').on('change', function () {
+            var c = this.value;
+
+            $('#subtype').empty();
+
+            BindDictItem("subtype", c, null);
         });
 
         var $form1 = $("#form_1").validate({
             rules: {
                 project: {required: true},
-                title: {required: true},
-                startDate: {required: true},
-                endDate: {required: true},
-                attachment: {required: true}
+                name: {required: true},
+                category: {required: true}
             },
             messages: {
-                project: {required: '请选择代理项目'},
-                title: {required: '请输入合同名称'},
-                startDate: {required: '请输入合同有效期'},
-                endDate: {required: '请输入合同有效期'},
-                attachment: {required: '请上传合同附件'}
+                project: {required: '请选择商品分类'},
+                category: {required: '请选择商品分类'},
+                name: {required: '请输入名称'}
             },
             onsubmit: true,
             submitHandler: function () {
@@ -173,6 +208,25 @@
             errorPlacement: function (error, element) {
                 error.insertAfter(element.parent());
             }
+        });
+
+
+        $('#startDate').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: 'month',
+            language: 'zh-CN',
+            autoclose: true
+        }).on("click", function () {
+            $("#startDate").datetimepicker("setEndDate", $("#endDate").val())
+        });
+
+        $('#endDate').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: 'month',
+            language: 'zh-CN',
+            autoclose: true
+        }).on("click", function () {
+            $("#endDate").datetimepicker("setStartDate", $("#startDate").val())
         });
 
         $("#attachment").fileinput({

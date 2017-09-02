@@ -69,6 +69,7 @@
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"></th>
                             </tr>
                             <tr>
@@ -78,6 +79,7 @@
                                 </th>
                                 <th>项目</th>
                                 <th>类型</th>
+                                <th>子类型</th>
                                 <th>商品名称</th>
                                 <th>型号</th>
                                 <th>单位</th>
@@ -128,8 +130,9 @@
             },
             "columns": [
                 CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
-                {"data": "project"},
-                {"data": "type"},
+                {"data": "projectName"},
+                {"data": "typeName"},
+                {"data": "subtypeName"},
                 {"data": "name"},
                 {"data": "model"},
                 {"data": "unit"},

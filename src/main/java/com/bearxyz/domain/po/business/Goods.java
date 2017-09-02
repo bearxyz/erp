@@ -18,9 +18,11 @@ public class Goods extends BaseDomain {
     @Column(length = 50)
     private String name = "";
     @Column(length = 50)
+    private String project = "";
+    @Column(length = 50)
     private String type = "";
     @Column(length = 50)
-    private String project = "";
+    private String subtype = "";
     @Column(length = 50)
     private String model = "";
     @Column(length = 10)
@@ -35,6 +37,13 @@ public class Goods extends BaseDomain {
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "GOODS_ID")
     private List<Package> packages;
+
+    @Transient
+    private String projectName = "";
+    @Transient
+    private String typeName = "";
+    @Transient
+    private String subtypeName = "";
 
     public String getName() {
         return name;
@@ -98,5 +107,37 @@ public class Goods extends BaseDomain {
 
     public void setPackages(List<Package> packages) {
         this.packages = packages;
+    }
+
+    public String getSubtype() {
+        return subtype;
+    }
+
+    public void setSubtype(String subtype) {
+        this.subtype = subtype;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public String getSubtypeName() {
+        return subtypeName;
+    }
+
+    public void setSubtypeName(String subtypeName) {
+        this.subtypeName = subtypeName;
     }
 }

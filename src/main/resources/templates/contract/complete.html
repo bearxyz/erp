@@ -132,10 +132,12 @@
 
     var taskKey = $('#taskKey').val();
 
+    BindDictItem("project", "PROJECT_TYPE", "代理项目", [[${contract.project}]]);
+    BindDictItem("agentType", "CONTRACT_TYPE", "签约类型", [[${contract.agentType}]]);
+    BindDictItem("agentLevel", "CLIENT_LEVEL_TYPE", "代理级别", [[${contract.agentLevel}]]);
+
     var pagefunction = function () {
-        BindDictItem("project", "PROJECT_TYPE", "代理项目", [[${contract.project}]]);
-        BindDictItem("agentType", "CONTRACT_TYPE", "签约类型", [[${contract.agentType}]]);
-        BindDictItem("agentLevel", "CLIENT_LEVEL_TYPE", "代理级别", [[${contract.agentLevel}]]);
+
     };
 
     $('#pass').on('click', function () {

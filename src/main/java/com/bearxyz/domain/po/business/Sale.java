@@ -2,10 +2,11 @@ package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.persistence.*;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 /**
  * Created by bearxyz on 2017/8/30.
@@ -25,13 +26,16 @@ public class Sale extends BaseDomain {
     @Column(length = 50)
     private String project = "";
     @Column
-    private Float price = (float)0.0;
+    private Float price = (float) 0.0;
     @Column
     private String unit = "";
     @Column(length = 50)
     private String type = "";
     @Column(length = 50)
+    private String subtype = "";
+    @Column(length = 50)
     private String processInstanceId = "";
+
     @Column
     private Date startDate;
     @Column
@@ -42,6 +46,8 @@ public class Sale extends BaseDomain {
     private Boolean approved = false;
     @Column
     private Boolean onSale = false;
+    @Column(length = 1000)
+    private String memo = "";
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
@@ -226,21 +232,6 @@ public class Sale extends BaseDomain {
         this.images = images;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
 
     public Integer getBuyer() {
         return buyer;
@@ -256,5 +247,37 @@ public class Sale extends BaseDomain {
 
     public void setResources(Set<SaleAttachment> resources) {
         this.resources = resources;
+    }
+
+    public String getSubtype() {
+        return subtype;
+    }
+
+    public void setSubtype(String subtype) {
+        this.subtype = subtype;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 }

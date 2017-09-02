@@ -73,7 +73,7 @@ function BindSelect(ctrlName, url, placeholder, selected) {
     var control = $('#' + ctrlName);
     $.getJSON(url, function (data) {
         control.empty();
-        control.append("<option value=''>&nbsp;" + placeholder + "</option>");
+        if (placeholder!=null) control.append("<option value=''>&nbsp;" + placeholder + "</option>");
         $.each(data, function (i, item) {
             if (selected && selected == item.id)
                 control.append("<option value='" + item.id + "' selected>&nbsp;" + item.text + "</option>");

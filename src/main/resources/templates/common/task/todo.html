@@ -53,6 +53,10 @@
                            th:href="${'/#'+task.detailUrl+'reApply/'+task.bussinessId}">调整申请</a>
                         <a class="btn btn-info btn-sm" th:if="${task.taskDefinitionKey=='adjustApply_1'}"
                            th:href="${'/#'+task.detailUrl+'reApply/'+task.bussinessId}">上传合同</a>
+                        <a class="btn btn-info btn-sm" th:if="${task.assignee!=null and task.taskDefinitionKey=='setPrice'}"
+                           th:href="${'/#'+task.detailUrl+'reApply/'+task.bussinessId}">定价</a>
+                        <a class="btn btn-info btn-sm" th:if="${task.assignee!=null and task.taskDefinitionKey=='package'}"
+                           th:href="${'/#'+task.detailUrl+'reApply/'+task.bussinessId}">包装</a>
                         <a class="btn btn-info btn-sm" th:if="${task.taskDefinitionKey=='adjustApply'}"
                            th:attr="onclick='cancel('+${task.taskId}+')'" href="javascript:void(0);">取 消</a>
                         <a class="btn btn-info btn-sm" th:if="${task.taskDefinitionKey=='apply'}"
@@ -64,7 +68,7 @@
                         <!--<a class="btn btn-info btn-sm" th:if="${task.assignee!=null and task.taskDefinitionKey!='adjustApply'}"
                            data-toggle="modal" data-target="#remoteModal" href="javascript:void(0);">会 签</a>-->
                         <a class="btn btn-info btn-sm"
-                           th:if="${task.assignee!=null and task.taskDefinitionKey!='adjustApply' and task.taskDefinitionKey!='adjustApply_1' and task.taskDefinitionKey!='apply'}"
+                           th:if="${task.assignee!=null and task.taskDefinitionKey!='adjustApply' and task.taskDefinitionKey!='adjustApply_1' and task.taskDefinitionKey!='apply' and task.taskDefinitionKey!='setPrice'and task.taskDefinitionKey!='package'}"
                            th:href="@{'/#'+${task.detailUrl}+'complete?key='+${task.taskDefinitionKey}+'&applyer='+${task.applyer}+'&bid='+${task.bussinessId}+'&tid='+${task.taskId}}">办 理</a>
                     </td>
                 </tr>

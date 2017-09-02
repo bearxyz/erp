@@ -33,28 +33,8 @@
     <!-- row -->
     <div class="row">
 
-        <article class="col-xs-12 col-sm-12 col-md-4 col-lg-2">
-            <div class="jarviswidget jarviswidget-color-orange" id="wid-id-0" data-widget-editbutton="false"
-                 data-widget-deletebutton="false"
-                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
-                <header>
-                    <span class="widget-icon">
-                        <i class="fa fa-sitemap"></i>
-                    </span>
-                    <h2><strong>商品分类</strong></h2>
-
-                </header>
-                <div>
-                    <!-- widget content -->
-                    <div class="widget-body">
-                        <div id="jstree"></div>
-                    </div>
-                </div>
-            </div>
-        </article>
-
         <!-- NEW WIDGET START -->
-        <article class="col-xs-12 col-sm-12 col-md-8 col-lg-10">
+        <article class="col-sm-12">
             <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false"
                  data-widget-deletebutton="false"
                  data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
@@ -109,23 +89,6 @@
 
     var pagefunction = function () {
 
-        loadScript("js/plugin/jstree/jstree.min.js", run_jstree_function);
-
-        function run_jstree_function() {
-            jQuery('#jstree').jstree({
-                'core': {
-                    'data': {
-                        'url': "/common/getDictTree",
-                        'data': function (node) {
-                            var mask = (node.id == "#") ? "GOODS_NATURE" : node.id;
-                            return {"mask": mask};
-                        }
-                    },
-                    'check_callback': true
-                }
-            });
-        }
-
         var responsiveHelper_dt_basic = undefined;
         var breakpointDefinition = {tablet: 1024, phone: 480};
 
@@ -134,12 +97,7 @@
             "serverSide": true,
             ajax: {
                 url: "/stock/index",
-                "type": "POST",
-                "data": {
-                    mask: function () {
-                        return $('#id').val();
-                    }
-                }
+                "type": "POST"
             },
             "columns": [
                 {"data": "name"},

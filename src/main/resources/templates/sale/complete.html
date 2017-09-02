@@ -59,25 +59,25 @@
                                     <section class="col col-3">
                                         <label class="label">名称：</label>
                                         <label class="input">
-                                            <input name="name" id="name" th:value="${sale.name}"/><i></i>
+                                            <input name="name" id="name" th:value="${sale.name}" disabled="disabled"/><i></i>
                                         </label>
                                     </section>
                                     <section class="col col-3" shiro:hasRole="ROLE_COO">
                                         <label class="label">单价：</label>
                                         <label class="input">
-                                            <input name="price" id="price" th:value="${sale.price}"/><i></i>
+                                            <input name="price" id="price" th:value="${sale.price}" disabled="disabled"/><i></i>
                                         </label>
                                     </section>
                                     <section class="col col-3" shiro:hasRole="ROLE_COO">
                                         <label class="label">单位：</label>
                                         <label class="input">
-                                            <input name="unit" id="unit" th:value="${sale.unit}"/><i></i>
+                                            <input name="unit" id="unit" th:value="${sale.unit}" disabled="disabled"/><i></i>
                                         </label>
                                     </section>
                                 </div>
                                 <section>
                                     <label class="textarea textarea-resizable">
-                                        <textarea placeholder="简介" id="memo" name="memo" class="custom-scroll"></textarea>
+                                        <textarea class="custom-scroll" disabled="disabled">[[${sale.memo}]]</textarea>
                                     </label>
                                 </section>
                             </fieldset>
@@ -100,11 +100,11 @@
                                                     <input name='name' disabled='disabled' th:value="${item.goods.name}" /></label>
                                                 </td>
                                                 <td><label class='input'><input name='spec' th:value="${item.spec}" disabled='disabled' /></label></td>
-                                                <td><label class='select'><select th:name='${"items[" + i.index + "].packageId"}'>
+                                                <td><label class='select'><select th:name='${"items[" + i.index + "].packageId"}' disabled="disabled">
                                                     <option value="" th:selected="${item.packageId==''}">无包装[单位:[[${item.goods.unit}]]]</option>
                                                     <option th:each="package: ${item.goods.packages}" th:value="${package.id}" th:selected="${item.packageId==package.id}">[[${package.packageSpec}]][单位:[[${package.packageUnit}]]]</option>
                                                 </select><i></i></label></td>
-                                                <td><label class='input'><input th:name='${"items[" + i.index + "].count"}' th:value="${item.count}" class='number' /></label></td>
+                                                <td><label class='input'><input th:name='${"items[" + i.index + "].count"}' th:value="${item.count}" disabled="disabled" /></label></td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -117,20 +117,17 @@
                                     <label class="input">
                                         <i class="icon-append fa fa-calendar"></i>
                                         <input id="startDate" class="hasDatepicker" name="startDate" placeholder="开始日期"
-                                               type="text" value="1970-1-1">
+                                               type="text" value="1970-1-1" disabled="disabled">
                                     </label>
                                 </section>
                                 <section class="col col-6">
                                     <label class="input">
                                         <i class="icon-append fa fa-calendar"></i>
-                                        <input id="endDate" class="hasDatepicker" name="endDate" placeholder="结束日期" type="text" value="1970-1-1">
+                                        <input id="endDate" class="hasDatepicker" name="endDate" placeholder="结束日期" type="text" value="1970-1-1" disabled="disabled">
                                     </label>
                                 </section>
                             </fieldset>
                             <fieldset id="resources" th:if="${sale.category=='GOODS_VIRTUAL'}">
-                                <section th:if="${taskKey=='reApply'}">
-                                    <input type="file" class="file-loading" id="attachment" name="attachment" multiple/>
-                                </section>
                                 <section>
                                     <table>
                                         <tr th:each="res:${sale.resources}"><td><a th:href="@{'common/downloadr/'+${res.id}}" target="_blank">[[${res.name+'.'+res.fileType}]]</a></td></tr>
@@ -141,20 +138,46 @@
                                 <section>
                                     <label class="label">重点图片：</label>
                                     <label class="input input-file">
-                                    <input type="file" class="file-loading" id="picture" name="picture" multiple/>
+                                        <input type="file" class="file-loading" id="picture" name="picture" multiple/>
                                     </label>
                                 </section>
                                 <section>
                                     <label class="label">介绍：</label>
                                 </section>
                             </fieldset>
+                            <fieldset th:if="${taskKey=='deptLeader' or taskKey=='manager'}">
+                                <section>
+
+                                </section>
+                            </fieldset>
+                            <fieldset th:if="${memo!=null and memo!=''}">
+                                <section>
+                                    <label class="label">部门经理意见：</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" disabled="disabled">[[${memo}]]</textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <fieldset>
+                                <section>
+                                    <label class="label">办理意见：</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" id="memo" name="memo"></textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <input type="hidden" id="taskId" name="taskId" th:value="${taskId}">
+                            <input type="hidden" id="taskKey" name="taskKey" th:value="${taskKey}">
                             <footer>
-                                <button type="submit" class="btn btn-primary">
-                                    保 存
+                                <button type="button" class="btn btn-primary" id="pass" th:if="${taskKey!='confirm'}">
+                                    同 意
                                 </button>
-                                <button type="button" class="btn btn-danger" href="#/common/task/todo">
+                                <button type="button" class="btn btn-danger" id="deny" th:if="${taskKey!='confirm'}">
+                                    驳 回
+                                </button>
+                                <a type="button" class="btn btn-danger" href="#/common/task/todo">
                                     取 消
-                                </button>
+                                </a>
                             </footer>
                         </form>
                     </div>
@@ -171,95 +194,37 @@
         </div>
     </div>
 </div>
-<script>
-    var item_count = 0;
+<script th:inline="javascript">
     pageSetUp();
+
+    var taskKey = $('#taskKey').val();
+
+    BindDictItem("category", "GOODS_NATURE", "", [[${sale.category}]]);
+    BindDictItem("project", [[${sale.category}]], "", [[${sale.project}]]);
+    BindDictItem("type", [[${sale.project}]], "", [[${sale.type}]]);
+    BindDictItem("subtype", [[${sale.type}]], "", [[${sale.subtype}]]);
 
     var pagefunction = function () {
 
-        BindDictItem("category", "GOODS_NATURE", "", "[[${sale.category}]]");
-        BindDictItem("project", "[[${sale.category}]]", "", "[[${sale.project}]]");
-        BindDictItem("type", "[[${sale.project}]]", "", "[[${sale.type}]]");
-        BindDictItem("subtype", "[[${sale.type}]]", "", "[[${sale.subtype}]]");
-
-        var $form1 = $("#form_1").validate({
-            rules: {
-                project: {required: true},
-                name: {required: true},
-                category: {required: true}
-            },
-            messages: {
-                project: {required: '请选择商品分类'},
-                category: {required: '请选择商品分类'},
-                name: {required: '请输入名称'}
-            },
-            onsubmit: true,
-            submitHandler: function () {
-                var formData = new FormData($('#form_1')[0]);
-                $.ajax({
-                    url: '/sale/reApply',
-                    type: 'post',
-                    async: false,
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: formData,
-                    success: function () {
-                        completeTaskRedirect([[${taskId}]], [{key: 'reApply', value: true, type: 'B'}], "#/common/task/todo");
-                    },
-                    error: function (e) {
-                        $.bigBox({
-                            title: "系统内部错误！",
-                            content: "该错误已被记录，请联系管理员，并稍后重试！",
-                            color: "#C46A69",
-                            icon: "fa fa-warning shake animated",
-                            timeout: 6000
-                        });
-                        e.preventDefault();
-                    }
-                });
-            },
-
-            // Do not change code below
-            errorPlacement: function (error, element) {
-                error.insertAfter(element.parent());
-            }
-        });
-
-
-        $('#startDate').datetimepicker({
-            format: 'yyyy-mm-dd',
-            minView: 'month',
-            language: 'zh-CN',
-            autoclose: true
-        }).on("click", function () {
-            $("#startDate").datetimepicker("setEndDate", $("#endDate").val())
-        });
-
-        $('#endDate').datetimepicker({
-            format: 'yyyy-mm-dd',
-            minView: 'month',
-            language: 'zh-CN',
-            autoclose: true
-        }).on("click", function () {
-            $("#endDate").datetimepicker("setStartDate", $("#startDate").val())
-        });
-
-        $("#attachment").fileinput({
-            language: 'zh',
-            showCaption: false,
-            showUpload: false
-        });
-
-        $("#picture").fileinput({
-            language: 'zh',
-            showCaption: false,
-            showUpload: false
-        });
-
     };
 
-    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+    $('#pass').on('click', function () {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
+        completeTask([[${taskId}]], [{key: taskKey+'Pass', value: true, type: 'B'}, {
+            key: taskKey+'Memo',
+            value: memo,
+            type: 'S'
+        }]);
+    });
+
+    $('#deny').on('click', function () {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '不同意';
+        completeTask([[${taskId}]], [{key: taskKey+'Pass', value: false, type: 'B'}, {
+            key: taskKey+'Memo',
+            value: memo,
+            type: 'S'
+        }]);
+    });
 
 </script>
 </body>

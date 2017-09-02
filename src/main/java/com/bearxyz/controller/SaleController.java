@@ -2,10 +2,9 @@ package com.bearxyz.controller;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
-import com.bearxyz.domain.po.business.Contract;
-import com.bearxyz.domain.po.business.Sale;
-import com.bearxyz.domain.po.business.SaleItem;
-import com.bearxyz.domain.po.business.StockItem;
+import com.bearxyz.domain.po.business.*;
+import com.bearxyz.repository.GoodsRepository;
+import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.SaleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +35,9 @@ public class SaleController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private GoodsService goodsService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(){
@@ -83,7 +85,7 @@ public class SaleController {
     @RequestMapping(value = {"/apply"}, method = RequestMethod.POST)
     public String doApply(@ModelAttribute("sale")Sale sale, SessionStatus status, HttpServletRequest request) throws IOException {
         List<MultipartFile> files = ((MultipartHttpServletRequest)request).getFiles("attachment");
-        service.apply(sale, files);
+        service.apply(sale, null,files);
         status.setComplete();
         return "{success: true}";
     }
@@ -92,8 +94,13 @@ public class SaleController {
     public String reApply(@PathVariable("id")String id, Model model) {
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
         Sale sale = service.getById(id);
+        for (SaleItem item : sale.getItems()) {
+            Goods goods = goodsService.getById(item.getGoodsId());
+            item.setGoods(goods);
+        }
         model.addAttribute("sale", sale);
         model.addAttribute("taskId", task.getId());
+        model.addAttribute("taskKey", task.getTaskDefinitionKey());
         return "/sale/reApply";
     }
 
@@ -101,7 +108,8 @@ public class SaleController {
     @ResponseBody
     public String doReApply(@ModelAttribute("sale")Sale sale, SessionStatus status, HttpServletRequest request) throws IOException {
         List<MultipartFile> files = ((MultipartHttpServletRequest)request).getFiles("attachment");
-        service.save(sale, files);
+        List<MultipartFile> pic = ((MultipartHttpServletRequest)request).getFiles("picture");
+        service.save(sale, pic, files);
         status.setComplete();
         return "{success: true}";
     }
@@ -111,6 +119,25 @@ public class SaleController {
     public String setStatus(@RequestParam("id") String id){
         service.setStatus(id);
         return "{success: true}";
+    }
+
+    @RequestMapping(value = "/complete", method = RequestMethod.GET)
+    public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
+        Sale sale = service.getById(bid);
+        for (SaleItem item : sale.getItems()) {
+            Goods goods = goodsService.getById(item.getGoodsId());
+            item.setGoods(goods);
+        }
+        model.addAttribute("sale", sale);
+        String memo = "";
+        model.addAttribute("applyer", applyer);
+        Task task = taskService.createTaskQuery().taskId(tid).singleResult();
+        if (!task.getTaskDefinitionKey().equals("deptLeader")&&taskService.getVariable(task.getId(), "deptLeaderMemo") != null)
+            memo = taskService.getVariable(task.getId(), "deptLeaderMemo").toString();
+        model.addAttribute("taskId", tid);
+        model.addAttribute("taskKey", task.getTaskDefinitionKey());
+        model.addAttribute("memo", memo);
+        return "/sale/complete";
     }
 
 }

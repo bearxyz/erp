@@ -1,9 +1,9 @@
 package com.bearxyz.service.business;
 
-import com.bearxyz.domain.po.business.Attachment;
 import com.bearxyz.domain.po.business.Picture;
-import com.bearxyz.repository.AttachmentRepository;
+import com.bearxyz.domain.po.business.SaleAttachment;
 import com.bearxyz.repository.PictureRepository;
+import com.bearxyz.repository.SaleAttachmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,17 +13,17 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 /**
- * Created by bearxyz on 2017/8/30.
+ * Created by bearxyz on 2017/9/2.
  */
 
 @Service
 @Transactional
-public class PictureService {
+public class SaleAttachmentService {
 
     @Autowired
-    private PictureRepository repository;
+    private SaleAttachmentRepository repository;
 
-    public Picture getById(String id){
+    public SaleAttachment getById(String id){
         return repository.getOne(id);
     }
 
@@ -31,15 +31,15 @@ public class PictureService {
         repository.delete(id);
     }
 
-    public Picture save(MultipartFile file) throws IOException {
-        Picture picture = null;
+    public SaleAttachment save(MultipartFile file) throws IOException {
+        SaleAttachment picture = null;
         if (file != null) {
             String originalFileName = file.getOriginalFilename();
-            if(originalFileName!=null&& !StringUtils.isEmpty(originalFileName)) {
+            if(originalFileName!=null&&!StringUtils.isEmpty(originalFileName)) {
                 String fileName = originalFileName.substring(originalFileName.lastIndexOf('\\') + 1, originalFileName.indexOf('.'));
                 String suffix = originalFileName.substring(originalFileName.indexOf('.') + 1, originalFileName.length());
                 byte[] bytes = file.getBytes();
-                picture = new Picture();
+                picture = new SaleAttachment();
                 picture.setFileContent(bytes);
                 picture.setName(fileName);
                 picture.setFileType(suffix);
