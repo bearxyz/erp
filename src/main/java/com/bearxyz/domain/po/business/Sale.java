@@ -2,11 +2,10 @@ package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by bearxyz on 2017/8/30.
@@ -16,6 +15,9 @@ import java.util.List;
 public class Sale extends BaseDomain {
 
     private static final long serialVersionUID = -7147062502551641984L;
+
+    @Column(length = 50)
+    private String category = "";
     @Column(length = 50)
     private String code = "";
     @Column(length = 50)
@@ -30,6 +32,12 @@ public class Sale extends BaseDomain {
     private String type = "";
     @Column(length = 50)
     private String processInstanceId = "";
+    @Column
+    private Date startDate;
+    @Column
+    private Date endDate;
+    @Column
+    private Integer buyer = 0;
     @Column
     private Boolean approved = false;
     @Column
@@ -47,7 +55,11 @@ public class Sale extends BaseDomain {
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "BUSINESS_ID")
-    private List<Picture> attachments = new ArrayList<>();
+    private List<Picture> images = new ArrayList<>();
+
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "BUSINESS_ID")
+    private Set<SaleAttachment> resources = new HashSet<>();
 
     @Transient
     private String taskId;
@@ -62,6 +74,13 @@ public class Sale extends BaseDomain {
     @Transient
     private String typeName = "";
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
     public String getCode() {
         return code;
@@ -167,14 +186,6 @@ public class Sale extends BaseDomain {
         this.items = items;
     }
 
-    public List<Picture> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<Picture> attachments) {
-        this.attachments = attachments;
-    }
-
     public Boolean getOnSale() {
         return onSale;
     }
@@ -205,5 +216,45 @@ public class Sale extends BaseDomain {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public List<Picture> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Picture> images) {
+        this.images = images;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Integer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Integer buyer) {
+        this.buyer = buyer;
+    }
+
+    public Set<SaleAttachment> getResources() {
+        return resources;
+    }
+
+    public void setResources(Set<SaleAttachment> resources) {
+        this.resources = resources;
     }
 }

@@ -5,13 +5,15 @@ import com.bearxyz.domain.po.BaseDomain;
 import javax.persistence.*;
 
 /**
- * Created by bearxyz on 2017/7/27.
+ * Created by bearxyz on 2017/9/2.
  */
 @Entity
-@Table(name = "T_ATTACHMENT")
-public class Attachment extends BaseDomain {
+@Table(name = "T_SALE_ATTACHMENT")
+public class SaleAttachment extends BaseDomain {
 
-    private static final long serialVersionUID = -7724576844856640485L;
+
+    private static final long serialVersionUID = -3370128920979570827L;
+
     @Column(length = 200)
     private String name = "";
     @Column

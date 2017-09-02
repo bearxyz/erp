@@ -60,7 +60,7 @@ public class SaleService {
     public void save(Sale sale, List<MultipartFile> files) throws IOException {
         for (MultipartFile file : files) {
             Picture attachment = pictureService.save(file);
-            sale.getAttachments().add(attachment);
+            sale.getImages().add(attachment);
         }
         repository.save(sale);
     }
