@@ -2,10 +2,10 @@ package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * Created by bearxyz on 2017/9/2.

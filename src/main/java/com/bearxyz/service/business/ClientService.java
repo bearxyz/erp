@@ -1,15 +1,11 @@
 package com.bearxyz.service.business;
 
 import com.bearxyz.common.DataTable;
-import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.Company;
 import com.bearxyz.repository.CompanyRepository;
 import com.bearxyz.repository.PersonRepository;
 import com.bearxyz.repository.TrackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

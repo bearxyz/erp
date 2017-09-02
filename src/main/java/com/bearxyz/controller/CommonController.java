@@ -9,7 +9,6 @@ import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.domain.vo.TaskVO;
 import com.bearxyz.domain.vo.Variable;
-import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.SaleAttachmentRepository;
 import com.bearxyz.service.business.AttachmentService;
 import com.bearxyz.service.business.GoodsService;

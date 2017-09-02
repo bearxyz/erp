@@ -4,9 +4,7 @@ import com.bearxyz.domain.po.BaseDomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.sql.*;
 import java.util.*;
-import java.util.Date;
 
 /**
  * Created by bearxyz on 2017/8/30.

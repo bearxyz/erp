@@ -1,6 +1,5 @@
 package com.bearxyz.listener;
 
-import com.bearxyz.domain.po.business.OrderItem;
 import com.bearxyz.domain.po.business.PurchasingOrder;
 import com.bearxyz.domain.po.business.PurchasingOrderItem;
 import com.bearxyz.repository.PurchasingOrderItemRepository;

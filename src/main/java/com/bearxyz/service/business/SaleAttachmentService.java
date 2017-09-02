@@ -1,8 +1,6 @@
 package com.bearxyz.service.business;
 
-import com.bearxyz.domain.po.business.Picture;
 import com.bearxyz.domain.po.business.SaleAttachment;
-import com.bearxyz.repository.PictureRepository;
 import com.bearxyz.repository.SaleAttachmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

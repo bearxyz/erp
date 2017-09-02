@@ -2,7 +2,9 @@ package com.bearxyz.controller;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
-import com.bearxyz.domain.po.business.*;
+import com.bearxyz.domain.po.business.Goods;
+import com.bearxyz.domain.po.business.Scrapt;
+import com.bearxyz.domain.po.business.ScraptItem;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.ScraptService;
 import com.fasterxml.jackson.core.JsonProcessingException;
