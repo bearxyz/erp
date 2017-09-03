@@ -23,8 +23,14 @@ public class Order extends BaseDomain {
     private String companyId = "";
     @Column(length = 50)
     private String transport = "";
+    @Column(length = 50)
+    private String province="";
+    @Column(length = 50)
+    private String city="";
+    @Column(length = 50)
+    private String district="";
     @Column(length = 200)
-    private String deliverAddress = "";
+    private String address = "";
     @Column(length = 50)
     private String processInstanceId = "";
     @Column
@@ -74,12 +80,36 @@ public class Order extends BaseDomain {
         this.transport = transport;
     }
 
-    public String getDeliverAddress() {
-        return deliverAddress;
+    public String getProvince() {
+        return province;
     }
 
-    public void setDeliverAddress(String deliverAddress) {
-        this.deliverAddress = deliverAddress;
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getProcessInstanceId() {
