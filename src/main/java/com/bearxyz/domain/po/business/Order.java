@@ -18,17 +18,21 @@ public class Order extends BaseDomain {
     @Column(length = 50)
     private String code = "";
     @Column
-    private Float price = (float)0.0;
+    private Float price = (float) 0.0;
     @Column(length = 36)
     private String companyId = "";
     @Column(length = 50)
     private String transport = "";
     @Column(length = 50)
-    private String province="";
+    private String transportCompany = "";
     @Column(length = 50)
-    private String city="";
+    private String transportNo = "";
     @Column(length = 50)
-    private String district="";
+    private String province = "";
+    @Column(length = 50)
+    private String city = "";
+    @Column(length = 50)
+    private String district = "";
     @Column(length = 200)
     private String address = "";
     @Column(length = 50)
@@ -47,6 +51,22 @@ public class Order extends BaseDomain {
     private String applyer;
     @Transient
     private Date finishedDate;
+
+    public String getTransportCompany() {
+        return transportCompany;
+    }
+
+    public void setTransportCompany(String transportCompany) {
+        this.transportCompany = transportCompany;
+    }
+
+    public String getTransportNo() {
+        return transportNo;
+    }
+
+    public void setTransportNo(String transportNo) {
+        this.transportNo = transportNo;
+    }
 
     public String getCode() {
         return code;
