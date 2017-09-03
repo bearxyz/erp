@@ -24,7 +24,7 @@ import org.springframework.web.bind.support.SessionStatus;
  * Created by bearxyz on 2017/9/2.
  */
 @Controller
-@RequestMapping(name = "/replenishment")
+@RequestMapping("/replenishment")
 @SessionAttributes("replenishment")
 public class ReplenishmentController {
 
@@ -71,7 +71,7 @@ public class ReplenishmentController {
 
     @RequestMapping(value = "/apply", method = RequestMethod.GET)
     public String create(Model model) {
-        model.addAttribute("purchasing", new Purchasing());
+        model.addAttribute("replenishment", new Replenishment());
         return "/replenishment/apply";
     }
 

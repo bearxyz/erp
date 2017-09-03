@@ -29,6 +29,9 @@ public class Order extends BaseDomain {
     private String processInstanceId = "";
     @Column
     private Boolean approved = false;
+    //订单状态：1:待支付；2:待发货;3:待收货；4:完成
+    @Column
+    private Integer status = 0;
 
     @Transient
     private String taskId;
@@ -125,5 +128,13 @@ public class Order extends BaseDomain {
 
     public void setFinishedDate(Date finishedDate) {
         this.finishedDate = finishedDate;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

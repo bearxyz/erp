@@ -102,7 +102,7 @@ public class ReplenishmentService {
                 predicate.getExpressions().add(cb.like(root.get("title"), "%" + StringUtils.trimAllWhitespace("") + "%"));
             if (!StringUtils.isEmpty(uid))
                 predicate.getExpressions().add(cb.equal(root.get("createdBy"), uid));
-            if (approved)
+            if (approved!=null)
                 predicate.getExpressions().add(cb.equal(root.get("approved"), approved));
             return predicate;
         };
