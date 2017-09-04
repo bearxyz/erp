@@ -90,7 +90,7 @@
                                 </section>
                             </fieldset>
                             <fieldset id="supports" style="display: none;">
-                                    <!--<section class="col col-6">
+                                    <section class="col col-6">
                                         <label class="input">
                                             <i class="icon-append fa fa-calendar"></i>
                                             <input id="startDate" class="hasDatepicker" name="startDate" placeholder="开始日期"
@@ -102,7 +102,7 @@
                                             <i class="icon-append fa fa-calendar"></i>
                                             <input id="endDate" class="hasDatepicker" name="endDate" placeholder="结束日期" type="text">
                                         </label>
-                                    </section>-->
+                                    </section>
                             </fieldset>
                             <fieldset id="resources" style="display: none;">
                                 <section>
@@ -145,9 +145,9 @@
             $('#type').empty();
             $('#subtype').empty();
             BindDictItem("project", c, null);
-            if (c == "GOODS_NORMAL") {$('#products').show();$('#resources').hide();$('#supports').hide();}
-            if (c == "GOODS_SUPPORT") {$('#products').hide();$('#resources').hide();$('#supports').show();}
-            if (c == "GOODS_VIRTUAL") {$('#products').hide();$('#resources').show();$('#supports').hide();}
+            if (c == "GOODS_NORMAL") {$('#products').show();$('#resources').hide();$('#supports').hide();$('#startDate').val('1970-1-1');$('#endDate').val('1970-1-1');}
+            if (c == "GOODS_SUPPORT") {$('#products').hide();$('#resources').hide();$('#supports').show();$('#startDate').val('');$('#endDate').val('');}
+            if (c == "GOODS_VIRTUAL") {$('#products').hide();$('#resources').show();$('#supports').hide();$('#startDate').val('1970-1-1');$('#endDate').val('1970-1-1');}
 
         });
         $('#project').on('change', function () {

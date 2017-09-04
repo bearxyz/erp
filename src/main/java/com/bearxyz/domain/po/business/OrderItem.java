@@ -2,10 +2,7 @@ package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 /**
  * Created by bearxyz on 2017/8/30.
@@ -26,6 +23,10 @@ public class OrderItem extends BaseDomain {
     private String unit = "";
     @Column(length = 36)
     private String packageId = "";
+
+    @ManyToOne
+    @JoinColumn(name = "ORDER_ID")
+    private Order order;
 
     @Transient
     private Sale sale;

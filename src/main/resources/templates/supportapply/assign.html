@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 派单</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form" class="smart-form" novalidate="novalidate">
+        <input type="hidden" id="taskId" name="taskId" th:value="${taskId}">
+        <fieldset>
+            <section>
+                <div class="inline-group">
+                    <label class="radio" th:each="manager:${managers}">
+                        <input name="uid" type="radio" th:value="${manager.id}" />
+                        <i></i>
+                        [[${manager.firstName}+${manager.lastName}]]
+                    </label>
+                </div>
+            </section>
+        </fieldset>
+        <footer>
+            <button type="button" class="btn btn-primary" id="transfer">
+                确 定
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                取 消
+            </button>
+        </footer>
+    </form>
+</div>
+<script th:inline="javascript">
+    var taskKey = [[${taskKey}]];
+    pageSetUp();
+    $('#transfer').on('click',function () {
+        $.ajax({
+            url: '/supportapply/assign',
+            type: 'post',
+            data: $('#form').serialize(),
+            success: function () {
+                window.location = "#/common/task/todo";
+            },
+            error: function (e) {
+                $.bigBox({
+                    title: "系统内部错误！",
+                    content: "该错误已被记录，请联系管理员，并稍后重试！",
+                    color: "#C46A69",
+                    icon: "fa fa-warning shake animated",
+                    timeout: 6000
+                });
+                e.preventDefault();
+            }
+        });
+    })
+</script>
+</body>
+</html>

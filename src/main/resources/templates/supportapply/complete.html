@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-edit fa-fw "></i>
+            扶持申请
+        </h1>
+    </div>
+</div>
+
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>扶持申请</h2>
+                </header>
+                <div role="content">
+                    <div class="widget-body no-padding">
+                        <form id="form" class="smart-form">
+                            <input id="saleId" type="hidden" name="saleId" th:value="${supportapply.sale.id}"/>
+                            <fieldset>
+                                <div class="row">
+                                    <section class="col col-3">
+                                        <label class="label">申请客户：</label>
+                                        <label class="input"><input id="applyer" name="applyer" th:value="${supportapply.applyer}"
+                                                                    disabled="disabled"/></label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">扶持名称：</label>
+                                        <label class="input"><input id="name" name="name" th:value="${supportapply.sale.name}"
+                                                                    disabled="disabled"/></label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">价格：</label>
+                                        <label class="input"><input id="price" name="price" th:value="${supportapply.sale.price}"
+                                                                    disabled="disabled"/></label>
+                                    </section>
+                                </div>
+                                <div class="row">
+                                    <section class="col col-6">
+                                        <label class="input">
+                                            <i class="icon-append fa fa-calendar"></i>
+                                            <input id="startDate" class="hasDatepicker" name="startDate"
+                                                   th:value="${supportapply.sale.startDate}" disabled="disabled"
+                                                   type="text">
+                                        </label>
+                                    </section>
+                                    <section class="col col-6">
+                                        <label class="input">
+                                            <i class="icon-append fa fa-calendar"></i>
+                                            <input id="endDate" class="hasDatepicker" name="endDate"
+                                                   th:value="${supportapply.sale.endDate}" type="text" disabled="disabled">
+                                        </label>
+                                    </section>
+                                </div>
+                                <section>
+                                    <label class="label">客户：</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" disabled="disabled"
+                                        >[[${supportapply.memo}]]</textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <fieldset th:if="${memo!=null and memo!=''}">
+                                <section>
+                                    <label class="label">部门经理意见：</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" disabled="disabled">[[${memo}]]</textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <fieldset>
+                                <section>
+                                    <label class="label">办理意见：</label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" id="memo" name="memo"></textarea>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <input type="hidden" id="taskId" name="taskId" th:value="${taskId}">
+                            <input type="hidden" id="taskKey" name="taskKey" th:value="${taskKey}">
+                            <footer>
+                                <button type="button" class="btn btn-primary" id="pass" th:if="${taskKey!='accept'}">
+                                    同 意
+                                </button>
+                                <button type="button" class="btn btn-danger" id="deny" th:if="${taskKey!='accept'}">
+                                    驳 回
+                                </button>
+                                <button type="button" class="btn btn-primary" id="pass" th:if="${taskKey=='accept'}">
+                                    确 认
+                                </button>
+                                <a type="button" class="btn btn-danger" href="#/common/task/todo">
+                                    取 消
+                                </a>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+<script th:inline="javascript">
+    pageSetUp();
+
+    var taskKey = $('#taskKey').val();
+
+    var pagefunction = function () {
+
+    };
+
+    $('#pass').on('click', function () {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
+        completeTask([[${taskId}]], [{key: taskKey+'Pass', value: true, type: 'B'}, {
+            key: taskKey+'Memo',
+            value: memo,
+            type: 'S'
+        }]);
+    });
+
+    $('#deny').on('click', function () {
+        var memo = ($('#memo').val() != "") ? $('#memo').val() : '不同意';
+        completeTask([[${taskId}]], [{key: taskKey+'Pass', value: false, type: 'B'}, {
+            key: taskKey+'Memo',
+            value: memo,
+            type: 'S'
+        }]);
+    });
+
+</script>
+</body>
+</html>

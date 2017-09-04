@@ -1,12 +1,12 @@
 package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by bearxyz on 2017/8/30.
@@ -44,9 +44,18 @@ public class Order extends BaseDomain {
     private Integer status = 0;
     @Column(length = 50)
     private String type = "";
-
+    @Column(length = 36)
+    private String saleId = "";
     @Column
     private String typeName = "";
+
+    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "ORDER_ID")
+    private List<OrderItem> items = new ArrayList<>();
+
+    @Transient
+    private Sale sale;
     @Transient
     private String companyName = "";
     @Transient
@@ -216,5 +225,29 @@ public class Order extends BaseDomain {
 
     public void setTypeName(String typeName) {
         this.typeName = typeName;
+    }
+
+    public String getSaleId() {
+        return saleId;
+    }
+
+    public void setSaleId(String saleId) {
+        this.saleId = saleId;
+    }
+
+    public Sale getSale() {
+        return sale;
+    }
+
+    public void setSale(Sale sale) {
+        this.sale = sale;
+    }
+
+    public List<OrderItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<OrderItem> items) {
+        this.items = items;
     }
 }

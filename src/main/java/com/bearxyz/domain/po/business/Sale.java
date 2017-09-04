@@ -4,7 +4,9 @@ import com.bearxyz.domain.po.BaseDomain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 /**
  * Created by bearxyz on 2017/8/30.
@@ -34,21 +36,22 @@ public class Sale extends BaseDomain {
     @Column(length = 50)
     private String processInstanceId = "";
     @Column
-    private Boolean isPublic = false;
+    private Boolean isPublic = true;
 
     @Column
-    private Date startDate;
+    private java.sql.Date startDate;
     @Column
-    private Date endDate;
+    private java.sql.Date endDate;
     @Column
     private Integer buyer = 0;
     @Column
     private Boolean approved = false;
     @Column
     private Boolean onSale = false;
+    @Column
+    private Boolean agentOnSale = false;
     @Column(length = 1000)
     private String memo = "";
-
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(columnDefinition = "CLOB")
@@ -273,22 +276,6 @@ public class Sale extends BaseDomain {
         this.memo = memo;
     }
 
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
-    }
-
     public Boolean getPublic() {
         return isPublic;
     }
@@ -328,4 +315,30 @@ public class Sale extends BaseDomain {
     public void setStock(String stock) {
         this.stock = stock;
     }
+
+    public java.sql.Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(java.sql.Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public java.sql.Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(java.sql.Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Boolean getAgentOnSale() {
+        return agentOnSale;
+    }
+
+    public void setAgentOnSale(Boolean agentOnSale) {
+        this.agentOnSale = agentOnSale;
+    }
+
+
 }

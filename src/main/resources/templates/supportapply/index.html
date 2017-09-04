@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
     <title></title>
-    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/jstree/style.css}"/>
 </head>
 <body>
+
 <!-- Bread crumb is created dynamically -->
 <!-- row -->
 <div class="row">
@@ -19,7 +19,7 @@
         <h1 class="page-title txt-color-blueDark">
             <!-- PAGE HEADER -->
             <i class="fa-fw fa fa-table"></i>
-            订单管理
+            扶持申请
         </h1>
     </div>
     <!-- end col -->
@@ -34,15 +34,15 @@
     <div class="row">
 
         <!-- NEW WIDGET START -->
-        <article class="col-sm-12">
-            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false"
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false"
                  data-widget-deletebutton="false"
                  data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
                 <header>
                     <span class="widget-icon">
                         <i class="fa fa-table"></i>
                     </span>
-                    <h2><strong> 订单管理</strong><input type="hidden" id="id"/></h2>
+                    <h2><strong> 扶持申请</strong></h2>
                 </header>
                 <div>
                     <div class="widget-body no-padding" id="grid-content">
@@ -54,16 +54,14 @@
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
-                                <th class="hasinput"><input type="text" class="form-control"/></th>
-                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"></th>
                             </tr>
                             <tr>
-                                <th>订单号</th>
-                                <th>客户</th>
-                                <th>订单总价</th>
-                                <th>下单时间</th>
-                                <th>订单类型</th>
-                                <th>状态</th>
+                                <th>项目名称</th>
+                                <th>申请客户</th>
+                                <th>申请时间</th>
+                                <th>单价</th>
+                                <th></th>
                             </tr>
                             </thead>
                         </table>
@@ -82,7 +80,7 @@
 <!-- Dynamic Modal -->
 <div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog" style="width: 900px;">
+    <div class="modal-dialog" style="width:1000px;">
         <div class="modal-content">
         </div>
     </div>
@@ -98,10 +96,10 @@
         var responsiveHelper_dt_basic = undefined;
         var breakpointDefinition = {tablet: 1024, phone: 480};
 
-        $('#dt_basic').dataTable({
+        var dt = $('#dt_basic').DataTable({
             "processing": true,
-            ajax: {
-                url: "/order/index",
+            "ajax": {
+                url: "/supportapply/index",
                 "type": "POST",
                 "contentType": "application/json; charset=utf-8",
                 "data": function (d) {
@@ -109,17 +107,15 @@
                 }
             },
             "columns": [
-                {"data": "code"},
-                {"data": "companyName"},
-                {"data": "price"},
+                {"data": "sale.name"},
+                {"data": "applyer"},
                 {"data": "dateCeated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
-                {"data": "typeName"},
-                {"data": null, render: formatStatus}
+                {"data": "price"},
+                {"data": null, "sClass": "text-center", render: formatStatus}
             ],
             "autoWidth": true,
             "searching": false,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
-            "bStateSave": true,
             "preDrawCallback": function () {
                 if (!responsiveHelper_dt_basic) {
                     responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
@@ -130,47 +126,27 @@
             },
             "drawCallback": function (oSettings) {
                 responsiveHelper_dt_basic.respond();
-                $(":checkbox[name='check-all']").prop('checked', false);
             },
-            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'l><'col-sm-6 col-xs-12 hidden-xs'>r>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
         });
 
     }
 
     loadScript("js/plugin/datatables/jquery.dataTables.min.js", function () {
-        loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
-            loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
-                loadScript("js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+        loadScript("js/plugin/datatables/dataTables.colVis.min.js", function () {
+            loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
+                loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
+                    loadScript("js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+                });
             });
         });
     });
 
-    $('#dt_basic').on("change", ":checkbox", function () {
-        if ($(this).is("[name='check-all']"))
-            $(":checkbox", "#dt_basic").prop("checked", $(this).prop("checked"));
-        else {
-            var checkbox = $("tbody:checkbox", "#dt_basic");
-            $(":checkbox[name='check-all']", "#dt_basic").prop("checked", checkbox.length == checkbox.filter(":checked"));
-        }
-    });
-    
     function formatStatus(cellValue, options, rowObject) {
-        var html = '';
-        if(rowObject.status == 1){
-            html='<lable class="label label-warning">待支付</lable>';
-        }
-        if(rowObject.status == 2){
-            html='<lable class="label label-warning">待发货</lable>';
-        }
-        if(rowObject.status == 3){
-            html='<lable class="label label-warning">待收货</lable>';
-        }
-        if(rowObject.status == 4){
-            html='<lable class="label label-warning">已完成</lable>';
-        }
+        var css = rowObject.taskName=='已结束'?'label-success':'label-warning';
+        var html = '<lable class="label '+css+'">'+rowObject.taskName+'</lable>';
         return html;
     }
 </script>
-
 </body>
 </html>
