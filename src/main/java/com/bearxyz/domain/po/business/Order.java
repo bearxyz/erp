@@ -45,6 +45,8 @@ public class Order extends BaseDomain {
     @Column(length = 50)
     private String type = "";
 
+    @Column
+    private String typeName = "";
     @Transient
     private String companyName = "";
     @Transient
@@ -206,5 +208,13 @@ public class Order extends BaseDomain {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 }
