@@ -3,6 +3,9 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.Contract;
+import com.bearxyz.domain.po.business.Goods;
+import com.bearxyz.domain.po.business.Present;
+import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.service.business.ContractService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,10 +36,16 @@ public class ContractController {
     private ContractService service;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private GoodsRepository goodsRepository;
 
     @RequestMapping(value = "/complete")
     public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
         Contract purchasing = service.getById(bid);
+        for(Present present: purchasing.getItems()){
+            Goods goods = goodsRepository.findOne(present.getGoodsId());
+            present.setGoods(goods);
+        }
         String memo = "";
         model.addAttribute("contract", purchasing);
         model.addAttribute("applyer", applyer);
@@ -78,6 +87,10 @@ public class ContractController {
     public String reApply(@PathVariable("id")String id, Model model) {
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
         Contract contract = service.getById(id);
+        for(Present present: contract.getItems()){
+            Goods goods = goodsRepository.findOne(present.getGoodsId());
+            present.setGoods(goods);
+        }
         model.addAttribute("companyId", id);
         model.addAttribute("contract", contract);
         model.addAttribute("taskId", task.getId());

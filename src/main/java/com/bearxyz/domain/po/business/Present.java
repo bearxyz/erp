@@ -11,31 +11,32 @@ import javax.persistence.Transient;
  * Created by bearxyz on 2017/9/3.
  */
 @Entity
-@Table(name = "T_FIRST_ORDER_ITME")
-public class FirstOrderItem extends BaseDomain {
+@Table(name = "T_PRESENT")
+public class Present extends BaseDomain {
 
+    private static final long serialVersionUID = 3485993831859135959L;
     @Column(length = 36)
-    private String firstSaleId = "";
+    private String goodsId = "";
     @Column
     private Integer count = 0;
     @Column(length = 50)
     private String spec = "";
     @Column
-    private Float price = (float)0.0;
+    private Integer ammount = 0;
     @Column(length = 10)
     private String unit = "";
     @Column(length = 36)
     private String packageId = "";
 
     @Transient
-    private FirstSale sale;
+    private Goods goods;
 
-    public String getFirstSaleId() {
-        return firstSaleId;
+    public String getGoodsId() {
+        return goodsId;
     }
 
-    public void setFirstSaleId(String firstSaleId) {
-        this.firstSaleId = firstSaleId;
+    public void setGoodsId(String goodsId) {
+        this.goodsId = goodsId;
     }
 
     public Integer getCount() {
@@ -54,12 +55,12 @@ public class FirstOrderItem extends BaseDomain {
         this.spec = spec;
     }
 
-    public Float getPrice() {
-        return price;
+    public Integer getAmmount() {
+        return ammount;
     }
 
-    public void setPrice(Float price) {
-        this.price = price;
+    public void setAmmount(Integer ammount) {
+        this.ammount = ammount;
     }
 
     public String getUnit() {
@@ -78,11 +79,11 @@ public class FirstOrderItem extends BaseDomain {
         this.packageId = packageId;
     }
 
-    public FirstSale getSale() {
-        return sale;
+    public Goods getGoods() {
+        return goods;
     }
 
-    public void setSale(FirstSale sale) {
-        this.sale = sale;
+    public void setGoods(Goods goods) {
+        this.goods = goods;
     }
 }

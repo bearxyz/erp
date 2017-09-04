@@ -42,6 +42,8 @@ public class Order extends BaseDomain {
     //订单状态：1:待支付；2:待发货;3:待收货；4:完成
     @Column
     private Integer status = 0;
+    @Column(length = 50)
+    private String type = "";
 
     @Transient
     private String taskId;
@@ -186,5 +188,13 @@ public class Order extends BaseDomain {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -48,13 +48,28 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
                                width="100%">
                             <thead>
-                            <th></th>
-                            <th>项目</th>
-                            <th>类别</th>
-                            <th>名称</th>
-                            <th>单价</th>
-                            <th>单位</th>
-                            <th></th>
+                            <tr>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"></th>
+                            </tr>
+                            <tr>
+                                <th>商品性质</th>
+                                <th>项目</th>
+                                <th>类别</th>
+                                <th>名称</th>
+                                <th>单价</th>
+                                <th>单位</th>
+                                <th>购买次数</th>
+                                <th>库存状态</th>
+                                <th></th>
+                            </tr>
                             </thead>
                         </table>
                     </div>
@@ -83,32 +98,6 @@
 
     pageSetUp();
 
-    function format(d) {
-        var html = '';
-        $.ajax({
-            url: '/sale/getItems',
-            type: 'POST',
-            async: false,
-            data: {id: d.id},
-            success: function (data) {
-                var items = eval(data);
-                html = '<table cellpadding="5" cellspacing="0" border="0" class="table table-hover table-condensed">';
-                html += "<thead><th>商品名称</th><th>数量</th><th>单位</th><th>规格</th><th>单价</th></thead>";
-                for (i = 0; i < items.length; i++) {
-                    html += "<tr>";
-                    html += "<td>" + items[i].goods.name + "</td>";
-                    html += "<td>" + items[i].ammount + "</td>";
-                    html += "<td>" + items[i].unit + "</td>";
-                    html += "<td>" + items[i].spec + "</td>";
-                    html += "<td>" + items[i].price + "</td>";
-                    html += "</tr>";
-                }
-                html += '</table>';
-            }
-        });
-        return html;
-    }
-
     var pagefunction = function () {
 
         var responsiveHelper_dt_basic = undefined;
@@ -116,7 +105,6 @@
 
         var dt = $('#dt_basic').DataTable({
             "processing": true,
-            "serverSide": true,
             "ajax": {
                 url: "/sale/list",
                 "type": "POST",
@@ -126,17 +114,14 @@
                 }
             },
             "columns": [
-                {
-                    "class": 'details-control',
-                    "orderable": false,
-                    "data": null,
-                    "defaultContent": ''
-                },
+                {"data": "categoryName"},
                 {"data": "projectName"},
                 {"data": "typeName"},
                 {"data": "name"},
                 {"data": "price"},
                 {"data": "unit"},
+                {"data": "buyer"},
+                {"data": "stock", "sClass": "text-center", render: formatStock},
                 {"data": "onSale", "sClass": "text-center", render: formatStatus}
             ],
             "autoWidth": true,
@@ -156,21 +141,11 @@
             "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'l><'col-sm-6 col-xs-12 hidden-xs'>r>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
         });
 
-        // Add event listener for opening and closing details
-        $('#dt_basic tbody').on('click', 'td.details-control', function () {
-            var tr = $(this).closest('tr');
-            var row = dt.row(tr);
+        $("#dt_basic thead th input[type=text]").on('keyup change', function () {
+            dt.column($(this).parent().index() + ':visible')
+                .search(this.value)
+                .draw();
 
-            if (row.child.isShown()) {
-                // This row is already open - close it
-                row.child.hide();
-                tr.removeClass('shown');
-            }
-            else {
-                // Open this row
-                row.child(format(row.data())).show();
-                tr.addClass('shown');
-            }
         });
 
     }
@@ -185,9 +160,16 @@
         });
     });
 
-    function formatStatus(cellValue, options, rowObject){
+    function formatStock(cellValue, options, rowObject) {
+        var stock = rowObject.stock;
+        var css = (stock == "正常") ? "label-success" : "label-danger";
+        var html = "<span class='label " + css + "'>" + stock + "</span>";
+        return html;
+    }
+
+    function formatStatus(cellValue, options, rowObject) {
         var html = "<span class='onoffswitch'>";
-        html += '<input name="checkbox-toggle" id="' + rowObject.id + '" class="onoffswitch-checkbox" onclick="setStatus(&quot;' +rowObject.id + '&quot;)"';
+        html += '<input name="checkbox-toggle" id="' + rowObject.id + '" class="onoffswitch-checkbox" onclick="setStatus(&quot;' + rowObject.id + '&quot;)"';
         if (cellValue) html += "checked='checked' ";
         html += "type='checkbox' />";
         html += "<label class='onoffswitch-label' for='" + rowObject.id + "'><span class='onoffswitch-inner' data-swchon-text='上架' data-swchoff-text='下架'></span><span class='onoffswitch-switch'></span></label></span>";

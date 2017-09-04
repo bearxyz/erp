@@ -96,32 +96,24 @@ public class StockService {
         return items;
     }
 
-    public DataTable<StockItem> getStockItems(boolean approved, PaginationCriteria req){
+    public DataTable<StockItem> getStockItems(boolean approved){
         DataTable<StockItem> result = new DataTable<>();
-        String order = "lastUpdated";
-        String direction = "desc";
-        req.getOrder().get(0).getDir();
-        if (req.getOrder() != null && req.getOrder().get(0) != null && req.getOrder().get(0).getColumn() > 0) {
-            direction = req.getOrder().get(0).getDir();
-            order = req.getColumns().get(req.getOrder().get(0).getColumn()).getData();
-        }
-        PageRequest request = new PageRequest(req.getStart() / req.getLength(), req.getLength(), new Sort(Sort.Direction.fromString(direction), order));
         Specification<StockItem> specification = (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
             if (approved)
                 predicate.getExpressions().add(cb.equal(root.get("approved"), approved));
             return predicate;
         };
-        Page<StockItem> page = stockItemRepository.findAll(specification, request);
-        List<StockItem> content = page.getContent();
+        List<StockItem> page = stockItemRepository.findAll(specification);
+        List<StockItem> content = page;
         for(StockItem item: content){
             Dict dict = dictRepository.findByMask(item.getStock().getMask());
             item.getStock().setTypeName(dict.getName());
             User user = userRepository.findOne(item.getStock().getLastModifiedBy());
             item.getStock().setOperator(user.getFirstName()+user.getLastName());
         }
-        result.setRecordsTotal(page.getTotalElements());
-        result.setRecordsFiltered(page.getTotalElements());
+        result.setRecordsTotal((long)page.size());
+        result.setRecordsFiltered((long)page.size());
         result.setData(content);
         return result;
     }

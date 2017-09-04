@@ -7,80 +7,137 @@
     <title></title>
 </head>
 <body>
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-        &times;
-    </button>
-    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 加盟合同</h4>
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-edit fa-fw "></i>
+            签约
+        </h1>
+    </div>
 </div>
 
-<div class="modal-body no-padding">
-    <form id="form_1" class="smart-form" novalidate="novalidate" enctype="multipart/form-data">
-        <input type="hidden" id="companyId" name="companyId" th:value="${companyId}">
-        <fieldset>
-            <div class="row">
-                <section class="col col-6">
-                    <label class="select">
-                        <select name="project" id="project"></select><i></i>
-                    </label>
-                </section>
-                <section class="col col-6">
-                    <label class="input">
-                        <input type="text" name="title" id="title" placeholder="合同名称"/>
-                    </label>
-                </section>
-            </div>
-            <div class="row">
-                <section class="col col-6">
-                    <label class="select">
-                        <select name="agentType" id="agentType"></select><i></i>
-                    </label>
-                </section>
-                <section class="col col-6">
-                    <label class="select">
-                        <select name="agentLevel" id="agentLevel"></select><i></i>
-                    </label>
-                </section>
-            </div>
-            <section>
-                <div class="row">
-                    <section class="col col-6">
-                        <label class="input">
-                            <i class="icon-append fa fa-calendar"></i>
-                            <input id="startDate" class="hasDatepicker" name="startDate" placeholder="合同生效日期"
-                                   type="text">
-                        </label>
-                    </section>
-                    <section class="col col-6">
-                        <label class="input">
-                            <i class="icon-append fa fa-calendar"></i>
-                            <input id="endDate" class="hasDatepicker" name="endDate" placeholder="合同到期日期" type="text">
-                        </label>
-                    </section>
-                </div>
-            </section>
-            <section>
-                <input type="file" class="file-loading" id="attachment" name="attachment" multiple/>
-            </section>
-            <section>
-                <label class="textarea textarea-resizable">
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>赠品清单</h2>
+                </header>
+                <div role="content">
+                    <div class="widget-body no-padding">
+                        <form id="form_1" class="smart-form" novalidate="novalidate" enctype="multipart/form-data">
+                            <input type="hidden" id="companyId" name="companyId" th:value="${companyId}">
+                            <header><a href="/common/selectProduct" data-toggle="modal" data-target="#remoteModal"
+                                       class="btn btn-primary btn-sm">选择赠品</a></header>
+                            <fieldset>
+                                <section>
+                                    <div class="table-responsive">
+                                        <table class="table" id="productTarget">
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>物品名称</th>
+                                                <th>规格</th>
+                                                <th>包装</th>
+                                                <th>数量(以包装单位为准)</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </section>
+                                <section>
+                                    <label class="input">
+                                        <input id="presentAddress" name="presentAddress" placeholder="赠品收货地址"/>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <fieldset>
+                                <div class="row">
+                                    <section class="col col-6">
+                                        <label class="select">
+                                            <select name="project" id="project"></select><i></i>
+                                        </label>
+                                    </section>
+                                    <section class="col col-6">
+                                        <label class="input">
+                                            <input type="text" name="title" id="title" placeholder="合同名称"/>
+                                        </label>
+                                    </section>
+                                </div>
+                                <div class="row">
+                                    <section class="col col-6">
+                                        <label class="select">
+                                            <select name="agentType" id="agentType"></select><i></i>
+                                        </label>
+                                    </section>
+                                    <section class="col col-6">
+                                        <label class="select">
+                                            <select name="agentLevel" id="agentLevel"></select><i></i>
+                                        </label>
+                                    </section>
+                                </div>
+                                <section>
+                                    <div class="row">
+                                        <section class="col col-6">
+                                            <label class="input">
+                                                <i class="icon-append fa fa-calendar"></i>
+                                                <input id="startDate" class="hasDatepicker" name="startDate"
+                                                       placeholder="合同生效日期"
+                                                       type="text">
+                                            </label>
+                                        </section>
+                                        <section class="col col-6">
+                                            <label class="input">
+                                                <i class="icon-append fa fa-calendar"></i>
+                                                <input id="endDate" class="hasDatepicker" name="endDate"
+                                                       placeholder="合同到期日期" type="text">
+                                            </label>
+                                        </section>
+                                    </div>
+                                </section>
+                                <section>
+                                    <input type="file" class="file-loading" id="attachment" name="attachment" multiple/>
+                                </section>
+                                <section>
+                                    <label class="textarea textarea-resizable">
                                                     <textarea class="custom-scroll"
                                                               placeholder="备注" name="memo"></textarea>
-                </label>
-            </section>
-        </fieldset>
-        <footer>
-            <button type="submit" class="btn btn-primary">
-                保 存
-            </button>
-            <button type="button" class="btn btn-danger" data-dismiss="modal">
-                取 消
-            </button>
-        </footer>
-    </form>
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    保 存
+                                </button>
+                                <a type="button" class="btn btn-danger" href="#/clientres/index">
+                                    取 消
+                                </a>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+        </div>
+    </div>
 </div>
+<!-- /.modal -->
 
 <script>
+    var item_count = 0;
     pageSetUp();
 
     var pagefunction = function () {
@@ -116,8 +173,7 @@
                     processData: false,
                     data: formData,
                     success: function () {
-                        $('#remoteModal').modal('hide');
-                        $('#dt_basic').DataTable().ajax.reload();
+                        window.location = "#/clientres/index";
                     },
                     error: function (e) {
                         $.bigBox({

@@ -61,6 +61,7 @@ public class HomeController {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         List<Permission> permissions = sysService.getUserPermissions(user.getId());
         model.addAttribute("permissions", permissions);
+        model.addAttribute("user", user);
         return "/home";
     }
 

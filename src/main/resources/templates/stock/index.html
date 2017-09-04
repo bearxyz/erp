@@ -42,7 +42,7 @@
                     <span class="widget-icon">
                         <i class="fa fa-table"></i>
                     </span>
-                    <h2><strong> 商品管理</strong><input type="hidden" id="id" /></h2>
+                    <h2><strong> 商品管理</strong><input type="hidden" id="id"/></h2>
                     <div class="widget-toolbar">
                         <a class="btn btn-primary" href="#/scrapt/apply">
                             <i class="fa fa-trash-o"> </i>
@@ -55,10 +55,18 @@
                         <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
                                width="100%">
                             <thead>
-                            <th>商品名称</th>
-                            <th>规格型号</th>
-                            <th>单位</th>
-                            <th>库存</th>
+                            <tr>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                            </tr>
+                            <tr>
+                                <th>商品名称</th>
+                                <th>规格型号</th>
+                                <th>单位</th>
+                                <th>库存</th>
+                            </tr>
                             </thead>
                         </table>
                     </div>
@@ -94,10 +102,13 @@
 
         $('#dt_basic').dataTable({
             "processing": true,
-            "serverSide": true,
             ajax: {
                 url: "/stock/index",
-                "type": "POST"
+                "type": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
             },
             "columns": [
                 {"data": "name"},
@@ -109,9 +120,6 @@
                 }
             ],
             "autoWidth": true,
-            "paging": false,
-            "lengthChange": false,
-            "ordering": false,
             "searching": false,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
             "bStateSave": true,

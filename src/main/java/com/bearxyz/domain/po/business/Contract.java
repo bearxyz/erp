@@ -5,7 +5,9 @@ import com.bearxyz.domain.po.BaseDomain;
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by bearxyz on 2017/7/27.
@@ -37,6 +39,8 @@ public class Contract extends BaseDomain {
     private String memo = "";
     @Column(length = 50)
     private String processInstanceId = "";
+    @Column(length = 100)
+    private String presentAddress = "";
     @Column
     private Boolean approved = false;
     @Column
@@ -59,7 +63,11 @@ public class Contract extends BaseDomain {
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "BUSINESS_ID")
-    private List<Attachment> attachments = new ArrayList<>();
+    private Set<Attachment> attachments = new HashSet<>();
+
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "CONTRACT_ID")
+    private List<Present> items = new ArrayList<>();
 
     @Transient
     private String companyName = "";
@@ -122,13 +130,6 @@ public class Contract extends BaseDomain {
         this.memo = memo;
     }
 
-    public List<Attachment> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
-    }
 
     public String getOperator() {
         return operator;
@@ -240,5 +241,29 @@ public class Contract extends BaseDomain {
 
     public void setAgentLevelName(String agentLevelName) {
         this.agentLevelName = agentLevelName;
+    }
+
+    public String getPresentAddress() {
+        return presentAddress;
+    }
+
+    public void setPresentAddress(String presentAddress) {
+        this.presentAddress = presentAddress;
+    }
+
+    public Set<Attachment> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(Set<Attachment> attachments) {
+        this.attachments = attachments;
+    }
+
+    public List<Present> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Present> items) {
+        this.items = items;
     }
 }

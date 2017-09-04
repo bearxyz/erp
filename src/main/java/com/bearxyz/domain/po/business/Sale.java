@@ -33,6 +33,8 @@ public class Sale extends BaseDomain {
     private String subtype = "";
     @Column(length = 50)
     private String processInstanceId = "";
+    @Column
+    private Boolean isPublic = false;
 
     @Column
     private Date startDate;
@@ -66,6 +68,10 @@ public class Sale extends BaseDomain {
     private Set<SaleAttachment> resources = new HashSet<>();
 
     @Transient
+    private String companyId;
+    @Transient
+    private Float agentPrice;
+    @Transient
     private String taskId;
     @Transient
     private String taskName;
@@ -77,6 +83,10 @@ public class Sale extends BaseDomain {
     private String projectName = "";
     @Transient
     private String typeName = "";
+    @Transient
+    private String categoryName = "";
+    @Transient
+    private String stock = "";
 
     public String getCategory() {
         return category;
@@ -277,5 +287,45 @@ public class Sale extends BaseDomain {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public Boolean getPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(Boolean aPublic) {
+        isPublic = aPublic;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public Float getAgentPrice() {
+        return agentPrice;
+    }
+
+    public void setAgentPrice(Float agentPrice) {
+        this.agentPrice = agentPrice;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public String getStock() {
+        return stock;
+    }
+
+    public void setStock(String stock) {
+        this.stock = stock;
     }
 }

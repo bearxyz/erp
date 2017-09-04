@@ -19,6 +19,58 @@
 <div class="modal-body no-padding">
     <form id="form_1" class="smart-form" novalidate="novalidate" enctype="multipart/form-data">
         <fieldset>
+            <section>
+                <div class="table-responsive">
+                    <table class="table" id="productTarget">
+                        <thead>
+                        <tr>
+                            <th>赠品名称</th>
+                            <th>型号</th>
+                            <th>规格</th>
+                            <th>单位</th>
+                            <th>数量</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item,i:${contract.items}">
+                            <td><label class='input'>
+                                <input name='name' disabled='disabled'
+                                       th:value="${item.goods.name}"/></label>
+                            </td>
+                            <td><label class='input'>
+                                <input name='name' disabled='disabled'
+                                       th:value="${item.goods.model}"/></label>
+                            </td>
+                            <td><label class='input'><input name='spec' th:value="${item.spec}"
+                                                            disabled='disabled'/></label></td>
+                            <td><label class='select'><select
+                                    th:name='${"items[" + i.index + "].packageId"}'
+                                    disabled='disabled'>
+                                <option value="" th:selected="${item.packageId==''}">
+                                    无包装[单位:[[${item.goods.unit}]]]
+                                </option>
+                                <option th:each="package: ${item.goods.packages}"
+                                        th:value="${package.id}"
+                                        th:selected="${item.packageId==package.id}">
+                                    [[${package.packageSpec}]][单位:[[${package.packageUnit}]]]
+                                </option>
+                            </select><i></i></label></td>
+                            <td><label class='input'><input
+                                    th:name='${"items[" + i.index + "].count"}'
+                                    th:value="${item.count}" class='number'
+                                    disabled='disabled'/></label></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <label class="input">
+                    <input id="presentAddress" name="presentAddress" placeholder="赠品收货地址" disabled="disabled" th:value="${contract.presentAddress}"/>
+                </label>
+            </section>
+        </fieldset>
+        <fieldset>
             <div class="row">
                 <section class="col col-6">
                     <label class="select">

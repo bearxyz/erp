@@ -48,7 +48,7 @@ public class SaleController {
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public String getList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
-        DataTable<Sale> foruses = service.getSales(true, req);
+        DataTable<Sale> foruses = service.getSales(true, null);
         foruses.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(foruses);
@@ -62,7 +62,7 @@ public class SaleController {
     @ResponseBody
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     public String getIndex(@RequestBody PaginationCriteria req) throws JsonProcessingException {
-        DataTable<Sale> foruses = service.getSales(false, req);
+        DataTable<Sale> foruses = service.getSales(false, null);
         foruses.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(foruses);

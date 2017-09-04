@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-edit fa-fw "></i>
+            系统设置
+        </h1>
+    </div>
+</div>
+
+
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget well" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>系统设置</h2>
+                </header>
+                <div role="content">
+                    <div class="widget-body">
+                        <div class="row" id="result" style="display: none;">
+                            <article class="col-sm-12">
+                                <div class="alert alert-success fade in">
+                                    <button class="close" data-dismiss="alert">
+                                        ×
+                                    </button>
+                                    <i class="fa-fw fa fa-check"></i>
+                                    <strong>保存成功</strong> 系统设成功。
+                                </div>
+                            </article>
+                        </div>
+                        <form id="form" class="smart-form" novalidate="novalidate" method="post">
+                                    <fieldset>
+                                            <section>
+                                                <label class="label">库存报警量：</label>
+                                                <label class="input">
+                                                    <input type="text" name="stockAlert" id="stockAlert" class="number" th:value="${config.stockAlert}"/>
+                                                </label>
+                                            </section>
+                                    </fieldset>
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    保 存
+                                </button>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<script type="text/javascript">
+    pageSetUp();
+    var pagefunction = function () {
+
+        var $form = $("#form").validate({
+            rules: {
+                stockAlert: {required: true}
+            },
+            messages: {
+                stockAlert: {required: '请输入库存报警量'}
+            },
+            submitHandler: function () {
+                $.ajax({
+                    url: '/config/index',
+                    type: 'post',
+                    data: $('#form').serialize(),
+                    success: function () {
+                        $("#result").show();
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+    };
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+</body>
+</html>

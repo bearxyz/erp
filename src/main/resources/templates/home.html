@@ -12,7 +12,8 @@
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/smartadmin-production-plugins.min.css}"/>
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/smartadmin-production.min.css}"/>
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/smartadmin-skins.min.css}"/>
-    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/datetimepicker/bootstrap-datetimepicker.min.css}"/>
+    <link rel="stylesheet" type="text/css" media="screen"
+          th:href="@{css/plugin/datetimepicker/bootstrap-datetimepicker.min.css}"/>
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/fileinput/fileinput.min.css}"/>
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/OpenSans.css}"/>
 </head>
@@ -21,48 +22,15 @@
 <header id="header">
     <div id="logo-group">
         <!-- PLACE YOUR LOGO HERE -->
-        <span id="logo"> <img src="/img/logo-in.png" alt="SmartAdmin"/> </span>
+        <span id="logo"> <img src="/img/logo-in.png"/> </span>
         <!-- END LOGO PLACEHOLDER -->
 
         <!-- Note: The activity badge color changes when clicked and resets the number to 0
              Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
-        <span id="activity" class="activity-dropdown"> <i class="fa fa-user"></i> <b class="badge"> 21 </b> </span>
+        <span id="activity" class="activity-dropdown" onclick="window.location='#/common/task/todo';"
+              th:if="${user.type=='USER_TYPE_SYSTEM'}"> <i class="fa fa-user"></i> <b id="taskCount" class="badge bg-color-red bounceIn animated"
+                                                                                      style="display: none;"> </b> </span>
         <!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
-        <div class="ajax-dropdown">
-
-            <!-- the ID links are fetched via AJAX to the ajax container "ajax-notifications" -->
-            <div class="btn-group btn-group-justified" data-toggle="buttons">
-                <label class="btn btn-default">
-                    <input type="radio" name="activity" id="ajax/notify/notifications.html"/>
-                    通知 (3) </label>
-                <label class="btn btn-default">
-                    <input type="radio" name="activity" id="/common/tasks.html"/>
-                    待办事项 (4) </label>
-            </div>
-
-            <!-- notification content -->
-            <div class="ajax-notifications custom-scroll">
-
-                <div class="alert alert-transparent">
-                    <h4>Click a button to show messages here</h4>
-                    This blank page message helps protect your privacy, or you can show the first message here
-                    automatically.
-                </div>
-
-                <i class="fa fa-lock fa-4x fa-border"></i>
-
-            </div>
-            <!-- end notification content -->
-
-            <!-- footer: refresh area -->
-            <span> 最后更新时间: 12/12/2013 9:43AM
-						<button type="button" data-loading-text="<i class='fa fa-refresh fa-spin'></i> 正在加载..."
-                                class="btn btn-xs btn-default pull-right">
-							<i class="fa fa-refresh"></i>
-						</button> </span>
-            <!-- end footer -->
-
-        </div>
         <!-- END AJAX-DROPDOWN -->
     </div>
 
@@ -143,7 +111,7 @@
 					<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
 						<img src="img/avatars/timg.jpg" alt="me" class="online"/>
 						<span>
-							<shiro:principal property="email" />
+							<shiro:principal property="email"/>
 						</span>
 					</a>
 
@@ -158,8 +126,9 @@
             </li>
             <li th:each="permission:${permissions}">
                 <a th:href="${permission.url}">
-                    <i th:class="'fa fa-lg fa-fw '+${permission.css}"></i> <span class="menu-item-parent"
-                                                                             th:text="${permission.name}"></span>
+                    <i th:class="'fa fa-lg fa-fw '+${permission.css}"></i>
+                    <span class="menu-item-parent" th:text="${permission.name}"></span>
+                    <span class="badge bg-color-red bounceIn animated pull-right inbox-badge margin-right-13" th:id="${permission.mask}" style="display: none"></span>
                 </a>
             </li>
         </ul>
@@ -232,7 +201,6 @@
 <!-- END FOOTER -->
 
 
-
 <!-- Dynamic Modal -->
 <div class="modal fade" id="homeModal" tabindex="-1" role="dialog" aria-labelledby="homeModalLabel"
      aria-hidden="true">
@@ -265,6 +233,113 @@
 <script th:src="@{js/app.min.js}"></script>
 <script th:src="@{js/settings.js}"></script>
 
-
+<script th:if="${user.type=='USER_TYPE_SYSTEM'}">
+    $(function () {
+        function checkTask() {
+            $.ajax({
+                url:'/alert/task',
+                type:'POST',
+                success: function (d) {
+                    if(d>0){
+                        $("#taskCount").html(d);
+                        $("#taskCount").show();
+                    }
+                    else $("#taskCount").hide();
+                }
+            });
+        }
+        setInterval(checkTask, 10000);
+    });
+</script>
+<script shiro:hasPermission="/stock/index">
+    $(function () {
+        function checkStock() {
+            $.ajax({
+                url:'/alert/stock',
+                type:'POST',
+                success: function (d) {
+                    if(d>0){
+                        $("#PERMISSION_STOCK").html(d);
+                        $("#PERMISSION_STOCK").show();
+                    }
+                    else $("#PERMISSION_STOCK").hide();
+                }
+            });
+        }
+        setInterval(checkStock, 10000);
+    });
+</script>
+<script shiro:hasPermission="/sale/list">
+    $(function () {
+        function checkStocks() {
+            $.ajax({
+                url:'/alert/stock',
+                type:'POST',
+                success: function (d) {
+                    if(d>0){
+                        $("#PERMISSION_SALE_LIST").html(d);
+                        $("#PERMISSION_SALE_LIST").show();
+                    }
+                    else $("#PERMISSION_SALE_LIST").hide();
+                }
+            });
+        }
+        setInterval(checkStocks, 10000);
+    });
+</script>
+<script shiro:hasPermission="/purchasingorder/index">
+    $(function () {
+        function checkPo() {
+            $.ajax({
+                url:'/alert/po',
+                type:'POST',
+                success: function (d) {
+                    if(d>0){
+                        $("#PERMISSION_PURCHASING_ORDER").html(d);
+                        $("#PERMISSION_PURCHASING_ORDER").show();
+                    }
+                    else $("#PERMISSION_PURCHASING_ORDER").hide();
+                }
+            });
+        }
+        setInterval(checkPo, 10000);
+    });
+</script>
+<script shiro:hasPermission="/stock/purchasing-in-list">
+    $(function () {
+        function checkStockin() {
+            $.ajax({
+                url:'/alert/stockin',
+                type:'POST',
+                success: function (d) {
+                    if(d>0){
+                        $("#PERMISSION_STOCK_PURCHASING_IN").html(d);
+                        $("#PERMISSION_STOCK_PURCHASING_IN").show();
+                    }
+                    else $("#PERMISSION_STOCK_PURCHASING_IN").hide();
+                }
+            });
+        }
+        setInterval(checkStockin, 10000);
+    });
+</script>
+<script shiro:hasPermission="/stock/list/STOCK-OUT">
+    $(function () {
+        function checkStockout() {
+            $.ajax({
+                url:'/alert/stockout',
+                type:'POST',
+                success: function (d) {
+                    if(d>0){
+                        $("#PERMISSION_DELIVERY").html(d);
+                        $("#PERMISSION_DELIVERY").show();
+                    }
+                    else $("#PERMISSION_DELIVERY").hide();
+                }
+            });
+        }
+        setInterval(checkStockout, 10000);
+    });
+</script>
 </body>
 </html>

@@ -27,12 +27,20 @@ public class Stock extends BaseDomain {
     private Date operationDate;
     @Column
     private Boolean approved = false;
+    @Column(length = 50)
+    private String deliverProvince = "";
+    @Column(length = 50)
+    private String deliverCity = "";
+    @Column(length = 50)
+    private String deliverDistrict = "";
     @Column(length = 200)
     private String deliverAddress = "";
     @Column(length = 36)
     private String deliverCompany = "";
     @Column(length = 50)
     private String transportFee = "";
+    @Column(length = 50)
+    private String transportNo = "";
 
     @Transient
     private String deliverCompanyName = "";
@@ -49,7 +57,7 @@ public class Stock extends BaseDomain {
     @Transient
     private Date finishedDate;
     @Transient
-    private Float totalPrice = (float)0.0;
+    private Float totalPrice = (float) 0.0;
 
     @JsonIgnore
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
@@ -206,5 +214,37 @@ public class Stock extends BaseDomain {
 
     public void setTotalPrice(Float totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String getDeliverProvince() {
+        return deliverProvince;
+    }
+
+    public void setDeliverProvince(String deliverProvince) {
+        this.deliverProvince = deliverProvince;
+    }
+
+    public String getDeliverCity() {
+        return deliverCity;
+    }
+
+    public void setDeliverCity(String deliverCity) {
+        this.deliverCity = deliverCity;
+    }
+
+    public String getDeliverDistrict() {
+        return deliverDistrict;
+    }
+
+    public void setDeliverDistrict(String deliverDistrict) {
+        this.deliverDistrict = deliverDistrict;
+    }
+
+    public String getTransportNo() {
+        return transportNo;
+    }
+
+    public void setTransportNo(String transportNo) {
+        this.transportNo = transportNo;
     }
 }

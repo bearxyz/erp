@@ -5,10 +5,7 @@ import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.domain.po.sys.Dict;
-import com.bearxyz.repository.GoodsRepository;
-import com.bearxyz.repository.PackageRepository;
-import com.bearxyz.repository.SaleItemRepository;
-import com.bearxyz.repository.SaleRepository;
+import com.bearxyz.repository.*;
 import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +46,8 @@ public class SaleService {
     private GoodsRepository goodsRepository;
     @Autowired
     private PackageRepository packageRepository;
+    @Autowired
+    private ConfigRepository configRepository;
 
     public List<SaleItem> getItemsBySaleId(String id) {
         Sale sale = repository.findOne(id);
@@ -67,9 +66,9 @@ public class SaleService {
     }
 
     public void save(Sale sale, List<MultipartFile> pics, List<MultipartFile> files) throws IOException {
-        if (pics != null&&pics.size()>0) {
-            if(sale.getImages()!=null){
-                for(Picture pic : sale.getImages()){
+        if (pics != null && pics.size() > 0) {
+            if (sale.getImages() != null) {
+                for (Picture pic : sale.getImages()) {
                     pictureService.delete(pic.getId());
                 }
             }
@@ -79,9 +78,9 @@ public class SaleService {
                     sale.getImages().add(attachment);
             }
         }
-        if (files != null&&files.size()>0) {
-            if(sale.getResources()!=null){
-                for(SaleAttachment attachment: sale.getResources()){
+        if (files != null && files.size() > 0) {
+            if (sale.getResources() != null) {
+                for (SaleAttachment attachment : sale.getResources()) {
                     saleAttachmentService.delete(attachment.getId());
                 }
             }
@@ -107,34 +106,40 @@ public class SaleService {
         repository.save(sale);
     }
 
-    public DataTable<Sale> getSales(Boolean approved, PaginationCriteria req) {
+    public DataTable<Sale> getSales(Boolean approved, String category) {
+        Config config = configRepository.findAll().get(0);
         DataTable<Sale> result = new DataTable<>();
-        String order = "lastUpdated";
-        String direction = "desc";
-        req.getOrder().get(0).getDir();
-        if (req.getOrder() != null && req.getOrder().get(0) != null && req.getOrder().get(0).getColumn() > 0) {
-            direction = req.getOrder().get(0).getDir();
-            order = req.getColumns().get(req.getOrder().get(0).getColumn()).getData();
-        }
-        PageRequest request = new PageRequest(req.getStart() / req.getLength(), req.getLength(), new Sort(Sort.Direction.fromString(direction), order));
         Specification<Sale> specification = (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
             if (approved != null)
                 predicate.getExpressions().add(cb.equal(root.get("approved"), approved));
+            if (category != null)
+                predicate.getExpressions().add(cb.equal(root.get("category"), category));
             return predicate;
         };
-        Page<Sale> page = repository.findAll(specification, request);
-        List<Sale> content = page.getContent();
+        List<Sale> page = repository.findAll(specification);
+        List<Sale> content = page;
         for (Sale sale : content) {
+            String stock = "正常";
             Dict dict = sysService.getDictByMask(sale.getProject());
             if (dict != null)
                 sale.setProjectName(dict.getName());
             dict = sysService.getDictByMask(sale.getType());
             if (dict != null)
                 sale.setTypeName(dict.getName());
+            dict = sysService.getDictByMask(sale.getCategory());
+            if (dict != null)
+                sale.setCategoryName(dict.getName());
+            for (SaleItem item : sale.getItems()) {
+                Goods goods = goodsRepository.findOne(item.getGoodsId());
+                if (goods.getStock() <= config.getStockAlert())
+                    stock = "危险";
+            }
+            sale.setStock(stock);
         }
-        result.setRecordsTotal(page.getTotalElements());
-        result.setRecordsFiltered(page.getTotalElements());
+
+        result.setRecordsTotal((long) page.size());
+        result.setRecordsFiltered((long) page.size());
         result.setData(content);
         return result;
     }

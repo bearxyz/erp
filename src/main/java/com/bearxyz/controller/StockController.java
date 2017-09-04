@@ -47,9 +47,9 @@ public class StockController {
 
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     @ResponseBody
-    public String getIndex(@RequestParam(value = "mask", required = false) String mask, @RequestParam("draw") String draw) throws JsonProcessingException {
+    public String getIndex(@RequestBody PaginationCriteria req) throws JsonProcessingException {
         DataTable<Goods> goods = goodsService.getGoods();
-        goods.setDraw(Integer.parseInt(draw));
+        goods.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(goods);
     }
@@ -104,7 +104,7 @@ public class StockController {
     @RequestMapping(value = "/detail", method = RequestMethod.POST)
     @ResponseBody
     public String getDetail(@RequestBody PaginationCriteria req) throws JsonProcessingException {
-        DataTable<StockItem> purchasing = service.getStockItems(false, req);
+        DataTable<StockItem> purchasing = service.getStockItems(false);
         purchasing.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(purchasing);

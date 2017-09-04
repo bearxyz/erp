@@ -212,7 +212,7 @@
 </script>
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASING_EXECUTIVE">
     function setSignBtn(id) {
-        return '<a data-toggle="modal" data-target="#remoteModal" href="contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">签约</span></a>';
+        return '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">签约</span></a>';
     }
 </script>
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASE_MANAGER,ROLE_LEASING_EXECUTIVE">

@@ -194,7 +194,7 @@
         }
         else if (rowObject.type == "STOCK-OUT") {
             if (!rowObject.approved)
-                html = "<a href='stock/selectTransport/" + rowObject.id + "' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#remoteModal'>物流</a>";
+                html = "<a href='stock/selectTransport/" + rowObject.id + "' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#remoteModal'>发货</a>";
             else
                 html = "<a href='stock/print/" + rowObject.id + "' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#remoteModal'>打印</a>";
         }
