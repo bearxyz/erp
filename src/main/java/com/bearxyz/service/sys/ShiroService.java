@@ -27,6 +27,7 @@ public class ShiroService {
 
     public Map<String, String> loadFilterChainDefinitions() {
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+        filterChainDefinitionMap.put("/public/**", "anon");
         filterChainDefinitionMap.put("/api/**", "anon");
         filterChainDefinitionMap.put("/favicon.ico","anon");
         filterChainDefinitionMap.put("/js/**", "anon");

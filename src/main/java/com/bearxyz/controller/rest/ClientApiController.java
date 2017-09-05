@@ -2,6 +2,7 @@ package com.bearxyz.controller.rest;
 
 import com.bearxyz.domain.po.business.Sale;
 import com.bearxyz.domain.po.sys.User;
+import com.bearxyz.domain.vo.ClientResource;
 import com.bearxyz.repository.SaleRepository;
 import com.bearxyz.repository.UserRepository;
 import com.bearxyz.utility.BCrypt;
@@ -35,17 +36,25 @@ public class ClientApiController {
         return result;
     }
 
-    @GetMapping("get")
-    public List<Sale> getBuyed(@RequestParam("username") String username, @RequestParam("password") String password){
+    @PostMapping("get")
+    public List<ClientResource> getBuyed(@RequestParam("username") String username, @RequestParam("password") String password){
         List<Sale> sales = new ArrayList<>();
         User user = userRepository.findByEmail(username);
         if (user != null || user.getEnabled() || !user.getAccountNonExpired() || !user.getAccountNonLocked()) {
             if(BCrypt.checkpw(password, user.getPassword()))
             {
-                sales = saleRepository.findSalesByCompanyIdAndCategory(user.getCompanyId(),"GOODS_VIRTUAL");
+                //sales = saleRepository.findSalesByCompanyIdAndCategory(user.getCompanyId(),"GOODS_VIRTUAL");
+                sales = saleRepository.findAllByCategory("GOODS_VIRTUAL");
             }
         }
-        return sales;
+        List<ClientResource> resources = new ArrayList<>();
+        for(Sale s: sales){
+            ClientResource cr = new ClientResource();
+            cr.setId(s.getId());
+            cr.setName(s.getName());
+            resources.add(cr);
+        }
+        return resources;
     }
 
 }
