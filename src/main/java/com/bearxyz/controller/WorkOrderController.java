@@ -11,6 +11,7 @@ import com.bearxyz.repository.WorkOrderRepository;
 import com.bearxyz.service.workflow.WorkflowService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.shiro.SecurityUtils;
@@ -40,6 +41,8 @@ public class WorkOrderController {
     private WorkflowService workflowService;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private TaskService taskService;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index() {
@@ -78,7 +81,7 @@ public class WorkOrderController {
             } else {
                 HistoricProcessInstance historicTaskInstance = workflowService.getHistoryProcessByBussinessId(wo.getId());
                 if (historicTaskInstance != null) {
-                    if (wo.getFinished() && (boolean) workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(), "deptLeaderPass"))
+                    if (wo.getFinished() &&workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(), "cando")!=null&& (boolean) workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(), "cando"))
                         wo.setTaskName("已完成");
                     else
                         wo.setTaskName("已取消");
@@ -115,6 +118,24 @@ public class WorkOrderController {
             variables.put("applyer", wo.getCreatedBy());
             wo.setProcessInstanceId(workflowService.startWorkflow("work-order", wo.getId(), wo.getCreatedBy(), variables));
         }
+        status.setComplete();
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/complete", method = RequestMethod.GET)
+    public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model){
+        Task task = taskService.createTaskQuery().taskId(tid).singleResult();
+        WorkOrder workOrder = workOrderRepository.findOne(bid);
+        model.addAttribute("wo",workOrder);
+        model.addAttribute("taskId", tid);
+        model.addAttribute("taskKey", task.getTaskDefinitionKey());
+        return "/workorder/complete";
+    }
+
+    @RequestMapping(value = "/complete", method = RequestMethod.POST)
+    @ResponseBody
+    public String doComplete(@ModelAttribute("wo") WorkOrder wo, SessionStatus status){
+        workOrderRepository.save(wo);
         status.setComplete();
         return "{success: true}";
     }
