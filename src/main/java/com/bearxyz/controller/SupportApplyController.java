@@ -11,9 +11,11 @@ import com.bearxyz.repository.SaleRepository;
 import com.bearxyz.repository.SupportApplyRepository;
 import com.bearxyz.service.business.SupportApplyService;
 import com.bearxyz.service.sys.SysService;
+import com.bearxyz.service.workflow.WorkflowService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -47,6 +49,8 @@ public class SupportApplyController {
     private SysService sysService;
     @Autowired
     private SupportApplyRepository repository;
+    @Autowired
+    private WorkflowService workflowService;
 
     @RequestMapping("/index")
     public String index() {
@@ -62,6 +66,31 @@ public class SupportApplyController {
             support = service.getApplyByConditions(null, null);
         } else {
             List<SupportApply> res = repository.getAllByClientId(((User) u.getPrincipal()).getId());
+            for(SupportApply sa: res){
+                Sale sale = saleRepository.findOne(sa.getSaleId());
+                sa.setSale(sale);
+
+                Task task = workflowService.getTaskByBussinessId(sa.getId());
+                if(task!=null) {
+                    sa.setTaskId(task.getId());
+                    sa.setTaskName(task.getName());
+                    sa.setFinishedDate(task.getDueDate());
+                }
+                else {
+                    HistoricProcessInstance historicTaskInstance = workflowService.getHistoryProcessByBussinessId(sa.getId());
+                    if (historicTaskInstance!=null) {
+                        if (workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(), "deptLeaderPass") != null && (boolean) workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(), "deptLeaderPass"))
+                            sa.setTaskName("已完成");
+                        else
+                            sa.setTaskName("已取消");
+                        sa.setTaskId(historicTaskInstance.getId());
+                        sa.setFinishedDate(historicTaskInstance.getEndTime());
+                    }
+
+                }
+                Company company = companyRepository.findOne(sa.getCompanyId());
+                sa.setApplyer(company.getName());
+            }
             support.setData(res);
             support.setRecordsTotal((long)res.size());
             support.setRecordsFiltered((long)res.size());
@@ -76,7 +105,7 @@ public class SupportApplyController {
         Sale sale = saleRepository.findOne(sid);
         model.addAttribute("sale", sale);
         model.addAttribute("supportapply", new SupportApply());
-        return "/supportapply/apply";
+        return "/supportapply/create";
     }
 
     @RequestMapping(value = "/create", method = RequestMethod.POST)
@@ -91,9 +120,10 @@ public class SupportApplyController {
 
     @RequestMapping("/apply/{sid}")
     public String apply(@PathVariable("sid") String sid, Model model) {
-        Sale sale = saleRepository.findOne(sid);
+        SupportApply apply = service.getById(sid);
+        Sale sale = saleRepository.findOne(apply.getSaleId());
         model.addAttribute("sale", sale);
-        model.addAttribute("supportapply", new SupportApply());
+        model.addAttribute("supportapply", apply);
         return "/supportapply/apply";
     }
 

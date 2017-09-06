@@ -5,9 +5,11 @@ import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.common.exception.NameRepeatedException;
 import com.bearxyz.domain.po.business.Company;
+import com.bearxyz.domain.po.business.Contract;
 import com.bearxyz.domain.po.sys.Role;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.CompanyRepository;
+import com.bearxyz.repository.ContractRepository;
 import com.bearxyz.repository.RoleRepository;
 import com.bearxyz.repository.UserRepository;
 import com.bearxyz.service.business.ClientService;
@@ -50,6 +52,9 @@ public class ClientController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private ContractRepository contractRepository;
 
     @RequestMapping(value = "/setAccount/{cid}", method = RequestMethod.GET)
     public String setAccount(@PathVariable("cid")String cid, Model model){
@@ -113,6 +118,11 @@ public class ClientController {
                 c.setHasAccount(true);
             else
                 c.setHasAccount(false);
+            Contract contract = contractRepository.findNewestContractByCompanyId(c.getId());
+            if(contract!=null) {
+                c.setCurrentStartDate(contract.getStartDate());
+                c.setCurrentEndDate(contract.getEndDate());
+            }
         }
         companys.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();

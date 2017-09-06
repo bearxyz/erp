@@ -184,10 +184,12 @@
         }
     });
     function formatStatus(cellValue, options, rowObject) {
-        if(rowObject.signed)
+        if (rowObject.signed)
             return "<span class='label label-success'>已签约</span>";
-        else
+        else if (rowObject.failed)
             return "<span class='label label-default'>未签约</span>";
+        else
+            return "<span class='label label-warning'>准客户</span>";
     }
     function formatArea(cellValue, options, rowObject) {
         return rowObject.consultProvince + "-" + rowObject.consultCity + "-" + rowObject.consultDistrict;
@@ -201,8 +203,8 @@
             if (!rowObject.assigned) {
                 if (setAssignBtn) html += setAssignBtn(rowObject.id);
             }
-            if (!rowObject.signed){
-                if(setSignBtn) html+=setSignBtn(rowObject.id);
+            if (!rowObject.signed) {
+                if (setSignBtn) html += setSignBtn(rowObject.id);
             }
         } catch (e) {
         }
@@ -212,17 +214,21 @@
 </script>
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASING_EXECUTIVE">
     function setSignBtn(id) {
-        return '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">签约</span></a>';
+        var h = '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">签约</span></a>';
+        h += '<a href="javascript:void(0);" class="btn btn-warning btn-xs" onclick="failed('+id+')"><span class="hidden-mobile">签约失败</span></a>';
+        return h;
     }
 </script>
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASE_MANAGER,ROLE_LEASING_EXECUTIVE">
     function setEditBtn(id) {
-        return '<a href="#/clientres/edit/' + id + '" class="btn-warning btn btn-xs"><i class="fa fa-edit"></i> <span class="hidden-mobile">客户资料</span></a>';
+        h = '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">合同变更</span></a>';
+        h+='<a href="#/clientres/edit/' + id + '" class="btn-warning btn btn-xs"><i class="fa fa-edit"></i> <span class="hidden-mobile">客户资料</span></a>';
+        return h;
     }
 </script>
 <script type="text/javascript" shiro:hasRole="ROLE_LEASE_MANAGER">
     function setAssignBtn(id) {
-        return '<a class="btn btn-primary btn-xs" href="javascript:void(0);" onclick="auto(\''+id+'\');"><span>自动分配</span></a><a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#remoteModal" href="clientres/man/' + id + '"><span>手工分配</span></a>';
+        return '<a class="btn btn-primary btn-xs" href="javascript:void(0);" onclick="auto(\'' + id + '\');"><span>自动分配</span></a><a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#remoteModal" href="clientres/man/' + id + '"><span>手工分配</span></a>';
     }
     function auto(id) {
         $.SmartMessageBox({
@@ -283,6 +289,35 @@
                 if (ButtonPressed === "确 定") {
                     $.ajax({
                         url: '/clientres/delete',
+                        type: 'POST',
+                        data: {ids: id.toString()},
+                        success: function () {
+                            $('#dt_basic').DataTable().ajax.reload();
+                        },
+                        error: function (e) {
+                            $.bigBox({
+                                title: "系统内部错误！",
+                                content: "该错误已被记录，请联系管理员，并稍后重试！",
+                                color: "#C46A69",
+                                icon: "fa fa-warning shake animated",
+                                timeout: 6000
+                            });
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+    }
+    function failed(id) {
+        $.SmartMessageBox({
+                title: "注 意!",
+                content: "确定签约不成功吗？",
+                buttons: '[取 消][确 定]'
+            },
+            function (ButtonPressed) {
+                if (ButtonPressed === "确 定") {
+                    $.ajax({
+                        url: '/clientres/failed',
                         type: 'POST',
                         data: {ids: id.toString()},
                         success: function () {

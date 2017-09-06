@@ -298,6 +298,7 @@
                                 <th>签署时间</th>
                                 <th>签署人</th>
                                 <th>附件</th>
+                                <th></th>
                                 </thead>
                             </table>
                         </div>
@@ -406,7 +407,8 @@
                 {"data": "endDate", render: CONSTANT.DATA_TABLES.RENDER.DATE},
                 {"data": "signDate", render: CONSTANT.DATA_TABLES.RENDER.DATE},
                 {"data": "operator"},
-                {"data": null, render: formatAttachment}
+                {"data": null, render: formatAttachment},
+                {"data": null, render: formatStatus}
             ],
             "autoWidth": true,
             "searching": false,
@@ -477,6 +479,14 @@
         for (var i = 0; i < rowObject.attachments.length; i++) {
             html += "<a href='/common/download/"+rowObject.attachments[i].id+"'>" + rowObject.attachments[i].name + "." + rowObject.attachments[i].fileType+"</a>;";
         }
+        return html;
+    }
+    function formatStatus(cellValue, options, rowObject) {
+        html='';
+        if(rowObject.invalid)
+            html='<label class="label label-warning">无效</label>';
+        else
+            html='<label class="label label-success">生效</label>';
         return html;
     }
 </script>

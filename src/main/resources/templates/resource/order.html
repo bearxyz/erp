@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+
+<div class="row">
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+        <!-- PAGE HEADER -->
+        <i class="fa-fw fa fa-home"></i>
+        产品订单
+        </h1>
+    </div>
+</div>
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>产品订单</h2>
+                </header>
+                <div role="content">
+            <div class="modal-body no-padding">
+                <form id="form" class="smart-form" >
+                <fieldset>
+
+            <section >
+                <label class="label">收货地址</label>
+                <label class="input">
+                    <input class="form-control" name="status" th:value="1" type="hidden">
+                    <input class="form-control" name="saleId" th:value="${sale.id}" type="hidden">
+                    <input class="form-control" name="companyId" th:value="${company.id}" type="hidden">
+                    <input class="form-control" id="province" name="province" th:value="${company.province}" readonly>
+                </label>
+                <label class="input">
+                    <input class="form-control" id="city" name="city" th:value="${company.city}" readonly>
+                </label>
+                <label class="input">
+                <input class="form-control" id="district" name="district" th:value="${company.district}" readonly>
+                </label>
+            </section>
+        </fieldset>
+                <fieldset>
+            <section >
+                <label class="label">详细地址</label>
+                <label class="textarea">
+                    <textarea rows="3" id="address" name="address" class="form-control">[[${company.address}]]</textarea>
+                </label>
+            </section>
+                </fieldset>
+                <fieldset>
+            <section >
+                <label class="label">快递方式</label>
+                <label class="radio"><input class="form-control" onclick="changeDeliverFee(1)" name="transport" value="快递" checked="checked" type="radio">
+                    <i></i>快递</label>
+                    <label class="radio"> <input class="form-control" onclick="changeDeliverFee(2)" name="transport" value="物流"  type="radio">
+                <i></i>物流</label>
+                <input class="form-control" id="deliverFee" name="deliverFee" th:value="${deliverFee}" type="hidden">
+
+            </section>
+                </fieldset>
+                <fieldset>
+            <section >
+                <label class="label">确定订单信息</label>
+                <table class="table table-hover" id="cartList">
+                    <thead>
+                    <tr>
+                        <th>商品名称</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>小计</th>
+                    </tr>
+                    <tr>
+                        <td>[[${sale.name}]]</td>
+                        <td><input class="form-control" id="price" name="price" th:value="${sale.price}" type="hidden">[[${sale.price}]]</td>
+                        <td>1</td>
+                        <td>[[${sale.price}]]</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">运费</td>
+                        <td>
+                            <span id="deliverFeeHtml">[[${deliverFee}]]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">总计</td>
+                        <td>
+                            <input class="form-control" id="totalPrice" name="totalPrice" th:value="${totalPrice}" type="hidden"><span id="toalPrice">[[${totalPrice}]]</span>
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                </table>
+            </section>
+                </fieldset>
+            <footer>
+                <button class="btn btn-primary" id="addOrder" type="submit">提交订单</button>
+                <button class="btn btn-default" type="button" onclick="window.history.back();">返回</button>
+            </footer>
+                </form>
+            </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<script th:src="@{js/plugin/jquery-form/jquery-form.min.js}"></script>
+<script type="text/javascript">
+
+    pageSetUp();
+
+
+    var pagefunction = function() {
+        // clears the variable if left blank
+        var $form = $("#form").validate({
+            rules: {
+                province: {required: true},
+                city: {required: true},
+                district: {required: true},
+                address: {required: true}
+            },
+            messages: {
+                province: {required: '请完善公司的省份信息'},
+                city: {required: '请完善公司的市信息'},
+                district: {required: '请完善公司的区域信息'},
+                address: {required: '请输入详细地址信息'}
+            },
+            onsubmit: true,
+            submitHandler: function () {
+                $.ajax({
+                    url: '/resource/apply',
+                    type: 'post',
+                    data: $('#form').serialize(),
+                    success: function (e) {
+                        window.location = '#/my/order';
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+
+
+    };
+    function changeDeliverFee(type){
+        if(type==1){
+            var price=$("#price").val();
+            var deliverFee=$("#deliverFee").val();
+            var toalPrice=Number(price)+Number(deliverFee);
+            $("#toalPrice").html(toalPrice);
+            $("#deliverFeeHtml").html(deliverFee);
+        }else if(type==2){
+            var price=$("#price").val();
+            $("#toalPrice").html(price);
+            $("#deliverFee").val("0.0");
+            $("#deliverFeeHtml").html("0.0");
+        }
+    }
+    pagefunction();
+
+</script>
+
+</body>
+</html>

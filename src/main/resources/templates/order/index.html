@@ -158,6 +158,7 @@
         var html = '';
         if(rowObject.status == 1){
             html='<lable class="label label-warning">待支付</lable>';
+            html+='<a href="javascript:void(0);" onclick="pay(\''+rowObject.id+'\')" class="btn btn-primary">确认支付</a>';
         }
         if(rowObject.status == 2){
             html='<lable class="label label-warning">待发货</lable>';
@@ -169,6 +170,36 @@
             html='<lable class="label label-warning">已完成</lable>';
         }
         return html;
+    }
+
+    function pay(id) {
+        $.SmartMessageBox({
+                title: "注 意!",
+                content: "确定付款了吗？",
+                buttons: '[取 消][确 定]'
+            },
+            function (ButtonPressed) {
+                if (ButtonPressed === "确 定") {
+                    $.ajax({
+                        url: '/order/pay',
+                        type: 'POST',
+                        data: {id: id},
+                        success: function () {
+                            $('#dt_basic').DataTable().ajax.reload();
+                        },
+                        error: function (e) {
+                            $.bigBox({
+                                title: "系统内部错误！",
+                                content: "该错误已被记录，请联系管理员，并稍后重试！",
+                                color: "#C46A69",
+                                icon: "fa fa-warning shake animated",
+                                timeout: 6000
+                            });
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
     }
 </script>
 

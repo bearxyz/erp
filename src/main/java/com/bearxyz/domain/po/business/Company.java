@@ -4,6 +4,7 @@ import com.bearxyz.domain.po.BaseDomain;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,6 +15,7 @@ import java.util.List;
 public class Company extends BaseDomain {
 
     private static final long serialVersionUID = -1264316047321649030L;
+
 
     @Column
     private Boolean isAssigned = false;
@@ -111,10 +113,17 @@ public class Company extends BaseDomain {
     private String serviceId = "";
 
     @Column
-    private boolean signed = false;
+    private Boolean signed = false;
+
+    @Column
+    private Boolean failed = false;
 
     @Transient
-    private boolean hasAccount = false;
+    private Boolean hasAccount = false;
+    @Transient
+    private java.sql.Date currentStartDate;
+    @Transient
+    private java.sql.Date currentEndDate;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "company")
     private List<Person> persons = new ArrayList<>();
@@ -455,14 +464,6 @@ public class Company extends BaseDomain {
         this.consultProject = consultProject;
     }
 
-    public boolean isSigned() {
-        return signed;
-    }
-
-    public void setSigned(boolean signed) {
-        this.signed = signed;
-    }
-
     public String getContactor() {
         return contactor;
     }
@@ -495,11 +496,43 @@ public class Company extends BaseDomain {
         isAssigned = assigned;
     }
 
-    public boolean isHasAccount() {
+    public Boolean getSigned() {
+        return signed;
+    }
+
+    public void setSigned(Boolean signed) {
+        this.signed = signed;
+    }
+
+    public Boolean getFailed() {
+        return failed;
+    }
+
+    public void setFailed(Boolean failed) {
+        this.failed = failed;
+    }
+
+    public Boolean getHasAccount() {
         return hasAccount;
     }
 
-    public void setHasAccount(boolean hasAccount) {
+    public void setHasAccount(Boolean hasAccount) {
         this.hasAccount = hasAccount;
+    }
+
+    public java.sql.Date getCurrentStartDate() {
+        return currentStartDate;
+    }
+
+    public void setCurrentStartDate(java.sql.Date currentStartDate) {
+        this.currentStartDate = currentStartDate;
+    }
+
+    public java.sql.Date getCurrentEndDate() {
+        return currentEndDate;
+    }
+
+    public void setCurrentEndDate(java.sql.Date currentEndDate) {
+        this.currentEndDate = currentEndDate;
     }
 }

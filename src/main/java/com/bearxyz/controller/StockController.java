@@ -4,6 +4,7 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
+import com.bearxyz.repository.OrderRepository;
 import com.bearxyz.repository.PurchasingOrderItemRepository;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.OfficialPartnerService;
@@ -33,6 +34,9 @@ public class StockController {
 
     @Autowired
     private PurchasingOrderItemRepository purchasingOrderItemRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Autowired
     private TaskService taskService;
@@ -145,9 +149,12 @@ public class StockController {
     @ResponseBody
     public String doSelectTransport(@ModelAttribute(name = "stock")Stock stock, SessionStatus status) {
         stock.setApproved(true);
+        Order order = orderRepository.findOne(stock.getOrderId());
+        order.setStatus(3);
         for(StockItem item: stock.getItems())
             item.setApproved(true);
         service.save(stock);
+        orderRepository.save(order);
         status.setComplete();
         return "{success: true}";
     }

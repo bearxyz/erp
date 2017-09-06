@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * Created by bearxyz on 2017/8/29.
  */
@@ -29,24 +31,32 @@ public class ContractFinished implements ExecutionListener {
     public void notify(DelegateExecution execution) throws Exception {
         Contract contract = contractRepository.findOne(execution.getProcessBusinessKey());
         Company company = companyRepository.findOne(contract.getCompanyId());
-        contract.setApproved(true);
-        company.setSigned(true);
-        Stock stock = new Stock();
-        stock.setType("STOCK-OUT");
-        stock.setMask("STOCK_OUT_OTHER");
-        stock.setCode(OrderUtils.genSerialnumber("CK"));
-        stock.setPurpose("合同赠品");
-        stock.setDeliverAddress(contract.getPresentAddress());
-        for(Present item: contract.getItems()){
-            StockItem it = new StockItem();
-            it.setGoodsId(item.getGoodsId());
-            it.setUnit(item.getUnit());
-            it.setPrice((float)0.0);
-            it.setAmmount(item.getAmmount());
-            it.setCount(item.getCount());
-            stock.getItems().add(it);
+        List<Contract> contracts = contractRepository.findAllByCompanyId(contract.getCompanyId());
+        for(Contract c: contracts){
+            c.setInvalid(true);
+            contractRepository.save(c);
         }
-        stockRepository.save(stock);
+        contract.setApproved(true);
+        contract.setInvalid(false);
+        company.setSigned(true);
+        if(contract.getItems()!=null&&contract.getItems().size()>0) {
+            Stock stock = new Stock();
+            stock.setType("STOCK-OUT");
+            stock.setMask("STOCK_OUT_OTHER");
+            stock.setCode(OrderUtils.genSerialnumber("CK"));
+            stock.setPurpose("合同赠品");
+            stock.setDeliverAddress(contract.getPresentAddress());
+            for (Present item : contract.getItems()) {
+                StockItem it = new StockItem();
+                it.setGoodsId(item.getGoodsId());
+                it.setUnit(item.getUnit());
+                it.setPrice((float) 0.0);
+                it.setAmmount(item.getAmmount());
+                it.setCount(item.getCount());
+                stock.getItems().add(it);
+            }
+            stockRepository.save(stock);
+        }
         contractRepository.save(contract);
         companyRepository.saveAndFlush(company);
     }

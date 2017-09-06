@@ -144,7 +144,11 @@
 
     function formatStatus(cellValue, options, rowObject) {
         var css = rowObject.taskName=='已结束'?'label-success':'label-warning';
-        var html = '<lable class="label '+css+'">'+rowObject.taskName+'</lable>';
+        var html = '';
+        if(rowObject.taskName!=null)
+            html = '<lable class="label '+css+'">'+rowObject.taskName+'</lable>';
+        else
+            return '<a class="btn btn-primary" href="#/supportapply/apply/'+rowObject.id+'">受理</a>';
         return html;
     }
 </script>

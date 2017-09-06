@@ -1,6 +1,8 @@
 package com.bearxyz.domain.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by bearxyz on 2017/9/5.
@@ -12,6 +14,7 @@ public class ClientResource implements Serializable {
     private String id;
     private String name;
     private String imageUrl;
+    private List<ClientResourceItem> attachments=new ArrayList<>();
 
     public String getId() {
         return id;
@@ -35,5 +38,13 @@ public class ClientResource implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<ClientResourceItem> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<ClientResourceItem> attachments) {
+        this.attachments = attachments;
     }
 }

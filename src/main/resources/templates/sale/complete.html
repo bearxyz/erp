@@ -146,8 +146,15 @@
                                 </section>
                             </fieldset>
                             <fieldset th:if="${taskKey=='deptLeader' or taskKey=='manager'}">
+                                <div class="row">
+                                    <div class="superbo col-sm-12">
+                                        <div class="superbox-list" th:each="image:${sale.images}">
+                                            <img class="superbox-img" th:src="@{'/public/showImg/'+${image.id}}" />
+                                        </div>
+                                    </div>
+                                </div>
                                 <section>
-
+                                    <p th:utext="${sale.content}"></p>
                                 </section>
                             </fieldset>
                             <fieldset th:if="${memo!=null and memo!=''}">

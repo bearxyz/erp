@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
->
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
@@ -28,9 +29,9 @@
     <!-- col -->
     <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8 text-right">
 
-        <a href="javascript:void(0);" class="btn btn-default shop-btn">
+        <a href="javascript:toOrder()" class="btn btn-default shop-btn">
             <i class="fa fa-3x fa-shopping-cart"></i>
-            <span class="air air-top-right label-danger txt-color-white padding-5">10</span>
+            <span class="air air-top-right label-danger txt-color-white padding-5" id="carCount">0</span>
         </a>
 
     </div>
@@ -47,10 +48,9 @@
 
 <!-- widget grid -->
 <section id="widget-grid" class="">
-
     <!-- row -->
 
-    <div class="row">
+    <div class="row" id="rows">
 
         <div class="col-sm-6 col-md-6 col-lg-4">
             <!-- product -->
@@ -58,7 +58,7 @@
                 <div class="row">
                     <div class="col-md-5 col-sm-12 col-xs-12">
                         <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
+                            <img src="" alt="194x228" class="img-responsive">
                             <span class="tag2 hot">
 									HOT
 								</span>
@@ -81,7 +81,7 @@
                         </div>
                         <div class="product-info smart-form">
                             <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success"> 加入购物车</a> </div>
                             </div>
                         </div>
                     </div>
@@ -90,426 +90,15 @@
             <!-- end product -->
         </div>
 
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
 
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
-
-        <div class="col-sm-6 col-md-6 col-lg-4">
-            <!-- product -->
-            <div class="product-content product-wrap clearfix">
-                <div class="row">
-                    <div class="col-md-5 col-sm-12 col-xs-12">
-                        <div class="product-image">
-                            <img src="img/demo/e-comm/3.png" alt="194x228" class="img-responsive">
-                            <span class="tag2 hot">
-									HOT
-								</span>
-                        </div>
-                    </div>
-                    <div class="col-md-7 col-sm-12 col-xs-12">
-                        <div class="product-deatil">
-                            <h5 class="name">
-                                <a href="#">
-                                    Product Name Title Here <span>Category</span>
-                                </a>
-                            </h5>
-                            <p class="price-container">
-                                <span>$399</span>
-                            </p>
-                            <span class="tag1"></span>
-                        </div>
-                        <div class="description">
-                            <p>Proin in ullamcorper lorem. Maecenas eu ipsum </p>
-                        </div>
-                        <div class="product-info smart-form">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">Add to cart</a> </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end product -->
-        </div>
 
         <div class="col-sm-12 text-center">
-            <a href="javascript:void(0);" class="btn btn-primary btn-lg">Load more <i class="fa fa-arrow-down"></i></a>
+
+        </div>
+
+
+        <div class="table-responsive m-t">
+
         </div>
 
     </div>
@@ -517,19 +106,270 @@
     <!-- end row -->
 
 </section>
-<!-- end widget grid -->
 
+<!-- end widget grid -->
+<script th:src="@{js/jquery.cookie.js}"></script>
 <script type="text/javascript">
+    var total=0;    //总条目: 可变
+    var show=1;    //每页显示条目数: 可变
+    var size=1;     //当前第几页
+    var totalPage=0; //总页数
 
     pageSetUp();
+    //购物车
+    var Cart = function () {
+        this.Count = 0;
+        this.Total = 0;
+        this.Items = new Array();
+    };
+    //购物车集合对象
+    var CartItem = function () {
+        this.Id = 0;
+        this.Name = "";
+        this.Count = 0;
+        this.Price = 0;
+    };
+    function cleanCart() {
+        var cartHelper =new CartHelper();
+        cartHelper.Clear();
+    }
+    function toAddCart(id, name, count, price){
+        var cartHelper =new CartHelper();
+        cartHelper.Add(id, name, count, price);
+    }
+    //购物车操作
+    var CartHelper = function () {
+        this.cookieName = "yxhCart";
+        this.Clear = function () {
+            var cart = new Cart();
+            this.Save(cart);
+            return cart;
+        };
+        //向购物车添加
+        this.Add = function (id, name, count, price) {
+            var carCount=parseInt($("#carCount").html());
+
+            var cart = this.Read();
+            var index = this.Find(id);
+            if (index != -1) {
+                cart.Items[index].Count = cart.Items[index].Count+1;
+                cart.Total +=(((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            } else {
+                var item = new CartItem();
+                item.Id = id;
+                item.Name = name;
+                item.Count = count;
+                item.Price = price;
+                cart.Items.push(item);
+                cart.Count++;
+                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            }
+            $("#carCount").html(carCount+1);
+            this.Save(cart);
+            return cart;
+        };
+        //改变数量
+        this.Change = function (id, count) {
+            var cart = this.Read();
+            var index = this.Find(id);
+            cart.Items[index].Count = count;
+            this.Save(cart);
+            return cart;
+        };
+        //移出购物车
+        this.Del = function (id) {
+            var cart = this.Read();
+            var index = this.Find(id);
+            if (index > -1) {
+                var item = cart.Items[index];
+                cart.Count--;
+                cart.Total = cart.Total - 1;
+                cart.Items.splice(index, 1);
+                this.Save(cart);
+            }
+            return cart;
+        };
+        //根据ID查找
+        this.Find = function (id) {
+            var cart = this.Read();
+            var index = -1;
+            for (var i = 0; i < cart.Items.length; i++) {
+                if (cart.Items[i].Id == id) {
+                    index = i;
+                }
+            }
+            return index;
+        };
+        //COOKIE操作
+        this.Save = function (cart) {
+            var source = "";
+            for (var i = 0; i < cart.Items.length; i++) {
+                if (source != "") { source += "|$|"; }
+                source += this.ItemToString(cart.Items[i]);
+            }
+            $.cookie(this.cookieName, source);
+        };
+        this.Read = function () {
+            //读取COOKIE中的集合
+            var source = $.cookie(this.cookieName);
+            var cart = new Cart();
+            if (source == null || source == "") {
+                return cart;
+            }
+            var arr = source.split("|$|");
+            cart.Count = arr.length;
+            for (var i = 0; i < arr.length; i++) {
+                var item = this.ItemToObject(arr[i]);
+                cart.Items.push(item);
+                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            }
+            return cart;
+        };
+        this.ItemToString = function (item) {
+            return item.Id + "||" + escape(item.Name) + "||" + item.Count + "||" + item.Price;
+        };
+        this.ItemToObject = function (str) {
+            var arr = str.split('||');
+            var item = new CartItem();
+            item.Id = arr[0];
+            item.Name = unescape(arr[1]);
+            item.Count = arr[2];
+            item.Price = arr[3];
+            return item;
+        };
+    };
+
+
 
 
     var pagefunction = function() {
         // clears the variable if left blank
+        $.ajax({
+            url: '/product/index',
+            type: 'POST',
+            async: false,
+            data: {"category":"GOODS_NORMAL"},
+            success: function (data) {
+                var items = eval(data);
+                $("#rows").html("");
+                var rowsHtml="";
+                total=items.length;
+                if(total>0){
+                    if(total%show==0){
+                        totalPage=parseInt(total/show);
+                    }else{
+                        totalPage=parseInt(total/show)+1;
+                    }
+                    for (var i = 0; i < items.length; i++) {
+                        var category="";
+                        var project="";
+                        var content="";
+                        if(items[i].category !=null){
+                            category=items[i].category;
+                        }
+                        if(!items[i].project !=null) {
+                            project = items[i].project;
+                        }
+                        if(items[i].content !=null){
+                            content = items[i].content;
+                        }
+                        var images=items[i].images;
+                        var imgageId="";
+                        if(images.length>0){
+                            imgageId=images[0].id;
+                        }
+                        if(i<size*show){
+                            rowsHtml += "<div class=\"col-sm-6 col-md-6 col-lg-4\" id='product"+i+"'>";
+                            rowsHtml += "<div class=\"product-content product-wrap clearfix\">";
+                            rowsHtml += "<div class=\"row\">";
+                            rowsHtml += "<div class=\"col-md-5 col-sm-12 col-xs-12\">";
+                            rowsHtml += "<div class=\"product-image\">";
+                            rowsHtml += "<img src=\"/public/showImg/"+imgageId+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            rowsHtml += "<span class=\"tag2 hot\">HOT</span>";
+                            rowsHtml += "</div></div>";
+                            rowsHtml += "<div class=\"col-md-7 col-sm-12 col-xs-12\">";
+                            rowsHtml += "<div class=\"product-deatil\">";
+                            rowsHtml += "<h5 class=\"name\">";
+                            rowsHtml += "<a href=\"#/sale/detail/"+items[i].id+"\" >" + items[i].name + "<span>" + project + "</span><span>" + category + "</span></a>";
+                            rowsHtml += "</h5>";
+                            rowsHtml += "<p class=\"price-container\"><span>$"+items[i].price+"</span></p>";
+                            rowsHtml += "<span class=\"tag1\"></span>";
+                            rowsHtml += "</div>";
+                            rowsHtml += "<div class=\"description\"><p>"+content+"</p></div>";
+                            rowsHtml += "<div class=\"product-info smart-form\">";
+                            rowsHtml += "<div class=\"row\">";
+                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"javascript:toAddCart('"+items[i].id+"','"+items[i].name+"',1,'"+items[i].price +"');\" class=\"btn btn-success\"> 加入购物车</a> </div>";
+                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"#/sale/detail/"+items[i].id+"\" class=\"btn btn-success\"> 详情</a> </div>";
+                            rowsHtml += "</div></div></div></div></div></div>";
+                        }else {
+                            rowsHtml += "<div class=\"col-sm-6 col-md-6 col-lg-4\" id='product" + i + "' style='display: none'>";
+                            rowsHtml += "<div class=\"product-content product-wrap clearfix\">";
+                            rowsHtml += "<div class=\"row\">";
+                            rowsHtml += "<div class=\"col-md-5 col-sm-12 col-xs-12\">";
+                            rowsHtml += "<div class=\"product-image\">";
+                            rowsHtml += "<img src=\"/public/showImg/"+imgageId+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            rowsHtml += "<span class=\"tag2 hot\">HOT</span>";
+                            rowsHtml += "</div></div>";
+                            rowsHtml += "<div class=\"col-md-7 col-sm-12 col-xs-12\">";
+                            rowsHtml += "<div class=\"product-deatil\">";
+                            rowsHtml += "<h5 class=\"name\">";
+                            rowsHtml += "<a href=\"#/sale/detail/"+items[i].id+"\" >" + items[i].name + "<span>" + project + "</span><span>" + category + "</span></a>";
+                            rowsHtml += "</h5>";
+                            rowsHtml += "<p class=\"price-container\"><span>$" + items[i].price + "</span></p>";
+                            rowsHtml += "<span class=\"tag1\"></span>";
+                            rowsHtml += "</div>";
+                            rowsHtml += "<div class=\"description\"><p>"+content+"</p></div>";
+                            rowsHtml += "<div class=\"product-info smart-form\">";
+                            rowsHtml += "<div class=\"row\">";
+                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"javascript:toAddCart('"+items[i].id+"','"+items[i].name+"',1,'"+items[i].price +"');\" class=\"btn btn-success\"> 加入购物车</a> </div>";
+                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"#/sale/detail/"+items[i].id+"\" class=\"btn btn-success\"> 详情</a> </div>";
+                            rowsHtml += "</div></div></div></div></div></div>";
+                        }
+                    }
+                    if(totalPage==size){
+                        rowsHtml += "<div class=\"col-sm-12 text-center\" id=\"pageHtml\">没有更多数据</div>";
+                    }else{
+                        rowsHtml += "<div class=\"col-sm-12 text-center\" id=\"pageHtml\"><a href=\"javascript:toPage("+size+");\" class=\"btn btn-primary btn-lg\">Load more <i class=\"fa fa-arrow-down\"></i></a></div>";
+                    }
+                }else{
+                    rowsHtml += "<div class=\"col-sm-12 text-center\" id=\"pageHtml\">没有商品数据</div>";
+                }
+                //rowsHtml +="</div>";
+                $("#rows").html(rowsHtml);
+            }
+        });
     };
+    //动态分页
+    function toPage(size){
+        var pageSize=size+1;
+        for(var i=size*show;i<pageSize*show;i++){
+            if(i<total){
+                $("#product"+i).show();
+            }
+        }
+        $("#pageHtml").html("");
+        var pageHtml="";
+        if(totalPage==pageSize){
+            pageHtml += "没有更多数据";
+        }else{
+            pageHtml += "<a href=\"javascript:toPage("+pageSize+");\" class=\"btn btn-primary btn-lg\">Load more <i class=\"fa fa-arrow-down\"></i></a>";
+        }
+        $("#pageHtml").html(pageHtml);
+    }
     pagefunction();
+    //清空购物车
+    cleanCart();
+    function toOrder(){
+        var carCount=$("#carCount").html();
+        if(carCount==0){
+            alert("购物车为空，不能提交订单");
+        }else{
+            window.location.href="#/product/order";
+        }
+    }
 
-</script>
+
+    </script>
 
 </body>
 </html>

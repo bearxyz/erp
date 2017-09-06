@@ -1,8 +1,10 @@
 package com.bearxyz.controller.rest;
 
-import com.bearxyz.domain.po.business.Sale;
+import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.domain.vo.ClientResource;
+import com.bearxyz.domain.vo.ClientResourceItem;
+import com.bearxyz.repository.PictureRepository;
 import com.bearxyz.repository.SaleRepository;
 import com.bearxyz.repository.UserRepository;
 import com.bearxyz.utility.BCrypt;
@@ -52,6 +54,15 @@ public class ClientApiController {
             ClientResource cr = new ClientResource();
             cr.setId(s.getId());
             cr.setName(s.getName());
+            if(s.getImages().size()>0)
+                cr.setImageUrl("http://erp.xjdpx.com/public/showImg/"+s.getImages().get(0).getId());
+            for(SaleAttachment att: s.getResources()){
+                ClientResourceItem item = new ClientResourceItem();
+                item.setId(att.getId());
+                item.setFileName(att.getName());
+                item.setFileType(att.getFileType());
+                cr.getAttachments().add(item);
+            }
             resources.add(cr);
         }
         return resources;

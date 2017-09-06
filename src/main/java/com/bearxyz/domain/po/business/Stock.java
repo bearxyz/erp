@@ -41,6 +41,8 @@ public class Stock extends BaseDomain {
     private String transportFee = "";
     @Column(length = 50)
     private String transportNo = "";
+    @Column(length = 36)
+    private String orderId = "";
 
     @Transient
     private String deliverCompanyName = "";
@@ -246,5 +248,13 @@ public class Stock extends BaseDomain {
 
     public void setTransportNo(String transportNo) {
         this.transportNo = transportNo;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 }

@@ -124,4 +124,12 @@ public class ClientresController {
         return "{success: true}";
     }
 
+    @RequestMapping(value = "/failed", method = RequestMethod.POST)
+    @ResponseBody
+    public String failed(@RequestParam("id")String id) {
+        Company company = companyRepository.findOne(id);
+        companyRepository.save(company);
+        return "{success: true}";
+    }
+
 }

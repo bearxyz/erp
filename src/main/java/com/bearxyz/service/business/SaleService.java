@@ -154,4 +154,16 @@ public class SaleService {
         repository.save(sale);
     }
 
+    public List<Sale> getSaleList(){
+        return repository.findAll();
+    }
+
+    public List<Sale> getSaleByTypeList(String companyId,String category){
+        if(category !=null && (!category.equals(""))){
+            return repository.findSalesByCompanyIdAndCategory(companyId,category);
+        }else{
+            return repository.findAll();
+        }
+    }
+
 }

@@ -11,7 +11,7 @@
     <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
         <h1 class="page-title txt-color-blueDark">
             <i class="fa fa-edit fa-fw "></i>
-            扶持申请
+            提交工单
         </h1>
     </div>
 </div>
@@ -24,62 +24,53 @@
                  data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
                 <header>
                     <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
-                    <h2>扶持申请</h2>
+                    <h2>提交工单</h2>
                 </header>
                 <div role="content">
                     <div class="widget-body no-padding">
                         <form id="form" class="smart-form">
-                            <input id="saleId" type="hidden" name="saleId" th:value="${sale.id}"/>
                             <fieldset>
-                                <div class="row">
-                                    <section class="col col-6">
-                                        <label class="label">扶持名称：</label>
-                                        <label class="input"><input id="name" name="name" th:value="${sale.name}"
-                                                                    disabled="disabled"/></label>
-                                    </section>
-                                    <section class="col col-6">
-                                        <label class="label">价格：</label>
-                                        <label class="input"><input id="price" name="price" th:value="${sale.price}"
-                                                                    disabled="disabled"/></label>
-                                    </section>
-                                </div>
-                                <div class="row">
-                                    <section class="col col-6">
-                                        <label class="input">
-                                            <i class="icon-append fa fa-calendar"></i>
-                                            <input id="startDate" class="hasDatepicker" name="startDate"
-                                                   th:value="${sale.startDate}" disabled="disabled"
-                                                   type="text">
-                                        </label>
-                                    </section>
-                                    <section class="col col-6">
-                                        <label class="input">
-                                            <i class="icon-append fa fa-calendar"></i>
-                                            <input id="endDate" class="hasDatepicker" name="endDate"
-                                                   th:value="${sale.endDate}" type="text" disabled="disabled">
-                                        </label>
-                                    </section>
-                                </div>
                                 <section>
-                                    <label class="label">简介：</label>
-                                    <label class="textarea textarea-resizable">
-                                        <textarea class="custom-scroll" disabled="disabled"
-                                        >[[${sale.memo}]]</textarea>
+                                    <label class="label">工单类型：</label>
+                                    <label class="select">
+                                        <select name="type" id="type" disabled="disabled"></select><i></i>
                                     </label>
                                 </section>
                                 <section>
-                                    <label class="label">要求：</label>
+                                    <label class="label">内容：</label>
                                     <label class="textarea textarea-resizable">
                                         <textarea class="custom-scroll" id="memo" name="memo" disabled="disabled"
-                                        ></textarea>
+                                        >[[${wo.memo}]]</textarea>
+                                    </label>
+                                </section>
+
+                            </fieldset>
+                            <fieldset>
+                                <section>
+                                    <label class="label">是否需要上级协助</label>
+                                    <div class="inline-group">
+                                        <label class="radio">
+                                            <input type="radio" name="finished" value="1" checked="checked"><i></i>不需要
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="finished" value="0"><i></i>需要
+                                        </label>
+                                    </div>
+                                </section>
+                                <section>
+                                    <label class="label">
+                                        处理意见：
+                                    </label>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea class="custom-scroll" id="clientMemo" name="clientMemo"></textarea>
                                     </label>
                                 </section>
                             </fieldset>
                             <footer>
                                 <button type="submit" class="btn btn-primary">
-                                    申 请
+                                    提 交
                                 </button>
-                                <a href="#/support/index" class="btn btn-danger">
+                                <a href="#/my/workorder" class="btn btn-danger">
                                     取 消
                                 </a>
                             </footer>
@@ -99,22 +90,22 @@
     </div>
 </div>
 <!-- /.modal -->
-<script>
-
-    var item_count = 0;
+<script th:inline="javascript">
 
     pageSetUp();
+
+    BindDictItem("type", "WORK_ORDER_TYPE", "工单类型", [[${wo.type}]]);
 
     var pagefunction = function () {
         $("#form").validate({
             onsubmit: true,
             submitHandler: function () {
                 $.ajax({
-                    url: '/supportapply/apply',
+                    url: '/workorder/edit',
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function () {
-                        window.location = '#/supportapply/index';
+                        window.location = '#/workorder/index';
                     },
                     error: function (e) {
                         $.bigBox({

@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+>
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
     <title></title>
-    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/jstree/style.css}"/>
 </head>
 <body>
+
 <!-- Bread crumb is created dynamically -->
 <!-- row -->
 <div class="row">
@@ -19,7 +19,7 @@
         <h1 class="page-title txt-color-blueDark">
             <!-- PAGE HEADER -->
             <i class="fa-fw fa fa-table"></i>
-            客户管理
+            工单管理
         </h1>
     </div>
     <!-- end col -->
@@ -42,7 +42,7 @@
                     <span class="widget-icon">
                         <i class="fa fa-table"></i>
                     </span>
-                    <h2><strong> 客户管理</strong></h2>
+                    <h2><strong> 工单管理</strong></h2>
                 </header>
                 <div>
                     <div class="widget-body no-padding" id="grid-content">
@@ -55,17 +55,15 @@
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
-                                <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"></th>
                             </tr>
                             <tr>
-                                <th>学校名称</th>
-                                <th>地址</th>
-                                <th>联系人</th>
-                                <th>联系电话</th>
-                                <th>当前合同开始日期</th>
-                                <th>当前合同结束日期</th>
-                                <th>操作</th>
+                                <th>提交客户</th>
+                                <th>工单类型</th>
+                                <th>提交内容</th>
+                                <th>反馈信息</th>
+                                <th>提交时间</th>
+                                <th></th>
                             </tr>
                             </thead>
                         </table>
@@ -81,7 +79,6 @@
 
 </section>
 <!-- end widget grid -->
-
 <!-- Dynamic Modal -->
 <div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
      aria-hidden="true">
@@ -101,10 +98,10 @@
         var responsiveHelper_dt_basic = undefined;
         var breakpointDefinition = {tablet: 1024, phone: 480};
 
-        var otable = $('#dt_basic').DataTable({
+        var dt = $('#dt_basic').DataTable({
             "processing": true,
-            ajax: {
-                url: "/client/index",
+            "ajax": {
+                url: "/workorder/index",
                 "type": "POST",
                 "contentType": "application/json; charset=utf-8",
                 "data": function (d) {
@@ -112,23 +109,16 @@
                 }
             },
             "columns": [
-                {"data": "name"},
-                {"data": "address"},
-                {"data": "contactor"},
-                {"data": "contactPhone"},
-                {"data": "currentStartDate", render: CONSTANT.DATA_TABLES.RENDER.DATE},
-                {"data": "currentEndDate", render: CONSTANT.DATA_TABLES.RENDER.DATE},
-                {
-                    "data": "operate",
-                    "sClass": "text-center",
-                    width: "160px",
-                    orderable: false,
-                    render: formatAction
-                }
+                {"data": "companyName"},
+                {"data": "type"},
+                {"data": "memo"},
+                {"data": "result"},
+                {"data": "dateCeated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
+                {"data": null, "sClass": "text-center", render: formatStatus}
             ],
             "autoWidth": true,
+            "searching": false,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
-            "bStateSave": true,
             "preDrawCallback": function () {
                 if (!responsiveHelper_dt_basic) {
                     responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
@@ -140,49 +130,29 @@
             "drawCallback": function (oSettings) {
                 responsiveHelper_dt_basic.respond();
             },
-            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
-        });
-
-        $("#dt_basic thead th input[type=text]").on('keyup change', function () {
-            otable.column($(this).parent().index() + ':visible')
-                .search(this.value)
-                .draw();
-
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'l><'col-sm-6 col-xs-12 hidden-xs'>r>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
         });
 
     }
 
     loadScript("js/plugin/datatables/jquery.dataTables.min.js", function () {
-        loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
-            loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
-                loadScript("js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+        loadScript("js/plugin/datatables/dataTables.colVis.min.js", function () {
+            loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
+                loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
+                    loadScript("js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+                });
             });
         });
     });
 
-    $('#dt_basic').on("change", ":checkbox", function () {
-        if ($(this).is("[name='check-all']"))
-            $(":checkbox", "#dt_basic").prop("checked", $(this).prop("checked"));
-        else {
-            var checkbox = $("tbody:checkbox", "#dt_basic");
-            $(":checkbox[name='check-all']", "#dt_basic").prop("checked", checkbox.length == checkbox.filter(":checked"));
-        }
-    });
-    function formatAction(cellValue, options, rowObject) {
-        var html = '<div class="btn-group btn-group-justified">';
-        if (!rowObject.hasAccount)
-            html += '<a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#remoteModal" href="client/setAccount/'+rowObject.id+'">分配账号</a>';
-        try {
-            if (setEditBtn) html += setEditBtn(rowObject.id);
-        } catch (e) {
-        }
-        html += '</div>';
+    function formatStatus(cellValue, options, rowObject) {
+        var css = rowObject.taskName=='已结束'?'label-success':'label-warning';
+        var html = '';
+        if(rowObject.taskName!=null)
+            html = '<lable class="label '+css+'">'+rowObject.taskName+'</lable>';
+        else
+            return '<a class="btn btn-primary" href="#/workorder/edit/'+rowObject.id+'">办理</a>';
         return html;
-    }
-</script>
-<script type="text/javascript" shiro:hasPermission="/clientres/edit">
-    function setEditBtn(id) {
-        return '<a href="#/client/edit/' + id + '" class="btn-warning btn btn-xs"><i class="fa fa-edit"></i> <span class="hidden-mobile">客户资料</span></a>';
     }
 </script>
 </body>

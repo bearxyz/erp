@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+
+<!-- Bread crumb is created dynamically -->
+<!-- row -->
+<div class="row">
+
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+
+            <!-- PAGE HEADER -->
+            <i class="fa-fw fa fa-home"></i>
+            <span>
+				商品详情
+			</span>
+        </h1>
+    </div>
+    <!-- end col -->
+
+    <!-- col -->
+    <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8 text-right">
+
+        <a href="#/product/order" class="btn btn-default shop-btn">
+            <i class="fa fa-3x fa-shopping-cart"></i>
+            <span class="air air-top-right label-danger txt-color-white padding-5" id="carCount">0</span>
+        </a>
+    </div>
+    <!-- end col -->
+
+</div>
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+    <!-- row -->
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <!-- product -->
+            <div class="product-content product-wrap clearfix product-deatil">
+                <div class="row">
+                    <div class="col-md-5 col-sm-12 col-xs-12 ">
+                        <div class="product-image">
+                            <div id="myCarousel-2" class="carousel slide">
+                                <ol class="carousel-indicators">
+                                    <li data-target="#myCarousel-2" data-slide-to="0" class=""></li>
+                                    <li data-target="#myCarousel-2" data-slide-to="1" class="active"></li>
+                                    <li data-target="#myCarousel-2" data-slide-to="2" class=""></li>
+                                </ol>
+                                <div class="carousel-inner">
+                                    <!-- Slide 1 -->
+                                    <div class="item" th:each="images:${sale.images}">
+                                        <img src="${images.name}" alt="">
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7 col-sm-12 col-xs-12">
+
+                        <h2 class="name">
+                            [[${sale.name}]]
+                            <small>[[${sale.project}]] </small>
+                            <small>[[${sale.category}]] </small>
+                            <input class="form-control" id="id" name="id" th:value="${sale.id}" type="hidden">
+                            <input class="form-control" id="name" name="name" th:value="${sale.name}" type="hidden">
+                            <input class="form-control" id="price" name="price" th:value="${sale.price}" type="hidden">
+                        </h2>
+                        <hr>
+                    <fieldset th:if="${sale.category=='GOODS_NORMAL'}">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <a  href="javascript:toAddCart()" class="btn btn-success btn-lg">添加购物车 ￥[[${sale.price}]]</a>
+                        </div>
+                    </fieldset>
+                        <fieldset th:if="${sale.category=='GOODS_VIRTUAL'}">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <a  th:href="@{'#/resource/order/'+${sale.id}}"  class="btn btn-success btn-lg"> 立即购买 ￥[[${sale.price}]]</a>
+                        </div>
+                        </fieldset>
+                        <fieldset th:if="${sale.category=='GOODS_SUPPORT'}">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <a  th:href="@{'#/supportapply/create/'+${sale.id}}"  class="btn btn-success btn-lg">申请 ￥[[${sale.price}]]</a>
+                        </div>
+                        </fieldset>
+                    </div>
+                        <hr>
+                        <div class="description description-tabs">
+                            <div id="myTabContent" class="tab-content">
+                                <div class="tab-pane fade active in" id="more-information">
+                                    <br>
+                                    <strong>商品详情</strong>
+                                    <p>[[${sale.content}]]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end product -->
+        </div>
+    <!-- end row -->
+
+</section>
+<!-- end widget grid -->
+<script th:src="@{js/jquery.cookie.js}"></script>
+<script type="text/javascript">
+
+
+    pageSetUp();
+    //购物车
+    var Cart = function () {
+        this.Count = 0;
+        this.Total = 0;
+        this.Items = new Array();
+    };
+    //购物车集合对象
+    var CartItem = function () {
+        this.Id = 0;
+        this.Name = "";
+        this.Count = 0;
+        this.Price = 0;
+    };
+    function cleanCart() {
+        var cartHelper =new CartHelper();
+        cartHelper.Clear();
+    }
+    function toAddCart(){
+        var cartHelper =new CartHelper();
+        var id=$("#id").val();
+        var name=$("#name").val();
+        var price=$("#price").val();
+        cartHelper.Add(id, name, 1, price);
+    }
+    //购物车操作
+    var CartHelper = function () {
+        this.cookieName = "yxhCart";
+        this.Clear = function () {
+            var cart = new Cart();
+            this.Save(cart);
+            return cart;
+        };
+        //向购物车添加
+        this.Add = function (id, name, count, price) {
+            var carCount=parseInt($("#carCount").html());
+            var cart = this.Read();
+            var index = this.Find(id);
+            if (index != -1) {
+                cart.Items[index].Count = cart.Items[index].Count+1;
+                cart.Total +=(((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            } else {
+                var item = new CartItem();
+                item.Id = id;
+                item.Name = name;
+                item.Count = count;
+                item.Price = price;
+                cart.Items.push(item);
+                cart.Count++;
+                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            }
+            $("#carCount").html(carCount+1);
+            this.Save(cart);
+            return cart;
+        };
+        //改变数量
+        this.Change = function (id, count) {
+            var cart = this.Read();
+            var index = this.Find(id);
+            cart.Items[index].Count = count;
+            this.Save(cart);
+            return cart;
+        };
+        //移出购物车
+        this.Del = function (id) {
+            var cart = this.Read();
+            var index = this.Find(id);
+            if (index > -1) {
+                var item = cart.Items[index];
+                cart.Count--;
+                cart.Total = cart.Total - 1;
+                cart.Items.splice(index, 1);
+                this.Save(cart);
+            }
+            return cart;
+        };
+        //根据ID查找
+        this.Find = function (id) {
+            var cart = this.Read();
+            var index = -1;
+            for (var i = 0; i < cart.Items.length; i++) {
+                if (cart.Items[i].Id == id) {
+                    index = i;
+                }
+            }
+            return index;
+        };
+        //COOKIE操作
+        this.Save = function (cart) {
+            var source = "";
+            for (var i = 0; i < cart.Items.length; i++) {
+                if (source != "") { source += "|$|"; }
+                source += this.ItemToString(cart.Items[i]);
+            }
+            $.cookie(this.cookieName, source);
+        };
+        this.Read = function () {
+            //读取COOKIE中的集合
+            var source = $.cookie(this.cookieName);
+            var cart = new Cart();
+            if (source == null || source == "") {
+                return cart;
+            }
+            var arr = source.split("|$|");
+            cart.Count = arr.length;
+            for (var i = 0; i < arr.length; i++) {
+                var item = this.ItemToObject(arr[i]);
+                cart.Items.push(item);
+                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            }
+            return cart;
+        };
+        this.ItemToString = function (item) {
+            return item.Id + "||" + escape(item.Name) + "||" + item.Count + "||" + item.Price;
+        };
+        this.ItemToObject = function (str) {
+            var arr = str.split('||');
+            var item = new CartItem();
+            item.Id = arr[0];
+            item.Name = unescape(arr[1]);
+            item.Count = arr[2];
+            item.Price = arr[3];
+            return item;
+        };
+    };
+
+    var pagefunction = function () {
+
+    }
+    //清空购物车
+    cleanCart();
+</script>
+</body>
+</html>

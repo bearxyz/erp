@@ -128,4 +128,6 @@ public class SupportApply extends BaseDomain {
     public void setMemo(String memo) {
         this.memo = memo;
     }
+
+
 }

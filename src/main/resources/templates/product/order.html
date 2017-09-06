@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+
+<div class="row">
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+        <!-- PAGE HEADER -->
+        <i class="fa-fw fa fa-home"></i>
+        产品订单
+        </h1>
+    </div>
+</div>
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>产品订单</h2>
+                </header>
+                <div role="content">
+            <div class="modal-body no-padding">
+                <form id="form" class="smart-form" >
+                <fieldset>
+
+            <section >
+                <label class="label">收货地址</label>
+                <label class="input">
+                    <input class="form-control" name="status" th:value="1" type="hidden">
+                    <input class="form-control" name="companyId" th:value="${company.id}" type="hidden">
+                    <input class="form-control" id="province" name="province" th:value="${company.province}" readonly>
+                </label>
+                <label class="input">
+                    <input class="form-control" id="city" name="city" th:value="${company.city}" readonly>
+                </label>
+                <label class="input">
+                <input class="form-control" id="district" name="district" th:value="${company.district}" readonly>
+                </label>
+            </section>
+        </fieldset>
+                <fieldset>
+            <section >
+                <label class="label">详细地址</label>
+                <label class="textarea">
+                    <textarea rows="3" id="address" name="address" class="form-control">[[${company.address}]]</textarea>
+                </label>
+            </section>
+                </fieldset>
+                <fieldset>
+            <section >
+                <label class="label">快递方式</label>
+                <label class="radio"><input class="form-control" onclick="changeDeliverFee(1)" name="transport" value="快递" checked="checked" type="radio">
+                    <i></i>快递</label>
+                    <label class="radio"> <input class="form-control" onclick="changeDeliverFee(2)" name="transport" value="物流"  type="radio">
+                <i></i>物流</label>
+                <input class="form-control" id="sourceDeliverFee" name="sourceDeliverFee" th:value="${deliverFee}" type="hidden">
+                <input class="form-control" id="deliverFee" name="deliverFee" th:value="${deliverFee}" type="hidden">
+
+            </section>
+                </fieldset>
+                <fieldset>
+            <section >
+                <label class="label">确定订单信息</label>
+                <table class="table table-hover" id="cartList">
+                    <thead>
+                    <tr>
+                        <th>商品名称</th>
+                        <th>单价</th>
+                        <th>数量</th>
+                        <th>小计</th>
+                        <th>操作</th>
+                    </tr>
+                    <tr>
+                        <th>aaa</th>
+                        <th>￥30.50</th>
+                        <th>2</th>
+                        <th>￥61.00</th>
+                        <th>删除</th>
+                    </tr>
+                    <tr>
+                        <td colspan="4">总计</td>
+                        <td>
+                            <strong>￥61.00</strong>
+                        </td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                </table>
+            </section>
+                </fieldset>
+            <footer>
+                <button class="btn btn-primary" id="addOrder" type="submit">提交订单</button>
+                <button class="btn btn-default" type="button" onclick="window.history.back();">返回</button>
+            </footer>
+                </form>
+            </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<script th:src="@{js/jquery.cookie.js}"></script>
+<script th:src="@{js/plugin/jquery-form/jquery-form.min.js}"></script>
+<script type="text/javascript">
+
+    pageSetUp();
+
+    //购物车
+    var Cart = function () {
+        this.Count = 0;
+        this.Total = 0;
+        this.Items = new Array();
+    };
+    //购物车集合对象
+    var CartItem = function () {
+        this.Id = 0;
+        this.Name = "";
+        this.Count = 0;
+        this.Price = 0;
+    };
+    function cleanCart() {
+        var cartHelper =new CartHelper();
+        cartHelper.Clear();
+        toCartShow();
+    }
+    function toAddCart(id, name, count, price){
+        var cartHelper =new CartHelper();
+        cartHelper.Add(id, name, count, price);
+    }
+    //购物车操作
+    var CartHelper = function () {
+        this.cookieName = "yxhCart";
+        this.Clear = function () {
+            var cart = new Cart();
+            this.Save(cart);
+            return cart;
+        };
+        //向购物车添加
+        this.Add = function (id, name, count, price) {
+            var carCount=parseInt($("#carCount").html());
+
+            var cart = this.Read();
+            var index = this.Find(id);
+            if (index != -1) {
+                cart.Items[index].Count = cart.Items[index].Count+1;
+                cart.Total +=(((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            } else {
+                var item = new CartItem();
+                item.Id = id;
+                item.Name = name;
+                item.Count = count;
+                item.Price = price;
+                cart.Items.push(item);
+                cart.Count++;
+                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            }
+            $("#carCount").html(carCount+1);
+            this.Save(cart);
+            return cart;
+        };
+        //改变数量
+        this.Change = function (id, count) {
+            var cart = this.Read();
+            var index = this.Find(id);
+            cart.Items[index].Count = count;
+            this.Save(cart);
+            return cart;
+        };
+        //移出购物车
+        this.Del = function (id) {
+            var cart = this.Read();
+            var index = this.Find(id);
+            if (index > -1) {
+                var item = cart.Items[index];
+                cart.Count--;
+                cart.Total = cart.Total - (((item.Count * 100) * (item.Price * 100)) / 10000);
+                cart.Items.splice(index, 1);
+                this.Save(cart);
+            }
+            return cart;
+        };
+        //根据ID查找
+        this.Find = function (id) {
+            var cart = this.Read();
+            var index = -1;
+            for (var i = 0; i < cart.Items.length; i++) {
+                if (cart.Items[i].Id == id) {
+                    index = i;
+                }
+            }
+            return index;
+        };
+        //COOKIE操作
+        this.Save = function (cart) {
+            var source = "";
+            for (var i = 0; i < cart.Items.length; i++) {
+                if (source != "") { source += "|$|"; }
+                source += this.ItemToString(cart.Items[i]);
+            }
+            $.cookie(this.cookieName, source);
+        };
+        this.Read = function () {
+            //读取COOKIE中的集合
+            var source = $.cookie(this.cookieName);
+            var cart = new Cart();
+            if (source == null || source == "") {
+                return cart;
+            }
+            var arr = source.split("|$|");
+            cart.Count = arr.length;
+            for (var i = 0; i < arr.length; i++) {
+                var item = this.ItemToObject(arr[i]);
+                cart.Items.push(item);
+                cart.Total += (((item.Count * 100) * (item.Price * 100)) / 10000)
+            }
+            return cart;
+        };
+        this.ItemToString = function (item) {
+            return item.Id + "||" + escape(item.Name) + "||" + item.Count + "||" + item.Price;
+        };
+        this.ItemToObject = function (str) {
+            var arr = str.split('||');
+            var item = new CartItem();
+            item.Id = arr[0];
+            item.Name = unescape(arr[1]);
+            item.Count = arr[2];
+            item.Price = arr[3];
+            return item;
+        };
+    };
+
+
+    var pagefunction = function() {
+        // clears the variable if left blank
+
+        var $form = $("#form").validate({
+            rules: {
+                province: {required: true},
+                city: {required: true},
+                district: {required: true},
+                address: {required: true}
+            },
+            messages: {
+                province: {required: '请完善公司的省份信息'},
+                city: {required: '请完善公司的市信息'},
+                district: {required: '请完善公司的区域信息'},
+                address: {required: '请输入详细地址信息'}
+            },
+            onsubmit: true,
+            submitHandler: function () {
+                $.ajax({
+                    url: '/product/apply',
+                    type: 'post',
+                    data: $('#form').serialize(),
+                    success: function (e) {
+                            window.location = '#/my/order';
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+
+
+    };
+    function toCartShow(){
+        $("#cartList  tr:not(:first)").empty("");
+        var cartHtml="";
+        var cartHelper =new CartHelper();
+        var cart=cartHelper.Read();
+        var totalMoney=0;
+        var deliverFee=$("#deliverFee").val();
+        if(cart.Count>0){
+            for (var i = 0; i < cart.Count; i++) {
+                var item =  cart.Items[i];
+                var itemTotal=0;
+                itemTotal+=item.Price*item.Count;
+                totalMoney=totalMoney+itemTotal;
+                cartHtml+="<tr><input class=\"form-control\" name=\"items["+i+"].saleId\" value='"+item.Id+"' type=\"hidden\">";
+                cartHtml+="<td><input class=\"form-control\"  value=\""+item.Name+"\" type=\"hidden\"><span id=\"specHtml"+item.Id+"\">"+item.Name+"</span></td>";
+                cartHtml+="<td><input class=\"form-control\" id=\"unit"+item.Id+"\"  name=\"items["+i+"].price\" value=\""+item.Price+"\" type=\"hidden\"><span id=\"unitHtml"+item.Id+"\">￥"+item.Price+"</span></td>";
+                cartHtml+="<td><input class=\"form-control\" id=\"sourceCount"+item.Id+"\" name=\"sourceCount\" value=\""+item.Count+"\"  type=\"hidden\" ><input class=\"form-control\" id=\"count"+item.Id+"\" name=\"items["+i+"].count\" value=\""+item.Count+"\"  onchange=\"countChange('"+item.Id+"')\" ></td>";
+                cartHtml+="<td><input class=\"form-control\" id=\"price"+item.Id+"\"   value=\""+itemTotal+"\" type=\"hidden\"><span id=\"priceHtml"+item.Id+"\">￥"+itemTotal+"</span></td>";
+                cartHtml+="<td><a href=\"javascript:toDelCart('"+item.Id+"')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\">删除</span></a></td>";
+                cartHtml+="</tr>";
+            }
+            totalMoney=Number(totalMoney)+Number(deliverFee);
+            cartHtml+="<tr id=\"deliverFeeTr\">";
+            cartHtml+="<td  colspan=\"4\" >运费</td>";
+            cartHtml+="<td  ><strong><span id=\"deliverFeeHtml\">"+deliverFee+"</span></strong>";
+            cartHtml+="</tr>";
+            cartHtml+="<tr >";
+            cartHtml+="<td   colspan=\"4\" >总计</td>";
+            cartHtml+="<td  ><strong> <input class=\"form-control\" id=\"totalPrice\"  name=\"price\" value='"+totalMoney+"' type=\"hidden\"><span id=\"totalPriceHtml\">￥"+totalMoney+"</span></td></strong>";
+            cartHtml+="</tr>";
+        }else{
+            cartHtml+="<tr>";
+            cartHtml+="<td ></td>";
+            cartHtml+="<td ></td>";
+            cartHtml+="<td ></td>";
+            cartHtml+="<td ></td>";
+            cartHtml+="<td >无购物车数据</td>";
+            cartHtml+="</tr>";
+            $('#addOrder').addClass('disabled');
+        }
+        $("#cartList").append(cartHtml);
+    }
+    function toDelCart(id){
+        var cartHelper =new CartHelper();
+        cartHelper.Del(id);
+        toCartShow();
+    }
+    function countChange(saleId){
+         var count= $("#count"+saleId).val();
+        if(/^\d+$/.test(count)){
+            var sourceCount=$("#sourceCount"+saleId).val();
+            if(sourceCount>count){
+                var unit=$("#unit"+saleId).val();
+                var minPrice=(sourceCount-count)*unit;
+                var price=$("#price"+saleId).val();
+                var totalPrice=$("#totalPrice").val();
+                $("#price"+saleId).val(count*unit);
+                $("#priceHtml"+saleId).html(count*unit);
+                var totalPriceHtml=totalPrice-minPrice;
+                $("#totalPrice").val(totalPrice-minPrice);
+                $("#totalPriceHtml").html(totalPriceHtml);
+                $("#sourceCount"+saleId).val(count);
+            }else if(sourceCount<count){
+                var unit=$("#unit"+saleId).val();
+                var price=$("#price"+saleId).val();
+                var minPrice=(count-sourceCount)*unit;
+                var totalPrice=$("#totalPrice").val();
+                $("#price"+saleId).val(count*unit);
+                $("#priceHtml"+saleId).html(count*unit);
+                $("#totalPrice").val(Number(totalPrice)+Number(minPrice));
+                var totalPriceHtml=Number(totalPrice)+Number(minPrice);
+                alert(totalPriceHtml);
+                $("#totalPriceHtml").html(totalPriceHtml);
+                $("#sourceCount"+saleId).val(count);
+            }
+        }else if(count<=0) {
+            alert("数量必须大于0");
+        }else{
+            alert("数量必须为正整数");
+        }
+
+    }
+    function changeDeliverFee(type){
+        if(type==1){
+            var sourceDeliverFee=$("#sourceDeliverFee").val();
+            $("#deliverFeeHtml").html("+"+sourceDeliverFee);
+            var deliverFee= sourceDeliverFee;
+            $("#deliverFee").val(deliverFee);
+            var totalPrice=$("#totalPrice").val();
+            $("#totalPrice").val(Number(totalPrice)+Number(sourceDeliverFee));
+            var totalPriceHtml=Number(totalPrice)+Number(sourceDeliverFee);
+            $("#totalPriceHtml").html(totalPriceHtml);
+        }else if(type==2){
+            var sourceDeliverFee=$("#sourceDeliverFee").val();
+            $("#deliverFeeHtml").html("+0.00");
+            $("#deliverFee").val("0.00");
+            var totalPrice=$("#totalPrice").val();
+            $("#totalPrice").val(Number(totalPrice)-Number(sourceDeliverFee));
+            var totalPriceHtml=Number(totalPrice)-Number(sourceDeliverFee);
+            $("#totalPriceHtml").html(totalPriceHtml);
+        }
+    }
+    toCartShow();
+    pagefunction();
+
+</script>
+
+</body>
+</html>

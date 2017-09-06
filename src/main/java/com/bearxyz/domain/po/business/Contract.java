@@ -1,6 +1,7 @@
 package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
+import sun.jvm.hotspot.types.basic.BasicOopField;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -45,6 +46,8 @@ public class Contract extends BaseDomain {
     private Boolean approved = false;
     @Column
     private Boolean expired = false;
+    @Column
+    private Boolean invalid = false;
 
     @Transient
     private String projectName = "";
@@ -265,5 +268,13 @@ public class Contract extends BaseDomain {
 
     public void setItems(List<Present> items) {
         this.items = items;
+    }
+
+    public Boolean getInvalid() {
+        return invalid;
+    }
+
+    public void setInvalid(Boolean invalid) {
+        this.invalid = invalid;
     }
 }

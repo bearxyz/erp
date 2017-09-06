@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
     <title></title>
+    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/summernote/summernote.css}"/>
 </head>
 <body>
 <div class="row">
@@ -146,6 +147,10 @@
                                 </section>
                                 <section>
                                     <label class="label">介绍：</label>
+                                    <label class="textarea">
+                                        <textarea id="content" name="content" class="summernote">
+                                </textarea>
+                                    </label>
                                 </section>
                             </fieldset>
                             <footer>
@@ -171,11 +176,22 @@
         </div>
     </div>
 </div>
+<script src="js/plugin/summernote/summernote.min.js"></script>
+<script src="js/plugin/summernote/summernote-zh-CN.min.js"></script>
 <script>
     var item_count = 0;
     pageSetUp();
 
     var pagefunction = function () {
+
+        $('.summernote').summernote({
+            height: 400,
+            focus: false,
+            tabsize: 2,
+            lang: 'zh-CN',
+            dialogsInBody: true,
+            dialogsFade: true,
+        });
 
         BindDictItem("category", "GOODS_NATURE", "", "[[${sale.category}]]");
         BindDictItem("project", "[[${sale.category}]]", "", "[[${sale.project}]]");

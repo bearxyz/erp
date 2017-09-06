@@ -141,4 +141,11 @@ public class SaleController {
         return "/sale/complete";
     }
 
+    @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    public String detail(@PathVariable("id")String id, Model model) {
+        Sale sale =service.getById(id);
+        model.addAttribute("sale",sale);
+        return "/sale/detail";
+    }
+
 }

@@ -70,7 +70,7 @@
                                 <section>
                                     <label class="label">要求：</label>
                                     <label class="textarea textarea-resizable">
-                                        <textarea class="custom-scroll" id="memo" name="memo" disabled="disabled"
+                                        <textarea class="custom-scroll" id="memo" name="memo"
                                         ></textarea>
                                     </label>
                                 </section>
@@ -110,11 +110,11 @@
             onsubmit: true,
             submitHandler: function () {
                 $.ajax({
-                    url: '/supportapply/apply',
+                    url: '/supportapply/create',
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function () {
-                        window.location = '#/supportapply/index';
+                        window.location = '#/support/index';
                     },
                     error: function (e) {
                         $.bigBox({

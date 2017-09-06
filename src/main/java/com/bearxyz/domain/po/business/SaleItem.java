@@ -24,6 +24,8 @@ public class SaleItem extends BaseDomain {
     private String unit = "";
     @Column(length = 36)
     private String packageId = "";
+    @Column
+    private Float salePrice = (float)0.0;
 
     @ManyToOne
     @JoinColumn(name = "SALE_ID")
@@ -94,5 +96,13 @@ public class SaleItem extends BaseDomain {
 
     public void setGoods(Goods goods) {
         this.goods = goods;
+    }
+
+    public Float getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(Float salePrice) {
+        this.salePrice = salePrice;
     }
 }

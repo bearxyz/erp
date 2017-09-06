@@ -19,6 +19,8 @@ public class Order extends BaseDomain {
     private String code = "";
     @Column
     private Float price = (float) 0.0;
+    @Column
+    private Float deliverFee=(float)0.0;
     @Column(length = 36)
     private String companyId = "";
     @Column(length = 50)
@@ -49,7 +51,7 @@ public class Order extends BaseDomain {
     @Column
     private String typeName = "";
 
-    @JsonIgnore
+
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "ORDER_ID")
     private List<OrderItem> items = new ArrayList<>();
@@ -229,6 +231,14 @@ public class Order extends BaseDomain {
 
     public String getSaleId() {
         return saleId;
+    }
+
+    public Float getDeliverFee() {
+        return deliverFee;
+    }
+
+    public void setDeliverFee(Float deliverFee) {
+        this.deliverFee = deliverFee;
     }
 
     public void setSaleId(String saleId) {
