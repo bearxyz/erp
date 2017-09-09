@@ -2,9 +2,11 @@ package com.bearxyz.controller;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
+import com.bearxyz.domain.po.business.Company;
 import com.bearxyz.domain.po.business.Contract;
 import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.business.Present;
+import com.bearxyz.repository.CompanyRepository;
 import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.service.business.ContractService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,6 +41,9 @@ public class ContractController {
     @Autowired
     private GoodsRepository goodsRepository;
 
+    @Autowired
+    private CompanyRepository companyRepository;
+
     @RequestMapping(value = "/complete")
     public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
         Contract purchasing = service.getById(bid);
@@ -69,6 +74,8 @@ public class ContractController {
 
     @RequestMapping(value = "/create/{id}", method = RequestMethod.GET)
     public String createRecord(@PathVariable("id")String id, Model model) {
+        Company company = companyRepository.findOne(id);
+        model.addAttribute("company", company);
         model.addAttribute("companyId", id);
         model.addAttribute("contract", new Contract());
         return "/contract/create";

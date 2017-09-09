@@ -63,8 +63,8 @@
                                 <th>地址</th>
                                 <th>联系人</th>
                                 <th>联系电话</th>
-                                <th>当前合同开始日期</th>
-                                <th>当前合同结束日期</th>
+                                <th>合同开始日期</th>
+                                <th>合同结束日期</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
@@ -113,7 +113,7 @@
             },
             "columns": [
                 {"data": "name"},
-                {"data": "address"},
+                {"data": "fullAddress"},
                 {"data": "contactor"},
                 {"data": "contactPhone"},
                 {"data": "currentStartDate", render: CONSTANT.DATA_TABLES.RENDER.DATE},
@@ -139,6 +139,7 @@
             },
             "drawCallback": function (oSettings) {
                 responsiveHelper_dt_basic.respond();
+                runAllCharts();
             },
             "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
         });

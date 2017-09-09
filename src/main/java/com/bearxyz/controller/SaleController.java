@@ -2,9 +2,7 @@ package com.bearxyz.controller;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
-import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.business.Sale;
-import com.bearxyz.domain.po.business.SaleItem;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.SaleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -68,14 +66,6 @@ public class SaleController {
         return mapper.writeValueAsString(foruses);
     }
 
-    @ResponseBody
-    @RequestMapping(value = "/getItems", method = RequestMethod.POST)
-    public String getItems(@RequestParam("id")String id) throws JsonProcessingException{
-        List<SaleItem> results = service.getItemsBySaleId(id);
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(results);
-    }
-
     @RequestMapping(value = "/apply", method = RequestMethod.GET)
     public String apply(Model model) {
         model.addAttribute("sale", new Sale());
@@ -95,10 +85,6 @@ public class SaleController {
     public String reApply(@PathVariable("id")String id, Model model) {
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
         Sale sale = service.getById(id);
-        for (SaleItem item : sale.getItems()) {
-            Goods goods = goodsService.getById(item.getGoodsId());
-            item.setGoods(goods);
-        }
         model.addAttribute("sale", sale);
         model.addAttribute("taskId", task.getId());
         model.addAttribute("taskKey", task.getTaskDefinitionKey());
@@ -125,10 +111,6 @@ public class SaleController {
     @RequestMapping(value = "/complete", method = RequestMethod.GET)
     public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
         Sale sale = service.getById(bid);
-        for (SaleItem item : sale.getItems()) {
-            Goods goods = goodsService.getById(item.getGoodsId());
-            item.setGoods(goods);
-        }
         model.addAttribute("sale", sale);
         String memo = "";
         model.addAttribute("applyer", applyer);

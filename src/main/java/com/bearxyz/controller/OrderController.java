@@ -66,6 +66,8 @@ public class OrderController {
         Sale sale = null;
         if (order.getSaleId() != null) sale = saleRepository.findOne(order.getSaleId());
         if (sale != null && !sale.getCategory().equals("GOODS_NORMAL")) {
+            sale.setBuyer(sale.getBuyer()+1);
+            saleRepository.save(sale);
             saleRepository.insertCompanyUser(order.getCompanyId(), sale.getId(), sale.getCategory());
         } else {
             Stock stock = new Stock();
@@ -76,15 +78,8 @@ public class OrderController {
             stock.setDeliverAddress(order.getProvince() + order.getCity() + order.getDistrict() + order.getAddress());
             for (OrderItem item : order.getItems()) {
                 Sale s = saleRepository.findOne(item.getSaleId());
-                for (SaleItem i : s.getItems()) {
-                    StockItem it = new StockItem();
-                    it.setGoodsId(i.getGoodsId());
-                    it.setUnit(item.getUnit());
-                    it.setPrice(i.getSalePrice());
-                    it.setAmmount(i.getAmmount());
-                    it.setCount(item.getCount() * i.getCount());
-                    stock.getItems().add(it);
-                }
+                s.setBuyer(s.getBuyer()+item.getCount());
+                saleRepository.save(s);
             }
             stock.setOrderId(order.getId());
             stockRepository.save(stock);

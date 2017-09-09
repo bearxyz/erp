@@ -123,6 +123,7 @@ public class ClientController {
                 c.setCurrentStartDate(contract.getStartDate());
                 c.setCurrentEndDate(contract.getEndDate());
             }
+            c.setFullAddress(c.getProvince()+c.getCity()+c.getDistrict()+c.getAddress());
         }
         companys.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();

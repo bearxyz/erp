@@ -37,15 +37,6 @@
                                     <a href="#ss1" data-toggle="tab"><i class="fa fa-info"></i> 基本信息</a>
                                 </li>
                                 <li>
-                                    <a href="#ss2" data-toggle="tab"><i class="fa fa-money"></i> 财务情况</a>
-                                </li>
-                                <!--<li>
-                                    <a href="#ss3" data-toggle="tab"><i class="fa fa-user"></i> 人员情况</a>
-                                </li>-->
-                                <li>
-                                    <a href="#ss4" data-toggle="tab"><i class="fa fa-info"></i> 主观信息</a>
-                                </li>
-                                <li>
                                     <a href="#ss5" data-toggle="tab"><i class="fa fa-info"></i> 沟通记录</a>
                                 </li>
                                 <li>
@@ -55,244 +46,104 @@
                             <div id="myTabContent" class="tab-content">
                                 <div class="tab-pane fade in active" id="ss1">
                                     <fieldset>
-                                        <div class="row">
-                                            <section class="col col-4">
-                                                <label class="input">
-                                                    <input type="text" name="name" id="name" placeholder="学校名称"
-                                                           th:value="${company.name}"/>
-                                                </label>
-                                            </section>
-                                            <section class="col col-4">
-                                                <label class="select">
-                                                    <select type="text" name="type" id="type"></select><i></i>
-                                                </label>
-                                            </section>
-                                            <section class="col col-4">
-                                                <label class="select">
-                                                    <select type="text" name="managementModel"
-                                                            id="managementModel"></select><i></i>
-                                                </label>
-                                            </section>
-                                        </div>
-                                        <div class="row" id="dist1">
-                                            <section class="col col-2">
-                                                <label class="select"><select name="province">
-                                                </select><i></i></label>
-                                            </section>
-                                            <section class="col col-2">
-                                                <label class="select"><select name="city">
-                                                </select><i></i></label>
-                                            </section>
-                                            <section class="col col-2">
-                                                <label class="select"><select name="district">
-                                                </select><i></i></label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="input">
-                                                    <input type="text" name="address" id="address" placeholder="详细地址"
-                                                           th:value="${company.address}"/>
-                                                </label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-2">
-                                                <label class="input"><input type="text" name="numberOfTeacher"
-                                                                            id="numberOfTeacher" placeholder="员工人数"
-                                                                            th:value="${company.numberOfTeacher}"/></label>
-                                            </section>
-                                            <section class="col col-3">
-                                                <label class="input"><input type="text" name="numberOfFulltime"
-                                                                            id="numberOfFulltime"
-                                                                            placeholder="专职作文教师人数"
-                                                                            th:value="${company.numberOfFulltime}"/></label>
-                                            </section>
-                                            <section class="col col-3">
-                                                <label class="input"><input type="text" name="numberOfParttime"
-                                                                            id="numberOfParttime"
-                                                                            placeholder="兼职作文教师人数"
-                                                                            th:value="${company.numberOfParttime}"/></label>
-                                            </section>
-                                            <section class="col col-2">
-                                                <label class="input"><input type="text" name="numberOfOtherTeacher"
-                                                                            id="numberOfOtherTeacher"
-                                                                            placeholder="其他教师人数"
-                                                                            th:value="${company.numberOfOtherTeacher}"/></label>
-                                            </section>
-                                            <section class="col col-2">
-                                                <label class="input"><input type="text" name="numberOfOther"
-                                                                            id="numberOfOther"
-                                                                            placeholder="其他岗位人数"
-                                                                            th:value="${company.numberOfOther}"/></label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-3">
-                                                <label class="select">
-                                                    <select type="text" name="position" id="position"></select><i></i>
-                                                </label>
-                                            </section>
-                                            <section class="col col-3">
-                                                <label class="select">
-                                                    <select type="text" name="planning" id="planning"></select><i></i>
-                                                </label>
-                                            </section>
-                                            <section class="col col-3">
-                                                <label class="select">
-                                                    <select type="text" name="scale" id="scale"></select><i></i>
-                                                </label>
-                                            </section>
-                                            <section class="col col-3">
-                                                <label class="input"><input type="text" name="license" id="license"
-                                                                            placeholder="办学许可证"
-                                                                            th:value="${company.license}"/></label>
-                                            </section>
-                                        </div>
-                                    </fieldset>
-                                    <fieldset>
-                                        <div class="row" id="dist2">
-                                            <section class="col col-2">
-                                                <label class="select"><select name="consultProvince">
-                                                </select><i></i></label>
-                                            </section>
-                                            <section class="col col-2">
-                                                <label class="select"><select name="consultCity">
-                                                </select><i></i></label>
-                                            </section>
-                                            <section class="col col-2">
-                                                <label class="select"><select name="consultDistrict">
-                                                </select><i></i></label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="input"><input id="consultProject" name="consultProject"
-                                                                            type="text"
-                                                                            placeholder="咨询项目"
-                                                                            th:value="${company.consultProject}"/></label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="input"><input id="contactor" name="contactor"
-                                                                            type="text"
-                                                                            placeholder="联系人"
-                                                                            th:value="${company.contactor}"/></label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="input"><input id="contactPhone" name="contactPhone"
-                                                                            type="text"
-                                                                            placeholder="联系电话"
-                                                                            th:value="${company.contactPhone}"/></label>
-                                            </section>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                                <div class="tab-pane fade" id="ss2">
-                                    <fieldset>
-                                        <div class="row">
-                                            <section class="col col-4">
-                                                <label class="select">
-                                                    <select type="text" name="payment" id="payment"></select><i></i>
-                                                </label>
-                                            </section>
-                                            <section class="col col-4">
-                                                <label class="select">
-                                                    <select type="text" name="bank" id="bank"></select><i></i>
-                                                </label>
-                                            </section>
-                                            <section class="col col-4">
-                                                <label class="select">
-                                                    <select type="text" name="credit" id="credit"></select><i></i>
-                                                </label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-4">
-                                                <label class="select">
-                                                    <select type="text" name="fund" id="fund"></select><i></i>
-                                                </label>
-                                            </section>
-                                            <section class="col col-4">
-                                                <label class="select">
-                                                    <select type="text" name="attitudeOfPayment"
-                                                            id="attitudeOfPayment"></select><i></i>
-                                                </label>
-                                            </section>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                                <div class="tab-pane fade" id="ss3"></div>
-                                <div class="tab-pane fade" id="ss4">
-                                    <fieldset>
-
-                                        <section>
-                                            <label class="textarea textarea-resizable">
-                                                <textarea class="custom-scroll" placeholder="原因" name="relationReason"
-                                                          id="relationReason">[[${company.relationReason}]]</textarea>
+                                    <div class="row">
+                                        <section class="col col-4">
+                                            <label class="label">客户来源：</label>
+                                            <label class="select">
+                                                <select name="comeFrom" id="comeFrom" th:value="${company.comeFrom}"></select><i></i>
                                             </label>
                                         </section>
+                                        <section class="col col-4">
+                                            <label class="label">学校名称：</label>
+                                            <label class="input">
+                                                <input type="text" name="name" id="name" th:value="${company.name}"/>
+                                            </label>
+                                        </section>
+                                        <section class="col col-4">
+                                            <label class="label">主营项目：</label>
+                                            <label class="input">
+                                                <input type="text" name="majorProject" id="majorProject" th:value="${company.majorProject}"/>
+                                            </label>
+                                        </section>
+                                    </div>
+                                    <div class="row" id="dist2">
+                                        <section class="col col-3">
+                                            <label class="label">咨询区域（省）：</label>
+                                            <label class="select"><select name="consultProvince">
+                                            </select><i></i></label>
+                                        </section>
+                                        <section class="col col-3">
+                                            <label class="label">咨询区域（市）：</label>
+                                            <label class="select"><select name="consultCity">
+                                            </select><i></i></label>
+                                        </section>
+                                        <section class="col col-3">
+                                            <label class="label">咨询区域（区）：</label>
+                                            <label class="select"><select name="consultDistrict">
+                                            </select><i></i></label>
+                                        </section>
+                                        <section class="col col-3">
+                                            <label class="label">咨询项目：</label>
+                                            <label class="select"><select id="consultProject"
+                                                                          name="consultProject"></select><i></i></label>
+                                        </section>
+                                    </div>
+                                    <div class="row" id="dist1">
+                                        <section class="col col-2">
+                                            <label class="label">通讯地址（省）：</label>
+                                            <label class="select"><select name="province">
+                                            </select><i></i></label>
+                                        </section>
+                                        <section class="col col-2">
+                                            <label class="label">通讯地址（市）：</label>
+                                            <label class="select"><select name="city">
+                                            </select><i></i></label>
+                                        </section>
+                                        <section class="col col-2">
+                                            <label class="label">通讯地址（区）：</label>
+                                            <label class="select"><select name="district">
+                                            </select><i></i></label>
+                                        </section>
+                                        <section class="col col-6">
+                                            <label class="label">通讯地址（街道门牌号）：</label>
+                                            <label class="input">
+                                                <input type="text" name="address" id="address" th:value="${company.address}"/>
+                                            </label>
+                                        </section>
+                                    </div>
 
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="对客户的了解程度" name="understandingLevel"
-                                          id="understandingLevel" th:value="${company.understandingLevel}"></textarea>
-                                                </label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll" placeholder="客户对总部的态度"></textarea>
-                                                </label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll" placeholder="客户长期事业目标"></textarea>
-                                                </label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll" placeholder="客户短期事业目标"></textarea>
-                                                </label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll" placeholder="客户目前最关切的"></textarea>
-                                                </label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll" placeholder="客户更多思考的"></textarea>
-                                                </label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll" placeholder="客户对什么特别有意见"></textarea>
-                                                </label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll" placeholder="客户最热衷"></textarea>
-                                                </label>
-                                            </section>
-                                        </div>
-                                        <div class="row">
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll"
-                                                              placeholder="在客户眼中最关键的问题"></textarea>
-                                                </label>
-                                            </section>
-                                            <section class="col col-6">
-                                                <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll"
-                                                              placeholder="客户面临竞争（主要对手、竞争状况、客户对策）"></textarea>
-                                                </label>
-                                            </section>
-                                        </div>
+                                    <div class="row">
+                                        <section class="col col-4">
+                                            <label class="label">校区面积：</label>
+                                            <label class="input"><input id="area" name="area" th:value="${company.area}"/></label>
+                                        </section>
+                                        <section class="col col-4">
+                                            <label class="label">校区数量：</label>
+                                            <label class="input"><input id="schoolCount" name="schoolCount" class="number" th:value="${company.schoolCount}"/></label>
+                                        </section>
+                                        <section class="col col-4">
+                                            <label class="label">单期人数：</label>
+                                            <label class="input"><input id="manCount" name="manCount" class="number" th:value="${company.manCount}"/></label>
+                                        </section>
+                                    </div>
+
+                                    <div class="row">
+                                        <section class="col col-3">
+                                            <label class="label">区域状态：</label>
+                                            <label class="select"><select id="districtStatus"
+                                                                          name="districtStatus"></select><i></i></label>
+                                        </section>
+                                        <section class="col col-4">
+                                            <label class="label">联系人：</label>
+                                            <label class="input"><input id="contactor" name="contactor"
+                                                                        type="text" th:value="${company.contactor}"/></label>
+                                        </section>
+                                        <section class="col col-4">
+                                            <label class="label">联系电话：</label>
+                                            <label class="input"><input id="contactPhone" name="contactPhone"
+                                                                        type="text" th:value="${company.contactPhone}"/></label>
+                                        </section>
+                                    </div>
                                     </fieldset>
                                 </div>
                                 <div class="tab-pane fade" id="ss5">
@@ -379,17 +230,9 @@
             district: [[${company.consultDistrict}]]
         });
 
-        BindDictItem("type", "COMPANY_TYPE", "学校类型", [[${company.type}]]);
-        BindDictItem("managementModel", "MANAGEMENT_MODEL", "经营模式", [[${company.managementModel}]]);
-        BindDictItem("position", "POSITION", "同行地位", [[${company.position}]]);
-        BindDictItem("planning", "PLANNING", "发展规划", [[${company.planning}]]);
-        BindDictItem("scale", "SCALE", "校区规模", [[${company.scale}]]);
-
-        BindDictItem("payment", "PAYMENT", "支付方式", [[${company.payment}]]);
-        BindDictItem("bank", "BANK", "常用银行", [[${company.bank}]]);
-        BindDictItem("credit", "CREDIT", "信用情况", [[${company.credit}]]);
-        BindDictItem("fund", "FUND", "资金情况", [[${company.fund}]]);
-        BindDictItem("attitudeOfPayment", "PAYMENT_ATTITUDE", "付款态度", [[${company.attitudeOfPayment}]]);
+        BindDictItem("comeFrom", "COME_FROM", "",[[${company.comeFrom}]]);
+        BindDictItem("districtStatus", "DISCTRIC_STATUS", "",[[${company.districtStatus}]]);
+        BindDictItem("consultProject", "PROJECT_TYPE", "",[[${company.consultProject}]]);
 
         var responsiveHelper_dt_basic = undefined;
         var breakpointDefinition = {tablet: 1024, phone: 480};

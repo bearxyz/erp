@@ -51,52 +51,134 @@
 
                                     </div>
                                 </section>
-                                <section>
-                                    <label class="input">
-                                        <input id="presentAddress" name="presentAddress" placeholder="赠品收货地址"/>
-                                    </label>
-                                </section>
                             </fieldset>
                             <fieldset>
                                 <div class="row">
                                     <section class="col col-6">
+                                        <label class="label">签约项目：</label>
                                         <label class="select">
                                             <select name="project" id="project"></select><i></i>
                                         </label>
                                     </section>
                                     <section class="col col-6">
+                                        <label class="label">合同名称：</label>
                                         <label class="input">
-                                            <input type="text" name="title" id="title" placeholder="合同名称"/>
+                                            <input type="text" name="title" id="title" />
                                         </label>
                                     </section>
                                 </div>
                                 <div class="row">
                                     <section class="col col-6">
+                                        <label class="label">签约类型：</label>
                                         <label class="select">
                                             <select name="agentType" id="agentType"></select><i></i>
                                         </label>
                                     </section>
                                     <section class="col col-6">
+                                        <label class="label">代理级别：</label>
                                         <label class="select">
                                             <select name="agentLevel" id="agentLevel"></select><i></i>
                                         </label>
                                     </section>
                                 </div>
+                                <div class="row">
+                                    <section class="col col-3">
+                                        <label class="label">合同签署人：</label>
+                                        <label class="input"><input id="signPerson" name="signPerson"
+                                                                    type="text" th:value="${company.contactor}"/></label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">联系电话：</label>
+                                        <label class="input"><input id="signPhone" name="signPhone"
+                                                                    type="text" th:value="${company.contactPhone}"/></label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">身份证号：</label>
+                                        <label class="input"><input id="signId" name="signId"
+                                                                    type="text" /></label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">QQ邮箱：</label>
+                                        <label class="input"><input id="signEmail" name="signEmail"
+                                                                    type="text" /></label>
+                                    </section>
+                                </div>
+                                <div class="row" id="dist1">
+                                    <section class="col col-2">
+                                        <label class="label">通讯地址（省）：</label>
+                                        <label class="select"><select name="signProvince" id="agentProvince">
+                                        </select><i></i></label>
+                                    </section>
+                                    <section class="col col-2">
+                                        <label class="label">通讯地址（市）：</label>
+                                        <label class="select"><select name="signCity">
+                                        </select><i></i></label>
+                                    </section>
+                                    <section class="col col-2">
+                                        <label class="label">通讯地址（区）：</label>
+                                        <label class="select"><select name="signDistrict">
+                                        </select><i></i></label>
+                                    </section>
+                                    <section class="col col-6">
+                                        <label class="label">通讯地址（街道门牌号）：</label>
+                                        <label class="input">
+                                            <input type="text" name="signAddress" id="signAddress" th:value="${company.address}"/>
+                                        </label>
+                                    </section>
+                                </div>
+                                <div class="row" id="dist2">
+                                    <section class="col col-4">
+                                        <label class="label">代理区域（省）：</label>
+                                        <label class="select"><select name="agentProvince">
+                                        </select><i></i></label>
+                                    </section>
+                                    <section class="col col-4">
+                                        <label class="label">代理区域（市）：</label>
+                                        <label class="select"><select name="agentCity">
+                                        </select><i></i></label>
+                                    </section>
+                                    <section class="col col-4">
+                                        <label class="label">代理区域（区）：</label>
+                                        <label class="select"><select name="agentDistrict">
+                                        </select><i></i></label>
+                                    </section>
+                                </div>
+                                <section>
+                                    <div class="row">
+                                        <section class="col col-4">
+                                            <label class="label">合同起始日期：</label>
+                                            <label class="input">
+                                                <i class="icon-append fa fa-calendar"></i>
+                                                <input id="startDate" class="hasDatepicker" name="startDate" type="text">
+                                            </label>
+                                        </section>
+                                        <section class="col col-4">
+                                            <label class="label">合同终止日期：</label>
+                                            <label class="input">
+                                                <i class="icon-append fa fa-calendar"></i>
+                                                <input id="endDate" class="hasDatepicker" name="endDate" type="text">
+                                            </label>
+                                        </section>
+                                        <section class="col col-4">
+                                            <label class="label">合同时长(年)：</label>
+                                            <label class="input">
+                                                <input type="text" name="duration" id="duration" class="number" />
+                                            </label>
+                                        </section>
+                                    </div>
+                                </section>
                                 <section>
                                     <div class="row">
                                         <section class="col col-6">
+                                            <label class="label">品牌使用费：</label>
                                             <label class="input">
-                                                <i class="icon-append fa fa-calendar"></i>
-                                                <input id="startDate" class="hasDatepicker" name="startDate"
-                                                       placeholder="合同生效日期"
-                                                       type="text">
+                                                <input type="text" name="fee" id="fee" class="number" />
                                             </label>
                                         </section>
                                         <section class="col col-6">
+                                            <label class="label">预存教材款：</label>
                                             <label class="input">
-                                                <i class="icon-append fa fa-calendar"></i>
-                                                <input id="endDate" class="hasDatepicker" name="endDate"
-                                                       placeholder="合同到期日期" type="text">
+                                                <input type="text" name="prestore" id="prestore" class="number" />
                                             </label>
                                         </section>
                                     </div>
@@ -135,16 +217,27 @@
     </div>
 </div>
 <!-- /.modal -->
-
-<script>
+<script th:src="@{js/distpicker.js}"></script>
+<script th:inline="javascript">
     var item_count = 0;
     pageSetUp();
 
     var pagefunction = function () {
 
-        BindDictItem("project", "PROJECT_TYPE", "代理项目");
-        BindDictItem("agentType", "CONTRACT_TYPE", "签约类型");
-        BindDictItem("agentLevel", "CLIENT_LEVEL_TYPE", "代理级别");
+        $("#dist1").distpicker({
+            province: [[${company.province}]],
+            city: [[${company.city}]],
+            district: [[${company.district}]]
+        });
+        $("#dist2").distpicker({
+            province: [[${company.consultProvince}]],
+            city: [[${company.consultCity}]],
+            district: [[${company.consultDistrict}]]
+        });
+
+        BindDictItem("project", "PROJECT_TYPE", "");
+        BindDictItem("agentType", "CONTRACT_TYPE", "");
+        BindDictItem("agentLevel", "CLIENT_LEVEL_TYPE", "");
 
         var $form1 = $("#form_1").validate({
             rules: {

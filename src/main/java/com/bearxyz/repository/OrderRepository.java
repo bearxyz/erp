@@ -14,4 +14,6 @@ public interface OrderRepository extends JpaRepository<Order, String>, JpaSpecif
 
     @Query(value="SELECT o.*  FROM T_ORDER o   WHERE o.STATUS=?1 and o.COMPANY_ID=?2",nativeQuery = true)
     List<Order> getOrderByStateList(int status, String companyId);
+
+    Integer countOrderByCompanyIdAndStatus(String companyId, Integer Status);
 }

@@ -30,6 +30,7 @@ public class ShiroService {
         filterChainDefinitionMap.put("/public/**", "anon");
         filterChainDefinitionMap.put("/api/**", "anon");
         filterChainDefinitionMap.put("/favicon.ico","anon");
+        filterChainDefinitionMap.put("/soft/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/css/**", "anon");
         filterChainDefinitionMap.put("/img/**", "anon");

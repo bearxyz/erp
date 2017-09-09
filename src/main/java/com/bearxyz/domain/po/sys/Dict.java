@@ -32,6 +32,9 @@ public class Dict extends BaseDomain {
     @Column(length = 50)
     private String value;
 
+    @Column
+    private Float discount = (float)0.0;
+
     @Transient
     private boolean has = false;
 
@@ -81,5 +84,13 @@ public class Dict extends BaseDomain {
 
     public void setHas(boolean has) {
         this.has = has;
+    }
+
+    public Float getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Float discount) {
+        this.discount = discount;
     }
 }

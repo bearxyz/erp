@@ -20,6 +20,36 @@ public class Contract extends BaseDomain {
     private static final long serialVersionUID = -1352768149673334271L;
 
     @Column(length = 50)
+    private String signPerson = "";
+    @Column(length = 50)
+    private String signPhone = "";
+    @Column(length = 50)
+    private String signId = "";
+    @Column(length = 50)
+    private String signEmail = "";
+    @Column(length = 50)
+    private String signProvince = "";
+    @Column(length = 50)
+    private String signCity = "";
+    @Column(length = 50)
+    private String signDistrict = "";
+    @Column(length = 50)
+    private String signAddress = "";
+    @Column
+    private Float fee = (float) 0.0;
+    @Column
+    private Float prestore = (float) 0.0;
+    @Column(length = 50)
+    private String agentProvince = "";
+    @Column(length = 50)
+    private String agentCity = "";
+    @Column(length = 50)
+    private String agentDistrict = "";
+    @Column(length = 50)
+    private String agentAddress="";
+    @Column
+    private Integer duration = 0;
+    @Column(length = 50)
     private String project = "";
     @Column(length = 50)
     private String title = "";
@@ -47,6 +77,8 @@ public class Contract extends BaseDomain {
     private Boolean expired = false;
     @Column
     private Boolean invalid = false;
+    @Column
+    private Float goal = (float) 0.0;
 
     @Transient
     private String projectName = "";
@@ -275,5 +307,133 @@ public class Contract extends BaseDomain {
 
     public void setInvalid(Boolean invalid) {
         this.invalid = invalid;
+    }
+
+    public Float getGoal() {
+        return goal;
+    }
+
+    public void setGoal(Float goal) {
+        this.goal = goal;
+    }
+
+    public String getSignPerson() {
+        return signPerson;
+    }
+
+    public void setSignPerson(String signPerson) {
+        this.signPerson = signPerson;
+    }
+
+    public String getSignPhone() {
+        return signPhone;
+    }
+
+    public void setSignPhone(String signPhone) {
+        this.signPhone = signPhone;
+    }
+
+    public String getSignId() {
+        return signId;
+    }
+
+    public void setSignId(String signId) {
+        this.signId = signId;
+    }
+
+    public String getSignEmail() {
+        return signEmail;
+    }
+
+    public void setSignEmail(String signEmail) {
+        this.signEmail = signEmail;
+    }
+
+    public String getSignProvince() {
+        return signProvince;
+    }
+
+    public void setSignProvince(String signProvince) {
+        this.signProvince = signProvince;
+    }
+
+    public String getSignCity() {
+        return signCity;
+    }
+
+    public void setSignCity(String signCity) {
+        this.signCity = signCity;
+    }
+
+    public String getSignDistrict() {
+        return signDistrict;
+    }
+
+    public void setSignDistrict(String signDistrict) {
+        this.signDistrict = signDistrict;
+    }
+
+    public String getSignAddress() {
+        return signAddress;
+    }
+
+    public void setSignAddress(String signAddress) {
+        this.signAddress = signAddress;
+    }
+
+    public Float getFee() {
+        return fee;
+    }
+
+    public void setFee(Float fee) {
+        this.fee = fee;
+    }
+
+    public Float getPrestore() {
+        return prestore;
+    }
+
+    public void setPrestore(Float prestore) {
+        this.prestore = prestore;
+    }
+
+    public String getAgentProvince() {
+        return agentProvince;
+    }
+
+    public void setAgentProvince(String agentProvince) {
+        this.agentProvince = agentProvince;
+    }
+
+    public String getAgentCity() {
+        return agentCity;
+    }
+
+    public void setAgentCity(String agentCity) {
+        this.agentCity = agentCity;
+    }
+
+    public String getAgentDistrict() {
+        return agentDistrict;
+    }
+
+    public void setAgentDistrict(String agentDistrict) {
+        this.agentDistrict = agentDistrict;
+    }
+
+    public Integer getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+
+    public String getAgentAddress() {
+        return agentAddress;
+    }
+
+    public void setAgentAddress(String agentAddress) {
+        this.agentAddress = agentAddress;
     }
 }

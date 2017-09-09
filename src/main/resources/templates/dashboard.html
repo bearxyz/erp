@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lxmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
->
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta charset="UTF-8">
     <title></title>
@@ -20,24 +20,26 @@
                     <tbody>
                     <tr th:each="notice:${notices}">
                         <td><h4><a th:href="${'#/notice/read/'+notice.id}">[[${notice.title}]]</a></h4></td>
-                        <td class="hidden-xs hidden-sm"><small><i>[[${notice.datetime}]]</i></small></td>
+                        <td class="hidden-xs hidden-sm">
+                            <small><i>[[${notice.datetime}]]</i></small>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </article>
-            <article id="shortcut" class="col-lg-12">
-                <ul>
-                    <li th:each="perm: ${permissions}">
-                        <a class="jarvismetro-tile big-cubes bg-color-purple" th:href="${'#'+perm.url}">
+        <article id="shortcut" class="col-lg-12">
+            <ul>
+                <li th:each="perm: ${permissions}">
+                    <a class="jarvismetro-tile big-cubes bg-color-purple" th:href="${'#'+perm.url}">
                             <span class="iconbox">
                                 <i th:class="${'fa fa-4x '+perm.css}"></i>
                                 <span>[[${perm.name}]]</span>
                             </span>
-                        </a>
-                    </li>
-                </ul>
-            </article>
+                    </a>
+                </li>
+            </ul>
+        </article>
     </article>
     <article class="col-sm-12 col-md-5 col-lg-3">
         <div class="panel panel-default">
@@ -47,7 +49,8 @@
                 </div>
                 <div class="who clearfix" th:each="task: ${tasks}">
                     <img src="img/avatars/female.png" alt="img">
-                    <span class="name font-sm"> <span class="text-muted">申请人:</span> <b> [[${task.applyer}]] <span class="pull-right font-xs text-muted"><i>[[${task.createDate}]]</i></span> </b>
+                    <span class="name font-sm"> <span class="text-muted">申请人:</span> <b> [[${task.applyer}]] <span
+                            class="pull-right font-xs text-muted"><i>[[${task.createDate}]]</i></span> </b>
 							<br>
 							<a href="#/common/task/todo" class="font-md">[[${task.name}]]</a> </span>
                 </div>
@@ -56,16 +59,87 @@
     </article>
 </div>
 
-<div class="row" th:if="${user.type!='USER_TYPE_SYSTEM'}">
+<div class="row" shiro:hasRole="ROLE_AGENT">
 
     <article class="col-sm-12 col-md-7 col-lg-9">
+        <div class="row">
 
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="well well-sm well-light">
+                    <h4 class="txt-color-blue"><span class="semi-bold">待支付订单</span></h4>
+                    <br>
+                    <div class="text-center">
+                        您当前有<h1 txt-color-blue><span class="semi-bold">[[${orderCount}]]</span></h1>个待支付订单
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="well well-sm well-light">
+                    <h4 class="txt-color-blue"><span class="semi-bold">合同截止日期</span></h4>
+                    <br>
+                    <div class="text-center">
+                        当前合同至<h1 txt-color-blue><span class="semi-bold">[[${contract.endDate}]]</span></h1>有效
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-4">
+                <div class="well well-sm well-light">
+                    <h4 class="txt-color-blue"><span class="semi-bold">处理中的工单</span></h4>
+                    <br>
+                    <div class="text-center">
+                        您当前有<h1 txt-color-blue><span class="semi-bold">[[${workCount}]]</span></h1>项正在处理的工单
+                    </div>
+                </div>
+            </div>
+        </div>
+        <article id="shortcut" class="col-lg-12">
+            <ul>
+                <li th:each="perm: ${permissions}">
+                    <a class="jarvismetro-tile big-cubes bg-color-purple" th:href="${'#'+perm.url}">
+                            <span class="iconbox">
+                                <i th:class="${'fa fa-4x '+perm.css}"></i>
+                                <span>[[${perm.name}]]</span>
+                            </span>
+                    </a>
+                </li>
+            </ul>
+        </article>
     </article>
 
     <article class="col-sm-12 col-md-5 col-lg-3">
-
+        <div class="panel panel-default">
+            <div class="panel-body status">
+                <div class="who clearfix">
+                    <h4><i class="fa fa-globe fa-lg text-muted"></i> 公告</h4>
+                </div>
+                <div class="who clearfix" th:each="notice:${notices}">
+                    <span class="name font-sm"><a th:href="@{'#/notice/read/'+${notice.id}}" class="font-md">[[${notice.title}]]</a>
+                     <b>  <span class="pull-right font-xs text-muted"><i>[[${notice.dateCeated}]]</i></span> </b><br>
+                </span>
+                </div>
+            </div>
+        </div>
     </article>
 
+</div>
+
+<div class="row" shiro:hasAnyRoles="ROLE_TEACHER,ROLE_AGENT_SEC">
+    <article class="col-md-12">
+        <article id="shortcut" class="col-lg-12">
+            <ul>
+                <li th:each="perm: ${permissions}">
+                    <a class="jarvismetro-tile big-cubes bg-color-purple" th:href="${'#'+perm.url}">
+                            <span class="iconbox">
+                                <i th:class="${'fa fa-4x '+perm.css}"></i>
+                                <span>[[${perm.name}]]</span>
+                            </span>
+                    </a>
+                </li>
+            </ul>
+        </article>
+    </article>
 </div>
 </body>
 </html>

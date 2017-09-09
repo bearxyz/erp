@@ -20,4 +20,7 @@ public interface SaleRepository extends JpaRepository<Sale,String>, JpaSpecifica
     @Query(value = "insert into T_USER_SALE(COMPANY_ID, SALE_ID, CATEGORY) values(?1,?2,?3)", nativeQuery = true)
     void insertCompanyUser(String companyId, String saleId, String category);
 
+    @Query
+    List<Sale> findAllByCategoryAndOnSale(String category, boolean onSale);
+
 }

@@ -33,8 +33,6 @@ public class SaleService {
     @Autowired
     private SaleRepository repository;
     @Autowired
-    private SaleItemRepository itemRepository;
-    @Autowired
     private SaleAttachmentService saleAttachmentService;
     @Autowired
     private PictureService pictureService;
@@ -48,11 +46,6 @@ public class SaleService {
     private PackageRepository packageRepository;
     @Autowired
     private ConfigRepository configRepository;
-
-    public List<SaleItem> getItemsBySaleId(String id) {
-        Sale sale = repository.findOne(id);
-        return sale.getItems();
-    }
 
     public void apply(Sale sale, List<MultipartFile> pics, List<MultipartFile> files) throws IOException {
         save(sale, pics, files);
@@ -90,19 +83,6 @@ public class SaleService {
                     sale.getResources().add(attachment);
             }
         }
-        for (SaleItem item : sale.getItems()) {
-            Goods goods = goodsRepository.findOne(item.getGoodsId());
-            if (item.getPackageId() != null && !item.getPackageId().isEmpty()) {
-                Package pkg = packageRepository.findOne(item.getPackageId());
-                item.setSpec(goods.getModel());
-                item.setUnit(pkg.getPackageUnit());
-                item.setAmmount(pkg.getAmmount() * item.getCount());
-            } else {
-                item.setSpec(goods.getModel());
-                item.setUnit(goods.getUnit());
-                item.setAmmount(item.getCount());
-            }
-        }
         repository.save(sale);
     }
 
@@ -130,11 +110,9 @@ public class SaleService {
             dict = sysService.getDictByMask(sale.getCategory());
             if (dict != null)
                 sale.setCategoryName(dict.getName());
-            for (SaleItem item : sale.getItems()) {
-                Goods goods = goodsRepository.findOne(item.getGoodsId());
-                if (goods.getStock() <= config.getStockAlert())
-                    stock = "危险";
-            }
+            Goods goods = goodsRepository.findOne(sale.getGoodsId());
+            if (goods.getStock() <= config.getStockAlert())
+                stock = "危险";
             sale.setStock(stock);
         }
 
@@ -154,16 +132,17 @@ public class SaleService {
         repository.save(sale);
     }
 
-    public List<Sale> getSaleList(){
+    public List<Sale> getSaleList() {
         return repository.findAll();
     }
 
-    public List<Sale> getSaleByTypeList(String companyId,String category){
-        if(category !=null && (!category.equals(""))){
-            return repository.findSalesByCompanyIdAndCategory(companyId,category);
-        }else{
-            return repository.findAll();
-        }
+    public List<Sale> getSaleByTypeList(String companyId, String category) {
+        //if(category !=null && (!category.equals(""))){
+        //    return repository.findSalesByCompanyIdAndCategory(companyId,category);
+        //}else{
+        //    return repository.findAll();
+        //}
+        return repository.findAllByCategoryAndOnSale(category, true);
     }
 
 }

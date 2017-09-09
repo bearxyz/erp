@@ -6,6 +6,7 @@ import com.bearxyz.domain.po.business.Company;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.mapper.CompanyMapper;
 import com.bearxyz.repository.CompanyRepository;
+import com.bearxyz.repository.UserRepository;
 import com.bearxyz.service.business.ClientService;
 import com.bearxyz.service.sys.SysService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -38,6 +39,8 @@ public class ClientresController {
     private CompanyRepository companyRepository;
     @Autowired
     private CompanyMapper companyMapper;
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index() {
@@ -50,18 +53,21 @@ public class ClientresController {
         Subject u = SecurityUtils.getSubject();
         DataTable<Company> companys = new DataTable<>();
         if (u.hasRole("ROLE_LEASE_MANAGER")) {
-            companys = service.getCompanyByConditions(null,null);
+            companys = service.getCompanyByConditions(null, null);
         } else if (u.hasRole("ROLE_LEASING_EXECUTIVE")) {
-            List<Company> c= companyRepository.findCompaniesByUserProvinceAutoSign(((User) u.getPrincipal()).getId());
-            List<Company> cc=companyRepository.findCompaniesByUserManSign(((User) u.getPrincipal()).getId());
+            List<Company> c = companyRepository.findCompaniesByUserProvinceAutoSign(((User) u.getPrincipal()).getId());
+            List<Company> cc = companyRepository.findCompaniesByUserManSign(((User) u.getPrincipal()).getId());
             c.addAll(cc);
             companys.setData(c);
-            companys.setRecordsFiltered((long)c.size());
-            companys.setRecordsTotal((long)c.size());
+            companys.setRecordsFiltered((long) c.size());
+            companys.setRecordsTotal((long) c.size());
         } else {
-            companys = service.getCompanyByConditions(((User) u.getPrincipal()).getId(),null);
+            companys = service.getCompanyByConditions(((User) u.getPrincipal()).getId(), null);
         }
-
+        for (Company company : companys.getData()) {
+            User user = userRepository.findOne(company.getCreatedBy());
+            company.setCreaterName(user.getFirstName() + user.getLastName());
+        }
         companys.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(companys);
@@ -98,7 +104,7 @@ public class ClientresController {
 
     @RequestMapping(value = "/auto", method = RequestMethod.POST)
     @ResponseBody
-    public String auto(@RequestParam("id")String id) {
+    public String auto(@RequestParam("id") String id) {
         Company company = service.getCompanyById(id);
         company.setAssigned(true);
         company.setAutoAssigned(true);
@@ -108,7 +114,7 @@ public class ClientresController {
 
     @RequestMapping(value = "/man/{id}", method = RequestMethod.GET)
     public String man(@PathVariable(value = "id") String id, Model model) {
-        DataTable<User> users =sysService.getUserByRole("ROLE_LEASING_EXECUTIVE");
+        DataTable<User> users = sysService.getUserByRole("ROLE_LEASING_EXECUTIVE");
         model.addAttribute("users", users.getData());
         model.addAttribute("cid", id);
         return "/clientres/man";
@@ -116,7 +122,7 @@ public class ClientresController {
 
     @RequestMapping(value = "/man", method = RequestMethod.POST)
     @ResponseBody
-    public String doMan(@RequestParam("uid")String uid,@RequestParam("cid")String cid) {
+    public String doMan(@RequestParam("uid") String uid, @RequestParam("cid") String cid) {
         Company company = service.getCompanyById(cid);
         company.setAssigned(true);
         service.saveCompany(company);
@@ -126,7 +132,7 @@ public class ClientresController {
 
     @RequestMapping(value = "/failed", method = RequestMethod.POST)
     @ResponseBody
-    public String failed(@RequestParam("id")String id) {
+    public String failed(@RequestParam("id") String id) {
         Company company = companyRepository.findOne(id);
         companyRepository.save(company);
         return "{success: true}";

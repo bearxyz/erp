@@ -69,15 +69,23 @@
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"></th>
                             </tr>
                             <tr>
-                                <th>学校名称</th>
-                                <th>地址</th>
-                                <th>咨询区域</th>
+                                <th>录入时间</th>
+                                <th>客户来源</th>
+                                <th>客户名称</th>
                                 <th>咨询项目</th>
+                                <th>地址</th>
+                                <th>咨询省份</th>
+                                <th>咨询区域</th>
                                 <th>联系人</th>
                                 <th>联系电话</th>
+                                <th>录入人</th>
                                 <th>状态</th>
                                 <th>操作</th>
                             </tr>
@@ -126,12 +134,16 @@
                 }
             },
             "columns": [
+                {"data": "dateCeated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
+                {"data": "comeFrom"},
                 {"data": "name"},
-                {"data": "address"},
-                {"data": null, render: formatArea},
                 {"data": "consultProject"},
+                {"data": "address"},
+                {"data": "consultProvince"},
+                {"data": null, render: formatArea},
                 {"data": "contactor"},
                 {"data": "contactPhone"},
+                {"data": "createrName"},
                 {"data": null, render: formatStatus},
                 {
                     "data": "operate",
@@ -192,7 +204,7 @@
             return "<span class='label label-warning'>准客户</span>";
     }
     function formatArea(cellValue, options, rowObject) {
-        return rowObject.consultProvince + "-" + rowObject.consultCity + "-" + rowObject.consultDistrict;
+        return rowObject.consultCity + "-" + rowObject.consultDistrict;
     }
     function formatAction(cellValue, options, rowObject) {
         var html = '<div class="btn-group btn-group-justified">';
@@ -206,6 +218,9 @@
             if (!rowObject.signed) {
                 if (setSignBtn) html += setSignBtn(rowObject.id);
             }
+            if (rowObject.signed) {
+                if (setContactBtn) html += setContactBtn(rowObject.id);
+            }
         } catch (e) {
         }
         html += '</div>';
@@ -215,14 +230,19 @@
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASING_EXECUTIVE">
     function setSignBtn(id) {
         var h = '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">签约</span></a>';
-        h += '<a href="javascript:void(0);" class="btn btn-warning btn-xs" onclick="failed('+id+')"><span class="hidden-mobile">签约失败</span></a>';
+        h += '<a href="javascript:void(0);" class="btn btn-warning btn-xs" onclick="failed(' + id + ')"><span class="hidden-mobile">签约失败</span></a>';
+        return h;
+    }
+</script>
+<script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASE_MANAGER,ROLE_LEASING_EXECUTIVE">
+    function setContactBtn(id) {
+        h = '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">合同变更</span></a>';
         return h;
     }
 </script>
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASE_MANAGER,ROLE_LEASING_EXECUTIVE">
     function setEditBtn(id) {
-        h = '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">合同变更</span></a>';
-        h+='<a href="#/clientres/edit/' + id + '" class="btn-warning btn btn-xs"><i class="fa fa-edit"></i> <span class="hidden-mobile">客户资料</span></a>';
+        h = '<a href="#/clientres/edit/' + id + '" class="btn-warning btn btn-xs"><i class="fa fa-edit"></i> <span class="hidden-mobile">客户资料</span></a>';
         return h;
     }
 </script>

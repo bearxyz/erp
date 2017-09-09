@@ -20,4 +20,6 @@ public interface WorkOrderRepository extends JpaRepository<WorkOrder, String>, J
             "WHERE cp.USER_ID=?1", nativeQuery = true)
     List<WorkOrder> findAllByClientId(String clientId);
 
+    Integer countAllByCompanyIdAndFinished(String companyId, boolean finished);
+
 }

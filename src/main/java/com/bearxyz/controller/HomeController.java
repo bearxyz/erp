@@ -1,9 +1,13 @@
 package com.bearxyz.controller;
 
+import com.bearxyz.domain.po.business.Contract;
 import com.bearxyz.domain.po.business.Notice;
 import com.bearxyz.domain.po.sys.Permission;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.domain.vo.TaskVO;
+import com.bearxyz.repository.ContractRepository;
+import com.bearxyz.repository.OrderRepository;
+import com.bearxyz.repository.WorkOrderRepository;
 import com.bearxyz.service.business.NoticeService;
 import com.bearxyz.service.sys.SysService;
 import com.bearxyz.utility.RelativeDateFormat;
@@ -38,6 +42,15 @@ public class HomeController {
 
     @Autowired
     private NoticeService noticeService;
+
+    @Autowired
+    private ContractRepository contractRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
+    private WorkOrderRepository workOrderRepository;
 
     @RequestMapping(value = "/login.html", method = RequestMethod.GET)
     public String login() {
@@ -98,9 +111,15 @@ public class HomeController {
             model.addAttribute("tasks", taskVOS);
             model.addAttribute("notices", notices);
         }
-        else{
+        else {
+            Contract contract = contractRepository.findNewestContractByCompanyId(user.getCompanyId());
             List<Notice> notices = noticeService.getTopAndType(5, "NOTICT_TYPE_INTERNAL");
+            Integer orderCount = orderRepository.countOrderByCompanyIdAndStatus(user.getCompanyId(),1);
+            Integer workCount = workOrderRepository.countAllByCompanyIdAndFinished(user.getCompanyId(), false);
             model.addAttribute("notices", notices);
+            model.addAttribute("contract",contract);
+            model.addAttribute("orderCount",orderCount);
+            model.addAttribute("workCount", workCount);
         }
         model.addAttribute("permissions", permissions);
         model.addAttribute("user", user);

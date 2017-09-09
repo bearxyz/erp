@@ -42,7 +42,7 @@ public class PresentController {
     @ResponseBody
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     public String getList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
-        DataTable<ForUse> foruses = service.getForUse(null, "PRESENT",true, req);
+        DataTable<ForUseItem> foruses = service.getForUseItem(null, "PRESENT",true, req);
         foruses.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(foruses);

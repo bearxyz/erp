@@ -6,6 +6,7 @@ import com.bearxyz.domain.po.business.ForUse;
 import com.bearxyz.domain.po.business.ForUseItem;
 import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.business.Package;
+import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.ForUseItemRepository;
 import com.bearxyz.repository.ForUseRepository;
@@ -14,6 +15,7 @@ import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.task.Task;
+import org.apache.xpath.operations.Bool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -151,6 +153,30 @@ public class ForUseService {
         }
         result.setRecordsTotal(page.getTotalElements());
         result.setRecordsFiltered(page.getTotalElements());
+        result.setData(content);
+        return result;
+    }
+
+    public DataTable<ForUseItem> getForUseItem(String uid, String type, Boolean approved, PaginationCriteria req){
+        DataTable<ForUseItem> result = new DataTable<>();
+        List<ForUseItem> page = forUseItemRepository.findAllByTypeAndApproved(type, approved);
+        List<ForUseItem> content = page;
+            String goods = "";
+            for(ForUseItem item : content){
+                Goods g = goodsService.getById(item.getGoodsId());
+                Dict dict=sysService.getDictByMask(g.getProject());
+                if(dict!=null)
+                    g.setProjectName(dict.getName());
+                dict=sysService.getDictByMask(g.getType());
+                if(dict!=null)
+                    g.setTypeName(dict.getName());
+                dict=sysService.getDictByMask(g.getSubtype());
+                if(dict!=null)
+                    g.setSubtypeName(dict.getName());
+                item.setGoods(g);
+            }
+        result.setRecordsTotal((long)page.size());
+        result.setRecordsFiltered((long)page.size());
         result.setData(content);
         return result;
     }

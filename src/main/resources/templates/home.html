@@ -17,7 +17,7 @@
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/fileinput/fileinput.min.css}"/>
     <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/OpenSans.css}"/>
 </head>
-<body class="smart-style-0 fixed-header fixed-page-footer fixed-ribbon">
+<body class="smart-style-0 fixed-header fixed-page-footer fixed-ribbon minified">
 <!-- #HEADER -->
 <header id="header">
     <div id="logo-group">
@@ -95,6 +95,11 @@
                     class="fa fa-arrows-alt"></i></a> </span>
         </div>
         <!-- end fullscreen button -->
+
+        <div id="downloadSoftware" class="btn-header transparent pull-right" shiro:hasAnyRoles="ROLE_AGENT,ROLE_TEACHER">
+            <span> <a href="/soft/xjd.zip" target="_blank" title="下载客户端"><i
+                    class="fa fa-cloud-download"></i></a> </span>
+        </div>
 
     </div>
     <!-- end pulled right: nav area -->

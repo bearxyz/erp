@@ -37,6 +37,10 @@ public class Sale extends BaseDomain {
     private String processInstanceId = "";
     @Column
     private Boolean isPublic = true;
+    @Column
+    private Boolean canUseCoupon = false;
+    @Column(length = 36)
+    private String goodsId="";
 
     @Column
     private java.sql.Date startDate;
@@ -57,11 +61,6 @@ public class Sale extends BaseDomain {
     @Column(columnDefinition = "CLOB")
     private String content;
 
-    @JsonIgnore
-    @OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "SALE_ID")
-    private List<SaleItem> items = new ArrayList<>();
-
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "BUSINESS_ID")
     private List<Picture> images = new ArrayList<>();
@@ -70,6 +69,8 @@ public class Sale extends BaseDomain {
     @JoinColumn(name = "BUSINESS_ID")
     private Set<SaleAttachment> resources = new HashSet<>();
 
+    @Transient
+    private List<GroupBuy> groupBuys;
     @Transient
     private String companyId;
     @Transient
@@ -90,6 +91,8 @@ public class Sale extends BaseDomain {
     private String categoryName = "";
     @Transient
     private String stock = "";
+    @Transient
+    private Goods goods;
 
     public String getCategory() {
         return category;
@@ -193,14 +196,6 @@ public class Sale extends BaseDomain {
 
     public void setFinishedDate(Date finishedDate) {
         this.finishedDate = finishedDate;
-    }
-
-    public List<SaleItem> getItems() {
-        return items;
-    }
-
-    public void setItems(List<SaleItem> items) {
-        this.items = items;
     }
 
     public Boolean getOnSale() {
@@ -340,5 +335,35 @@ public class Sale extends BaseDomain {
         this.agentOnSale = agentOnSale;
     }
 
+    public Boolean getCanUseCoupon() {
+        return canUseCoupon;
+    }
 
+    public void setCanUseCoupon(Boolean canUseCoupon) {
+        this.canUseCoupon = canUseCoupon;
+    }
+
+    public List<GroupBuy> getGroupBuys() {
+        return groupBuys;
+    }
+
+    public void setGroupBuys(List<GroupBuy> groupBuys) {
+        this.groupBuys = groupBuys;
+    }
+
+    public String getGoodsId() {
+        return goodsId;
+    }
+
+    public void setGoodsId(String goodsId) {
+        this.goodsId = goodsId;
+    }
+
+    public Goods getGoods() {
+        return goods;
+    }
+
+    public void setGoods(Goods goods) {
+        this.goods = goods;
+    }
 }

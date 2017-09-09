@@ -26,7 +26,6 @@
                         <tr>
                             <th>赠品名称</th>
                             <th>型号</th>
-                            <th>规格</th>
                             <th>单位</th>
                             <th>数量</th>
                         </tr>
@@ -41,8 +40,6 @@
                                 <input name='name' disabled='disabled'
                                        th:value="${item.goods.model}"/></label>
                             </td>
-                            <td><label class='input'><input name='spec' th:value="${item.spec}"
-                                                            disabled='disabled'/></label></td>
                             <td><label class='select'><select
                                     th:name='${"items[" + i.index + "].packageId"}'
                                     disabled='disabled'>
@@ -64,52 +61,118 @@
                     </table>
                 </div>
             </section>
-            <section>
-                <label class="input">
-                    <input id="presentAddress" name="presentAddress" placeholder="赠品收货地址" disabled="disabled" th:value="${contract.presentAddress}"/>
-                </label>
-            </section>
         </fieldset>
         <fieldset>
             <div class="row">
                 <section class="col col-6">
+                    <label class="label">签约项目：</label>
                     <label class="select">
-                        <select name="project" id="project" disabled="disabled"></select><i></i>
+                        <select name="project" id="project" th:value="${contract.project}" disabled="disabled"></select><i></i>
                     </label>
                 </section>
                 <section class="col col-6">
+                    <label class="label">合同名称：</label>
                     <label class="input">
-                        <input type="text" name="title" id="title" placeholder="合同名称" th:value="${contract.title}"
-                               disabled="disabled"/>
+                        <input type="text" name="title" id="title" th:value="${contract.title}" disabled="disabled" />
                     </label>
                 </section>
             </div>
             <div class="row">
                 <section class="col col-6">
+                    <label class="label">签约类型：</label>
                     <label class="select">
                         <select name="agentType" id="agentType" disabled="disabled"></select><i></i>
                     </label>
                 </section>
                 <section class="col col-6">
+                    <label class="label">代理级别：</label>
                     <label class="select">
                         <select name="agentLevel" id="agentLevel" disabled="disabled"></select><i></i>
                     </label>
                 </section>
             </div>
+            <div class="row">
+                <section class="col col-3">
+                    <label class="label">合同签署人：</label>
+                    <label class="input"><input id="signPerson" name="signPerson"
+                                                type="text" th:value="${contract.signPerson}" disabled="disabled"/></label>
+                </section>
+                <section class="col col-3">
+                    <label class="label">联系电话：</label>
+                    <label class="input"><input id="signPhone" name="signPhone"
+                                                type="text" th:value="${contract.signPhone}" disabled="disabled"/></label>
+                </section>
+                <section class="col col-3">
+                    <label class="label">身份证号：</label>
+                    <label class="input"><input id="signId" name="signId"
+                                                type="text" th:value="${contract.signId}" disabled="disabled" /></label>
+                </section>
+                <section class="col col-3">
+                    <label class="label">QQ邮箱：</label>
+                    <label class="input"><input id="signEmail" name="signEmail"
+                                                type="text" th:value="${contract.signEmail}" disabled="disabled" /></label>
+                </section>
+            </div>
+            <div class="row" id="dist1">
+                <section class="col col-2">
+                    <label class="label">通讯地址（省）：</label>
+                    <label class="select"><select name="signProvince" id="agentProvince" disabled="disabled">
+                    </select><i></i></label>
+                </section>
+                <section class="col col-2">
+                    <label class="label">通讯地址（市）：</label>
+                    <label class="select"><select name="signCity" disabled="disabled">
+                    </select><i></i></label>
+                </section>
+                <section class="col col-2">
+                    <label class="label">通讯地址（区）：</label>
+                    <label class="select"><select name="signDistrict" disabled="disabled">
+                    </select><i></i></label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">通讯地址（街道门牌号）：</label>
+                    <label class="input">
+                        <input type="text" name="signAddress" id="signAddress" th:value="${contract.signAddress}"/>
+                    </label>
+                </section>
+            </div>
+            <div class="row" id="dist2">
+                <section class="col col-4">
+                    <label class="label">代理区域（省）：</label>
+                    <label class="select"><select name="agentProvince" disabled="disabled">
+                    </select><i></i></label>
+                </section>
+                <section class="col col-4">
+                    <label class="label">代理区域（市）：</label>
+                    <label class="select"><select name="agentCity" disabled="disabled">
+                    </select><i></i></label>
+                </section>
+                <section class="col col-4">
+                    <label class="label">代理区域（区）：</label>
+                    <label class="select"><select name="agentDistrict" disabled="disabled">
+                    </select><i></i></label>
+                </section>
+            </div>
             <section>
                 <div class="row">
-                    <section class="col col-6">
+                    <section class="col col-4">
+                        <label class="label">合同起始日期：</label>
                         <label class="input">
                             <i class="icon-append fa fa-calendar"></i>
-                            <input id="startDate" class="hasDatepicker" name="startDate" placeholder="合同生效日期"
-                                   type="text" th:value="${contract.startDate}" disabled="disabled">
+                            <input id="startDate" class="hasDatepicker" name="startDate" type="text" th:value="${contract.startDate}" disabled="disabled">
                         </label>
                     </section>
-                    <section class="col col-6">
+                    <section class="col col-4">
+                        <label class="label">合同终止日期：</label>
                         <label class="input">
                             <i class="icon-append fa fa-calendar"></i>
-                            <input id="endDate" class="hasDatepicker" name="endDate" placeholder="合同到期日期" type="text"
-                                   th:value="${contract.endDate}" disabled="disabled">
+                            <input id="endDate" class="hasDatepicker" name="endDate" type="text" th:value="${contract.endDate}" disabled="disabled">
+                        </label>
+                    </section>
+                    <section class="col col-4">
+                        <label class="label">合同时长(年)：</label>
+                        <label class="input">
+                            <input type="text" name="duration" id="duration" class="number" th:value="${contract.duration}" disabled="disabled" />
                         </label>
                     </section>
                 </div>
@@ -117,10 +180,15 @@
             <section>
                 <div class="row">
                     <section class="col col-6">
+                        <label class="label">品牌使用费：</label>
                         <label class="input">
-                            <i class="icon-append fa fa-calendar"></i>
-                            <input id="signDate" class="hasDatepicker" name="signDate" placeholder="签约日期" type="text"
-                                   th:value="${contract.signDate}" disabled="disabled">
+                            <input type="text" name="fee" id="fee" class="number" th:value="${contract.fee}" disabled="disabled" />
+                        </label>
+                    </section>
+                    <section class="col col-6">
+                        <label class="label">预存教材款：</label>
+                        <label class="input">
+                            <input type="text" name="prestore" id="prestore" class="number" th:value="${contract.prestore}" disabled="disabled" />
                         </label>
                     </section>
                 </div>
@@ -178,11 +246,22 @@
         </footer>
     </form>
 </div>
-
+<script th:src="@{js/distpicker.js}"></script>
 <script th:inline="javascript">
     pageSetUp();
 
     var taskKey = $('#taskKey').val();
+
+    $("#dist1").distpicker({
+        province: [[${contract.signProvince}]],
+        city: [[${contract.signCity}]],
+        district: [[${contract.signDistrict}]]
+    });
+    $("#dist2").distpicker({
+        province: [[${contract.agentProvince}]],
+        city: [[${contract.agentCity}]],
+        district: [[${contract.agentDistrict}]]
+    });
 
     BindDictItem("project", "PROJECT_TYPE", "代理项目", [[${contract.project}]]);
     BindDictItem("agentType", "CONTRACT_TYPE", "签约类型", [[${contract.agentType}]]);

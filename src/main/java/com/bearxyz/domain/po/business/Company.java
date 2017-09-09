@@ -3,6 +3,7 @@ package com.bearxyz.domain.po.business;
 import com.bearxyz.domain.po.BaseDomain;
 
 import javax.persistence.*;
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,14 @@ public class Company extends BaseDomain {
     private static final long serialVersionUID = -1264316047321649030L;
 
 
+    @Column(length = 50)
+    private String districtStatus = "";
+    @Column(length = 50)
+    private String area = "";
+    @Column
+    private Integer schoolCount = 0;
+    @Column
+    private Integer manCount = 0;
     @Column
     private Boolean isAssigned = false;
     @Column
@@ -59,6 +68,8 @@ public class Company extends BaseDomain {
     private String planning = "";
     @Column(length = 50)
     private String license = "";
+    @Column(length = 100)
+    private String majorProject = "";
 
     @Column(length = 50)
     private String payment = "";
@@ -124,6 +135,13 @@ public class Company extends BaseDomain {
     private java.sql.Date currentStartDate;
     @Transient
     private java.sql.Date currentEndDate;
+    @Transient
+    private String createrName = "";
+
+    @Transient
+    private String goalPie = "";
+    @Transient
+    private String fullAddress = "";
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "company")
     private List<Person> persons = new ArrayList<>();
@@ -534,5 +552,69 @@ public class Company extends BaseDomain {
 
     public void setCurrentEndDate(java.sql.Date currentEndDate) {
         this.currentEndDate = currentEndDate;
+    }
+
+    public String getGoalPie() {
+        return goalPie;
+    }
+
+    public void setGoalPie(String goalPie) {
+        this.goalPie = goalPie;
+    }
+
+    public String getFullAddress() {
+        return fullAddress;
+    }
+
+    public void setFullAddress(String fullAddress) {
+        this.fullAddress = fullAddress;
+    }
+
+    public String getCreaterName() {
+        return createrName;
+    }
+
+    public void setCreaterName(String createrName) {
+        this.createrName = createrName;
+    }
+
+    public String getMajorProject() {
+        return majorProject;
+    }
+
+    public void setMajorProject(String majorProject) {
+        this.majorProject = majorProject;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public Integer getSchoolCount() {
+        return schoolCount;
+    }
+
+    public void setSchoolCount(Integer schoolCount) {
+        this.schoolCount = schoolCount;
+    }
+
+    public Integer getManCount() {
+        return manCount;
+    }
+
+    public void setManCount(Integer manCount) {
+        this.manCount = manCount;
+    }
+
+    public String getDistrictStatus() {
+        return districtStatus;
+    }
+
+    public void setDistrictStatus(String districtStatus) {
+        this.districtStatus = districtStatus;
     }
 }
