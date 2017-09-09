@@ -50,6 +50,10 @@ public class Order extends BaseDomain {
     private String saleId = "";
     @Column
     private String typeName = "";
+    @Column
+    private Integer orderCount=0;
+    @Column
+    private Float totalPrice = (float)0.0;
 
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
@@ -259,5 +263,21 @@ public class Order extends BaseDomain {
 
     public void setItems(List<OrderItem> items) {
         this.items = items;
+    }
+
+    public Integer getOrderCount() {
+        return orderCount;
+    }
+
+    public void setOrderCount(Integer orderCount) {
+        this.orderCount = orderCount;
+    }
+
+    public Float getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Float totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

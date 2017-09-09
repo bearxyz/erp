@@ -396,4 +396,6 @@ public class Sale extends BaseDomain {
     public void setPackageId(String packageId) {
         this.packageId = packageId;
     }
+
+
 }
