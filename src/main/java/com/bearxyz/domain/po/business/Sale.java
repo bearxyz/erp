@@ -40,7 +40,13 @@ public class Sale extends BaseDomain {
     @Column
     private Boolean canUseCoupon = false;
     @Column(length = 36)
-    private String goodsId="";
+    private String goodsId = "";
+    @Column
+    private Integer count = 0;
+    @Column
+    private Integer ammount = 0;
+    @Column(length = 36)
+    private String packageId = "";
 
     @Column
     private java.sql.Date startDate;
@@ -365,5 +371,29 @@ public class Sale extends BaseDomain {
 
     public void setGoods(Goods goods) {
         this.goods = goods;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public Integer getAmmount() {
+        return ammount;
+    }
+
+    public void setAmmount(Integer ammount) {
+        this.ammount = ammount;
+    }
+
+    public String getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(String packageId) {
+        this.packageId = packageId;
     }
 }
