@@ -2,14 +2,18 @@ package com.bearxyz.service.business;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.domain.po.business.Goods;
+import com.bearxyz.domain.po.business.Sale;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.repository.DictRepository;
 import com.bearxyz.repository.GoodsRepository;
 import com.bearxyz.repository.PackageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +79,21 @@ public class GoodsService {
         List<Goods> goods = new ArrayList<>();
         for (String id : ids)
             goods.add(repository.findOne(id));
+        return goods;
+    }
+
+    public List<Goods> getGoodsByType(String project, String type, String subtype) {
+        Specification<Goods> specification = (root, query, cb) -> {
+            Predicate predicate = cb.conjunction();
+            if (project != null && !StringUtils.isEmpty(project))
+                predicate.getExpressions().add(cb.equal(root.get("project"), project));
+            if (type != null &&  !StringUtils.isEmpty(type))
+                predicate.getExpressions().add(cb.equal(root.get("type"), type));
+            if (subtype != null &&  !StringUtils.isEmpty(subtype))
+                predicate.getExpressions().add(cb.equal(root.get("subtype"), subtype));
+            return predicate;
+        };
+        List<Goods> goods = repository.findAll(specification);
         return goods;
     }
 

@@ -18,6 +18,8 @@ public class Company extends BaseDomain {
     private static final long serialVersionUID = -1264316047321649030L;
 
 
+    @Column
+    private Float balance = (float) 0.0;
     @Column(length = 50)
     private String districtStatus = "";
     @Column(length = 50)
@@ -616,5 +618,13 @@ public class Company extends BaseDomain {
 
     public void setDistrictStatus(String districtStatus) {
         this.districtStatus = districtStatus;
+    }
+
+    public Float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Float balance) {
+        this.balance = balance;
     }
 }

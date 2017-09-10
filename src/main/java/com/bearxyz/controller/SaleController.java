@@ -2,7 +2,10 @@ package com.bearxyz.controller;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
+import com.bearxyz.domain.po.business.Goods;
+import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.domain.po.business.Sale;
+import com.bearxyz.repository.PackageRepository;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.SaleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,6 +40,8 @@ public class SaleController {
 
     @Autowired
     private GoodsService goodsService;
+    @Autowired
+    private PackageRepository packageRepository;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(){
@@ -85,6 +90,10 @@ public class SaleController {
     public String reApply(@PathVariable("id")String id, Model model) {
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
         Sale sale = service.getById(id);
+        Package pk = packageRepository.findOne(sale.getPackageId());
+        Goods goods = goodsService.getById(sale.getGoodsId());
+        sale.setGoods(goods);
+        sale.setaPackage(pk);
         model.addAttribute("sale", sale);
         model.addAttribute("taskId", task.getId());
         model.addAttribute("taskKey", task.getTaskDefinitionKey());
@@ -111,6 +120,10 @@ public class SaleController {
     @RequestMapping(value = "/complete", method = RequestMethod.GET)
     public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
         Sale sale = service.getById(bid);
+        Package pk = packageRepository.findOne(sale.getPackageId());
+        Goods goods = goodsService.getById(sale.getGoodsId());
+        sale.setGoods(goods);
+        sale.setaPackage(pk);
         model.addAttribute("sale", sale);
         String memo = "";
         model.addAttribute("applyer", applyer);
@@ -128,6 +141,22 @@ public class SaleController {
         Sale sale =service.getById(id);
         model.addAttribute("sale",sale);
         return "/sale/detail";
+    }
+
+    @RequestMapping(value = "/getGoods")
+    @ResponseBody
+    public String getGoods(String project, String type, String subtype) throws JsonProcessingException {
+        List<Goods> goods=goodsService.getGoodsByType(project, type, subtype);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(goods);
+    }
+
+    @RequestMapping(value = "/getPackage")
+    @ResponseBody
+    public String getPackage(String goodsId) throws JsonProcessingException {
+        List<Package> goods=packageRepository.findAllByGoodsId(goodsId);
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(goods);
     }
 
 }

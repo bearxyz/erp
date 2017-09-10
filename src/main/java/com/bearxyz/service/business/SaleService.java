@@ -83,6 +83,8 @@ public class SaleService {
                     sale.getResources().add(attachment);
             }
         }
+        Package pak = packageRepository.findOne(sale.getPackageId());
+        sale.setUnit(pak.getPackageUnit());
         repository.save(sale);
     }
 
@@ -110,9 +112,12 @@ public class SaleService {
             dict = sysService.getDictByMask(sale.getCategory());
             if (dict != null)
                 sale.setCategoryName(dict.getName());
-            Goods goods = goodsRepository.findOne(sale.getGoodsId());
-            if (goods.getStock() <= config.getStockAlert())
-                stock = "危险";
+            if (sale.getGoodsId() != null) {
+                Goods goods = goodsRepository.findOne(sale.getGoodsId());
+                sale.setGoods(goods);
+                if (goods.getStock() <= config.getStockAlert())
+                    stock = "危险";
+            }
             sale.setStock(stock);
         }
 

@@ -2,9 +2,10 @@ package com.bearxyz.service.business;
 
 import com.bearxyz.common.DataTable;
 import com.bearxyz.domain.po.business.Company;
-import com.bearxyz.repository.CompanyRepository;
-import com.bearxyz.repository.PersonRepository;
-import com.bearxyz.repository.TrackRepository;
+import com.bearxyz.domain.po.business.Contract;
+import com.bearxyz.domain.po.sys.Dict;
+import com.bearxyz.domain.po.sys.User;
+import com.bearxyz.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,12 @@ public class ClientService {
     private PersonRepository personRepository;
     @Autowired
     private TrackRepository trackRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private DictRepository dictRepository;
+    @Autowired
+    private ContractRepository contractRepository;
 
 
     public Company saveCompany(Company company){
@@ -52,6 +59,21 @@ public class ClientService {
         companies.setRecordsFiltered((long)content.size());
         companies.setData(content);
         return companies;
+    }
+
+    public Float getClientBenefit(String userId){
+        Float discount = (float)1;
+
+        User user = userRepository.findOne(userId);
+        Company company = companyRepository.findOne(user.getCompanyId());
+        Contract contract = contractRepository.findNewestContractByCompanyId(company.getId());
+        if(contract!=null) {
+            Dict dict = dictRepository.findByMask(contract.getAgentLevel());
+            if(dict!=null){
+                discount=dict.getDiscount();
+            }
+        }
+        return discount;
     }
 
 }

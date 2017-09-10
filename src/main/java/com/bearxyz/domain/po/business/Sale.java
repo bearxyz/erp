@@ -99,6 +99,8 @@ public class Sale extends BaseDomain {
     private String stock = "";
     @Transient
     private Goods goods;
+    @Transient
+    private Package aPackage;
 
     public String getCategory() {
         return category;
@@ -397,5 +399,11 @@ public class Sale extends BaseDomain {
         this.packageId = packageId;
     }
 
+    public Package getaPackage() {
+        return aPackage;
+    }
 
+    public void setaPackage(Package aPackage) {
+        this.aPackage = aPackage;
+    }
 }

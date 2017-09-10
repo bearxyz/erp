@@ -31,58 +31,66 @@
                         <form id="form_1" class="smart-form" novalidate="novalidate" enctype="multipart/form-data">
                             <fieldset>
                                 <div class="row">
-                                <section class="col col-3">
-                                    <label class="select">
-                                        <select id="category" name="category">
-                                        </select><i></i>
-                                    </label>
-                                </section>
-                                <section class="col col-3">
-                                    <label class="select">
-                                        <select name="project" id="project"></select><i></i>
-                                    </label>
-                                </section>
-                                <section class="col col-3">
-                                    <label class="select">
-                                        <select name="type" id="type"></select><i></i>
-                                    </label>
-                                </section>
-                                <section class="col col-3">
-                                    <label class="select">
-                                        <select name="subtype" id="subtype"></select><i></i>
-                                    </label>
-                                </section>
-                                </div>
-                                <div class="row">
-                                <section class="col col-3">
-                                    <label class="input">
-                                        <input name="name" id="name" placeholder="名称" /><i></i>
-                                    </label>
-                                </section>
-                                </div>
-                                    <section>
-                                        <label class="textarea textarea-resizable">
-                                            <textarea placeholder="简介" id="memo" name="memo" class="custom-scroll"></textarea>
+                                    <section class="col col-3">
+                                        <label class="select">
+                                            <select id="category" name="category">
+                                            </select><i></i>
                                         </label>
                                     </section>
+                                    <section class="col col-3">
+                                        <label class="select">
+                                            <select name="project" id="project"></select><i></i>
+                                        </label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="select">
+                                            <select name="type" id="type"></select><i></i>
+                                        </label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="select">
+                                            <select name="subtype" id="subtype"></select><i></i>
+                                        </label>
+                                    </section>
+                                </div>
+                                <div class="row">
+                                    <section class="col col-3">
+                                        <label class="input">
+                                            <input name="name" id="name" placeholder="名称"/><i></i>
+                                        </label>
+                                    </section>
+                                </div>
+                                <section>
+                                    <label class="textarea textarea-resizable">
+                                        <textarea placeholder="简介" id="memo" name="memo"
+                                                  class="custom-scroll"></textarea>
+                                    </label>
+                                </section>
                             </fieldset>
                             <fieldset id="products" style="display: none;">
                                 <section>
-                                    <a href="/common/selectProduct" data-toggle="modal" data-target="#remoteModal"
-                                       class="btn btn-primary btn-sm">选择物品</a>
                                     <div class="table-responsive">
                                         <table class="table" id="productTarget">
                                             <thead>
                                             <tr>
-                                                <th></th>
                                                 <th>物品名称</th>
-                                                <th>规格</th>
                                                 <th>单位</th>
-                                                <th>数量</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-
+                                            <tr>
+                                                <td>
+                                                    <label class="select">
+                                                        <select id="goodsId" name="goodsId">
+                                                        </select><i></i>
+                                                    </label>
+                                                </td>
+                                                <td>
+                                                    <label class="select">
+                                                        <select id="packageId" name="packageId"></select><i></i>
+                                                    </label>
+                                                </td>
+                                            </tr>
                                             </tbody>
                                         </table>
 
@@ -90,19 +98,20 @@
                                 </section>
                             </fieldset>
                             <fieldset id="supports" style="display: none;">
-                                    <section class="col col-6">
-                                        <label class="input">
-                                            <i class="icon-append fa fa-calendar"></i>
-                                            <input id="startDate" class="hasDatepicker" name="startDate" placeholder="开始日期"
-                                                   type="text">
-                                        </label>
-                                    </section>
-                                    <section class="col col-6">
-                                        <label class="input">
-                                            <i class="icon-append fa fa-calendar"></i>
-                                            <input id="endDate" class="hasDatepicker" name="endDate" placeholder="结束日期" type="text">
-                                        </label>
-                                    </section>
+                                <section class="col col-6">
+                                    <label class="input">
+                                        <i class="icon-append fa fa-calendar"></i>
+                                        <input id="startDate" class="hasDatepicker" name="startDate" placeholder="开始日期"
+                                               type="text">
+                                    </label>
+                                </section>
+                                <section class="col col-6">
+                                    <label class="input">
+                                        <i class="icon-append fa fa-calendar"></i>
+                                        <input id="endDate" class="hasDatepicker" name="endDate" placeholder="结束日期"
+                                               type="text">
+                                    </label>
+                                </section>
                             </fieldset>
                             <fieldset id="resources" style="display: none;">
                                 <section>
@@ -144,10 +153,28 @@
             $('#project').empty();
             $('#type').empty();
             $('#subtype').empty();
-            BindDictItem("project", c, null);
-            if (c == "GOODS_NORMAL") {$('#products').show();$('#resources').hide();$('#supports').hide();$('#startDate').val('1970-1-1');$('#endDate').val('1970-1-1');}
-            if (c == "GOODS_SUPPORT") {$('#products').hide();$('#resources').hide();$('#supports').show();$('#startDate').val('');$('#endDate').val('');}
-            if (c == "GOODS_VIRTUAL") {$('#products').hide();$('#resources').show();$('#supports').hide();$('#startDate').val('1970-1-1');$('#endDate').val('1970-1-1');}
+            BindDictItem("project", c, "");
+            if (c == "GOODS_NORMAL") {
+                $('#products').show();
+                $('#resources').hide();
+                $('#supports').hide();
+                $('#startDate').val('1970-1-1');
+                $('#endDate').val('1970-1-1');
+            }
+            if (c == "GOODS_SUPPORT") {
+                $('#products').hide();
+                $('#resources').hide();
+                $('#supports').show();
+                $('#startDate').val('');
+                $('#endDate').val('');
+            }
+            if (c == "GOODS_VIRTUAL") {
+                $('#products').hide();
+                $('#resources').show();
+                $('#supports').hide();
+                $('#startDate').val('1970-1-1');
+                $('#endDate').val('1970-1-1');
+            }
 
         });
         $('#project').on('change', function () {
@@ -156,14 +183,22 @@
             $('#type').empty();
             $('#subtype').empty();
 
-            BindDictItem("type", c, null);
+            BindDictItem("type", c, "");
+            loadGoods();
         });
         $('#type').on('change', function () {
             var c = this.value;
 
             $('#subtype').empty();
 
-            BindDictItem("subtype", c, null);
+            BindDictItem("subtype", c, "");
+            loadGoods();
+        });
+        $('#subtype').on('change',function () {
+            loadGoods();
+        });
+        $('#goodsId').on('change',function () {
+           loadpackage();
         });
 
         var $form1 = $("#form_1").validate({
@@ -236,6 +271,32 @@
         });
 
     };
+
+    function loadGoods() {
+        var project = $('#project').val();
+        var type = $('#type').val();
+        var subtype = $('#subtype').val();
+        var control = $('#goodsId');
+        $.getJSON('/sale/getGoods',{project:project, type: type, subtype:subtype}, function (data) {
+            control.empty();
+            control.append("<option value=''></option>");
+            $.each(data, function (i, item) {
+                control.append("<option value='" + item.id + "'>&nbsp;" + item.name + "</option>");
+            });
+        });
+    }
+    
+    function loadpackage() {
+        var goodsId = $('#goodsId').val();
+        var control = $('#packageId');
+        $.getJSON('/sale/getPackage',{goodsId:goodsId}, function (data) {
+            control.empty();
+            control.append("<option value=''></option>");
+            $.each(data, function (i, item) {
+                control.append("<option value='" + item.id + "'>&nbsp;" + item.packageSpec + "["+item.packageUnit+"]</option>");
+            });
+        });
+    }
 
     loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
 

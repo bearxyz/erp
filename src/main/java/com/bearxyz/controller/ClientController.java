@@ -6,6 +6,7 @@ import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.common.exception.NameRepeatedException;
 import com.bearxyz.domain.po.business.Company;
 import com.bearxyz.domain.po.business.Contract;
+import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.Role;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.CompanyRepository;
@@ -142,6 +143,40 @@ public class ClientController {
     public String doEdit(@ModelAttribute("company") Company company, SessionStatus status) {
         service.saveCompany(company);
         status.setComplete();
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/benefit", method = RequestMethod.GET)
+    public String benefit(){
+        return "/client/benefit";
+    }
+
+    @RequestMapping(value = "/getclientlevel", method = RequestMethod.POST)
+    @ResponseBody
+    public String getClientLevel(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        List<Dict> dicts= sysService.getAllDictByParentMask("CLIENT_LEVEL_TYPE");
+        DataTable<Dict> result = new DataTable<>();
+        result.setData(dicts);
+        result.setRecordsFiltered((long)dicts.size());
+        result.setRecordsTotal((long)dicts.size());
+        result.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
+    @RequestMapping(value = "/setBenefit/{id}", method = RequestMethod.GET)
+    public String setBenefit(@PathVariable("id")String id, Model model){
+        Dict dict = sysService.getDictById(id);
+        model.addAttribute("dict", dict);
+        return "/client/setBenefit";
+    }
+
+    @RequestMapping(value = "/setBenefit", method = RequestMethod.POST)
+    @ResponseBody
+    public String doBenefit(String id, Float discount){
+        Dict dict = sysService.getDictById(id);
+        dict.setDiscount(discount);
+        sysService.saveDict(dict);
         return "{success: true}";
     }
 

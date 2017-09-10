@@ -42,6 +42,7 @@ public class ContractFinished implements ExecutionListener {
         contract.setApproved(true);
         contract.setInvalid(false);
         company.setSigned(true);
+        company.setBalance(company.getBalance()+contract.getPrestore());
         if(contract.getItems()!=null&&contract.getItems().size()>0) {
             ForUse forUse=new ForUse();
             forUse.setType("PRESENT");

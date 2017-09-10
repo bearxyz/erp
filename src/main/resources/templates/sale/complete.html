@@ -88,23 +88,25 @@
                                             <thead>
                                             <tr>
                                                 <th>物品名称</th>
-                                                <th>规格</th>
-                                                <th>包装</th>
-                                                <th>数量</th>
+                                                <th>单位</th>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr th:each="item,i:${sale.items}">
-                                                <td><label class='input'>
-                                                    <input th:name='${"items[" + i.index + "].goodsId"}' th:value="${item.goodsId}"  type='hidden'/>
-                                                    <input name='name' disabled='disabled' th:value="${item.goods.name}" /></label>
+                                            <tr>
+                                                <td>
+                                                    <label class="select">
+                                                        <select id="goodsId" name="goodsId" disabled="disabled">
+                                                            <option selected th:value="${sale.goods.id}">[[${sale.goods.name}]]</option>
+                                                        </select><i></i>
+                                                    </label>
                                                 </td>
-                                                <td><label class='input'><input name='spec' th:value="${item.spec}" disabled='disabled' /></label></td>
-                                                <td><label class='select'><select th:name='${"items[" + i.index + "].packageId"}' disabled="disabled">
-                                                    <option value="" th:selected="${item.packageId==''}">无包装[单位:[[${item.goods.unit}]]]</option>
-                                                    <option th:each="package: ${item.goods.packages}" th:value="${package.id}" th:selected="${item.packageId==package.id}">[[${package.packageSpec}]][单位:[[${package.packageUnit}]]]</option>
-                                                </select><i></i></label></td>
-                                                <td><label class='input'><input th:name='${"items[" + i.index + "].count"}' th:value="${item.count}" disabled="disabled" /></label></td>
+                                                <td>
+                                                    <label class="select">
+                                                        <select id="packageId" name="packageId" disabled="disabled">
+                                                            <option selected th:value="${sale.aPackage.id}">[[${sale.aPackage.packageUnit}]]</option>
+                                                        </select><i></i>
+                                                    </label>
+                                                </td>
                                             </tr>
                                             </tbody>
                                         </table>
