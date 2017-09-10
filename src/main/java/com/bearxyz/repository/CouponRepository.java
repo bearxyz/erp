@@ -14,4 +14,6 @@ public interface CouponRepository extends JpaRepository<Coupon, String>, JpaSpec
     List<Coupon> findAllByActivityId(String aid);
 
     Integer countAllByActivityIdAndUsed(String aid, boolean used);
+
+    Coupon findCouponByCodeAndUsed(String code, boolean used);
 }

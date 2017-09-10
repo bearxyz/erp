@@ -205,4 +205,11 @@ public class SaleController {
         return mapper.writeValueAsString(results);
     }
 
+    @RequestMapping(value = "/createGroupbuy/{id}", method = RequestMethod.GET)
+    public String createGroupbuy(@PathVariable("id")String id, Model model){
+        Sale sale = saleRepository.findOne(id);
+        model.addAttribute("sale", sale);
+        return "/sale/createGroupbuy";
+    }
+
 }
