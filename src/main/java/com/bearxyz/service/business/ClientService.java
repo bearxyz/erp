@@ -3,6 +3,8 @@ package com.bearxyz.service.business;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.domain.po.business.Company;
 import com.bearxyz.domain.po.business.Contract;
+import com.bearxyz.domain.po.business.GroupBuy;
+import com.bearxyz.domain.po.business.Sale;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.*;
@@ -34,6 +36,8 @@ public class ClientService {
     private DictRepository dictRepository;
     @Autowired
     private ContractRepository contractRepository;
+    @Autowired
+    private GroupBuyRepository groupBuyRepository;
 
 
     public Company saveCompany(Company company){
@@ -73,6 +77,14 @@ public class ClientService {
                 discount=dict.getDiscount();
             }
         }
+        return discount;
+    }
+
+    public Float getGroupBenefit(String saleId, Integer manCount){
+        Float discount = (float)0.0;
+        GroupBuy groupBuy = groupBuyRepository.findBySaleIdAndCount(saleId,manCount);
+        if(groupBuy!=null)
+            discount = groupBuy.getDisCount();
         return discount;
     }
 

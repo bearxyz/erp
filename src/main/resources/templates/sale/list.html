@@ -58,6 +58,8 @@
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"></th>
+                                <th class="hasinput"></th>
+                                <th class="hasinput"></th>
                             </tr>
                             <tr>
                                 <th>商品性质</th>
@@ -68,6 +70,8 @@
                                 <th>单位</th>
                                 <th>购买次数</th>
                                 <th>库存状态</th>
+                                <th></th>
+                                <th></th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -122,10 +126,11 @@
                 {"data": "unit"},
                 {"data": "buyer"},
                 {"data": "stock", "sClass": "text-center", render: formatStock},
-                {"data": "onSale", "sClass": "text-center", render: formatStatus}
+                {"data": "onSale", "sClass": "text-center", render: formatStatus},
+                {"data": null, "sClass": "text-center", render: formatAction},
+                {"data": null, "sClass": "text-center", render: formatButton}
             ],
             "autoWidth": true,
-            "searching": false,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
             "preDrawCallback": function () {
                 if (!responsiveHelper_dt_basic) {
@@ -174,6 +179,49 @@
         html += "type='checkbox' />";
         html += "<label class='onoffswitch-label' for='" + rowObject.id + "'><span class='onoffswitch-inner' data-swchon-text='上架' data-swchoff-text='下架'></span><span class='onoffswitch-switch'></span></label></span>";
         return html;
+    }
+    function formatAction(cellValue, options, rowObject) {
+        var html="";
+        if(rowObject.category=="GOODS_VIRTUAL") {
+            var html = "<span class='onoffswitch'>";
+            html += '<input name="checkbox-toggle" id="' + rowObject.id + '_p" class="onoffswitch-checkbox" onclick="setPublic(&quot;' + rowObject.id + '&quot;)"';
+            if (rowObject.public) html += "checked='checked' ";
+            html += "type='checkbox' />";
+            html += "<label class='onoffswitch-label' for='" + rowObject.id + "_p'><span class='onoffswitch-inner' data-swchon-text='公开' data-swchoff-text='加密'></span><span class='onoffswitch-switch'></span></label></span>";
+        }
+        if(rowObject.category=="GOODS_SUPPORT") {
+            var html = "<span class='onoffswitch'>";
+            html += '<input name="checkbox-toggle" id="' + rowObject.id + '_c" class="onoffswitch-checkbox" onclick="setCoupon(&quot;' + rowObject.id + '&quot;)"';
+            if (rowObject.canUseCoupon) html += "checked='checked' ";
+            html += "type='checkbox' />";
+            html += "<label class='onoffswitch-label' for='" + rowObject.id + "_c'><span class='onoffswitch-inner' data-swchon-text='优惠券' data-swchoff-text='无'></span><span class='onoffswitch-switch'></span></label></span>";
+        }
+        return html;
+    }
+    function formatButton(cellValue, options, rowObject) {
+        var html = '<div class="btn-group">';
+        if(rowObject.category=="GOODS_VIRTUAL") {
+            html += '<a href="#/sale/company/' + rowObject.id + '" class="btn-warning btn btn-xs"><i class="fa fa-edit"></i> <span class="hidden-mobile">客户</span></a>';
+        }
+        if(rowObject.category=="GOODS_SUPPORT") {
+            html += '<a href="#/sale/groupbuy/' + rowObject.id + '" class="btn-warning btn btn-xs"><i class="fa fa-edit"></i> <span class="hidden-mobile">团购</span></a>';
+        }
+        html += '</div>';
+        return html;
+    }
+    function setCoupon(id) {
+        $.ajax({
+            type: "POST",
+            url: "/sale/setCoupon",
+            data: {id: id}
+        });
+    }
+    function setPublic(id) {
+        $.ajax({
+            type: "POST",
+            url: "/sale/setPublic",
+            data: {id: id}
+        });
     }
     function setStatus(id) {
         $.ajax({

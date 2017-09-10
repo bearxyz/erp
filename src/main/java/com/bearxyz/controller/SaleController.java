@@ -3,9 +3,12 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.Goods;
+import com.bearxyz.domain.po.business.GroupBuy;
 import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.domain.po.business.Sale;
+import com.bearxyz.repository.GroupBuyRepository;
 import com.bearxyz.repository.PackageRepository;
+import com.bearxyz.repository.SaleRepository;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.SaleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,6 +45,11 @@ public class SaleController {
     private GoodsService goodsService;
     @Autowired
     private PackageRepository packageRepository;
+
+    @Autowired
+    private SaleRepository saleRepository;
+    @Autowired
+    private GroupBuyRepository groupBuyRepository;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(){
@@ -157,6 +165,44 @@ public class SaleController {
         List<Package> goods=packageRepository.findAllByGoodsId(goodsId);
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(goods);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/setPublic"}, method = RequestMethod.POST)
+    public String setPublic(@RequestParam("id") String id){
+        Sale sale = saleRepository.findOne(id);
+        sale.setPublic(!sale.getPublic());
+        saleRepository.save(sale);
+        return "{success: true}";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/setCoupon"}, method = RequestMethod.POST)
+    public String setCoupon(@RequestParam("id") String id){
+        Sale sale = saleRepository.findOne(id);
+        sale.setCanUseCoupon(!sale.getCanUseCoupon());
+        saleRepository.save(sale);
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/groupbuy/{id}", method = RequestMethod.GET)
+    public String groupBuy(@PathVariable("id")String id, Model model){
+        Sale sale = saleRepository.findOne(id);
+        model.addAttribute("sale", sale);
+        return "/sale/groupbuy";
+    }
+
+    @RequestMapping(value = "/groupbuy/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String getGroupBuy(@PathVariable("id")String id,@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        List<GroupBuy> groupBuys = groupBuyRepository.findAllBySaleId(id);
+        DataTable<GroupBuy> results = new DataTable<>();
+        results.setData(groupBuys);
+        results.setDraw(req.getDraw());
+        results.setRecordsTotal((long)groupBuys.size());
+        results.setRecordsFiltered((long)groupBuys.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(results);
     }
 
 }
