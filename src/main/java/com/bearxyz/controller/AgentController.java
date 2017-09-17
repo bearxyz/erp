@@ -61,6 +61,7 @@ public class AgentController {
         user.setType("USER_TYPE_AGENT");
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
         user.setCompanyId(u.getCompanyId());
+        user.setEnabled(false);
         ActionResponse ar = new ActionResponse();
         Role r = roleRepository.findByMask("ROLE_AGENT_SEC");
         String[] role = new String[]{r.getId()};

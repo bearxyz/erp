@@ -21,13 +21,17 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.*;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by bearxyz on 2017/9/4.
@@ -35,6 +39,7 @@ import java.util.Map;
 @Controller
 @RequestMapping("/supportapply")
 @SessionAttributes("supportapply")
+@Transactional
 public class SupportApplyController {
 
     @Autowired
@@ -66,19 +71,18 @@ public class SupportApplyController {
             support = service.getApplyByConditions(null, null);
         } else {
             List<SupportApply> res = repository.getAllByClientId(((User) u.getPrincipal()).getId());
-            for(SupportApply sa: res){
+            for (SupportApply sa : res) {
                 Sale sale = saleRepository.findOne(sa.getSaleId());
                 sa.setSale(sale);
 
                 Task task = workflowService.getTaskByBussinessId(sa.getId());
-                if(task!=null) {
+                if (task != null) {
                     sa.setTaskId(task.getId());
                     sa.setTaskName(task.getName());
                     sa.setFinishedDate(task.getDueDate());
-                }
-                else {
+                } else {
                     HistoricProcessInstance historicTaskInstance = workflowService.getHistoryProcessByBussinessId(sa.getId());
-                    if (historicTaskInstance!=null) {
+                    if (historicTaskInstance != null) {
                         if (workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(), "deptLeaderPass") != null && (boolean) workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(), "deptLeaderPass"))
                             sa.setTaskName("已完成");
                         else
@@ -91,9 +95,15 @@ public class SupportApplyController {
                 Company company = companyRepository.findOne(sa.getCompanyId());
                 sa.setApplyer(company.getName());
             }
+            Collections.sort(res, new Comparator<SupportApply>() {
+                @Override
+                public int compare(SupportApply o1, SupportApply o2) {
+                    return o2.getLastUpdated().compareTo(o1.getLastUpdated());
+                }
+            });
             support.setData(res);
-            support.setRecordsTotal((long)res.size());
-            support.setRecordsFiltered((long)res.size());
+            support.setRecordsTotal((long) res.size());
+            support.setRecordsFiltered((long) res.size());
         }
         support.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
@@ -113,6 +123,8 @@ public class SupportApplyController {
     public String doCreate(@ModelAttribute("supportapply") SupportApply supportapply, SessionStatus status) {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         supportapply.setCompanyId(user.getCompanyId());
+        Sale sale = saleRepository.findOne(supportapply.getSaleId());
+        supportapply.setPrice(sale.getPrice());
         service.save(supportapply);
         status.setComplete();
         return "{success: true}";
@@ -174,6 +186,24 @@ public class SupportApplyController {
         ActionResponse response = new ActionResponse();
         response.setSuccess(true);
         return mapper.writeValueAsString(response);
+    }
+
+    @RequestMapping(value = "/setReal", method = RequestMethod.POST)
+    @ResponseBody
+    public String setReal(String id, String realStartDate, String realEndDate, Integer realManCount) throws ParseException {
+        SupportApply apply = repository.findOne(id);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        if (realManCount != null)
+            apply.setRealManCount(realManCount);
+        if (realStartDate != null && !StringUtils.isEmpty(realStartDate)) {
+
+            apply.setRealStartDate(new Date(sdf.parse(realStartDate).getTime()));
+        }
+        if (realEndDate != null && !StringUtils.isEmpty(realEndDate)) {
+            apply.setRealEndDate(new Date(sdf.parse(realEndDate).getTime()));
+        }
+        repository.save(apply);
+        return "{success: true}";
     }
 
 }

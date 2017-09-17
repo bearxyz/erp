@@ -26,7 +26,7 @@
     <!-- end col -->
 
     <!-- right side of the page with the sparkline graphs -->
-    <!-- col -->
+    <!-- col-->
     <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8 text-right">
 
         <a href="javascript:toOrder()" class="btn btn-default shop-btn">
@@ -81,7 +81,7 @@
                         </div>
                         <div class="product-info smart-form">
                             <div class="row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success"> 加入购物车</a> </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6"> <a href="javascript:void(0);" class="btn btn-success">加入购物车</a> </div>
                             </div>
                         </div>
                     </div>
@@ -106,14 +106,14 @@
     <!-- end row -->
 
 </section>
-
-<!-- end widget grid -->
 <script th:src="@{js/jquery.cookie.js}"></script>
+<!-- end widget grid -->
 <script type="text/javascript">
     var total=0;    //总条目: 可变
     var show=1;    //每页显示条目数: 可变
     var size=1;     //当前第几页
     var totalPage=0; //总页数
+    pageSetUp();
 
     pageSetUp();
     //购物车
@@ -125,17 +125,20 @@
     //购物车集合对象
     var CartItem = function () {
         this.Id = 0;
-        this.Name = "";
+        //this.Name = "";
         this.Count = 0;
         this.Price = 0;
+        //this.Projcet="";
+       // this.Type="";
+        //this.Subtype="";
     };
     function cleanCart() {
         var cartHelper =new CartHelper();
         cartHelper.Clear();
     }
-    function toAddCart(id, name, count, price){
+    function toAddCart(id, count, price){
         var cartHelper =new CartHelper();
-        cartHelper.Add(id, name, count, price);
+        cartHelper.Add(id, count, price);
     }
     //购物车操作
     var CartHelper = function () {
@@ -146,20 +149,35 @@
             return cart;
         };
         //向购物车添加
-        this.Add = function (id, name, count, price) {
+        this.Add = function (id ,count, price) {
             var carCount=parseInt($("#carCount").html());
 
             var cart = this.Read();
             var index = this.Find(id);
             if (index != -1) {
-                cart.Items[index].Count = cart.Items[index].Count+1;
+                cart.Items[index].Count = Number(cart.Items[index].Count)+Number(1);
                 cart.Total +=(((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
             } else {
                 var item = new CartItem();
                 item.Id = id;
-                item.Name = name;
+                //item.Name = name;
                 item.Count = count;
                 item.Price = price;
+                //if (project == "null" ){
+                  //  item.project="";
+               // }else{
+                   // item.Projcet=project;
+              //  }
+               // if (type== "null"){
+                //    item.Type="";
+             //   }else{
+               //     item.Type=type;
+             //   }
+             //   if (subtype == "null"){
+              //      item.Subtype="";
+              //  }else{
+              //      item.Subtype=subtype;
+               // }
                 cart.Items.push(item);
                 cart.Count++;
                 cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
@@ -226,22 +244,21 @@
             return cart;
         };
         this.ItemToString = function (item) {
-            return item.Id + "||" + escape(item.Name) + "||" + item.Count + "||" + item.Price;
+            return item.Id +  "||" + item.Count + "||" + item.Price;
         };
         this.ItemToObject = function (str) {
             var arr = str.split('||');
             var item = new CartItem();
             item.Id = arr[0];
-            item.Name = unescape(arr[1]);
-            item.Count = arr[2];
-            item.Price = arr[3];
+           // item.Name = unescape(arr[1]);
+            item.Count = arr[1];
+            item.Price = arr[2];
+           // item.Projcet =arr[4];
+           // item.Type= arr[5];
+           // item.Subtype=arr[6];
             return item;
         };
     };
-
-
-
-
     var pagefunction = function() {
         // clears the variable if left blank
         $.ajax({
@@ -284,7 +301,9 @@
                             rowsHtml += "<div class=\"row\">";
                             rowsHtml += "<div class=\"col-md-5 col-sm-12 col-xs-12\">";
                             rowsHtml += "<div class=\"product-image\">";
-                            rowsHtml += "<img src=\"/public/showImg/"+imgageId+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            if(imgageId!="" && imgageId !=undefined){
+                                rowsHtml += "<img src=\"/public/showImg/"+imgageId+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            }
                             rowsHtml += "<span class=\"tag2 hot\">HOT</span>";
                             rowsHtml += "</div></div>";
                             rowsHtml += "<div class=\"col-md-7 col-sm-12 col-xs-12\">";
@@ -292,13 +311,13 @@
                             rowsHtml += "<h5 class=\"name\">";
                             rowsHtml += "<a href=\"#/sale/detail/"+items[i].id+"\" >" + items[i].name + "<span>" + project + "</span><span>" + category + "</span></a>";
                             rowsHtml += "</h5>";
-                            rowsHtml += "<p class=\"price-container\"><span>$"+items[i].price+"</span></p>";
+                            rowsHtml += "<p class=\"price-container\"><span>￥"+items[i].price+"</span></p>";
                             rowsHtml += "<span class=\"tag1\"></span>";
                             rowsHtml += "</div>";
-                            rowsHtml += "<div class=\"description\"><p>"+content+"</p></div>";
+                           // rowsHtml += "<div class=\"description\"><p>"+content+"</p></div>";
                             rowsHtml += "<div class=\"product-info smart-form\">";
                             rowsHtml += "<div class=\"row\">";
-                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"javascript:toAddCart('"+items[i].id+"','"+items[i].name+"',1,'"+items[i].price +"');\" class=\"btn btn-success\"> 加入购物车</a> </div>";
+                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"javascript:toAddCart('"+items[i].id+"',1,"+items[i].price+")\" class=\"btn btn-success\">添加购物车</a> </div>";
                             rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"#/sale/detail/"+items[i].id+"\" class=\"btn btn-success\"> 详情</a> </div>";
                             rowsHtml += "</div></div></div></div></div></div>";
                         }else {
@@ -307,7 +326,9 @@
                             rowsHtml += "<div class=\"row\">";
                             rowsHtml += "<div class=\"col-md-5 col-sm-12 col-xs-12\">";
                             rowsHtml += "<div class=\"product-image\">";
-                            rowsHtml += "<img src=\"/public/showImg/"+imgageId+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            if(imgageId!="" && imgageId !=undefined){
+                                rowsHtml += "<img src=\"/public/showImg/"+imgageId+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            }
                             rowsHtml += "<span class=\"tag2 hot\">HOT</span>";
                             rowsHtml += "</div></div>";
                             rowsHtml += "<div class=\"col-md-7 col-sm-12 col-xs-12\">";
@@ -315,13 +336,13 @@
                             rowsHtml += "<h5 class=\"name\">";
                             rowsHtml += "<a href=\"#/sale/detail/"+items[i].id+"\" >" + items[i].name + "<span>" + project + "</span><span>" + category + "</span></a>";
                             rowsHtml += "</h5>";
-                            rowsHtml += "<p class=\"price-container\"><span>$" + items[i].price + "</span></p>";
+                            rowsHtml += "<p class=\"price-container\"><span> ￥" + items[i].price + "</span></p>";
                             rowsHtml += "<span class=\"tag1\"></span>";
                             rowsHtml += "</div>";
-                            rowsHtml += "<div class=\"description\"><p>"+content+"</p></div>";
+                            //rowsHtml += "<div class=\"description\"><p>"+content+"</p></div>";
                             rowsHtml += "<div class=\"product-info smart-form\">";
                             rowsHtml += "<div class=\"row\">";
-                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"javascript:toAddCart('"+items[i].id+"','"+items[i].name+"',1,'"+items[i].price +"');\" class=\"btn btn-success\"> 加入购物车</a> </div>";
+                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"javascript:toAddCart('"+items[i].id+"',1,"+items[i].price+")\" class=\"btn btn-success\">添加购物车</a> </div>";
                             rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"#/sale/detail/"+items[i].id+"\" class=\"btn btn-success\"> 详情</a> </div>";
                             rowsHtml += "</div></div></div></div></div></div>";
                         }
@@ -357,6 +378,7 @@
         $("#pageHtml").html(pageHtml);
     }
     pagefunction();
+
     //清空购物车
     cleanCart();
     function toOrder(){
@@ -368,8 +390,6 @@
         }
     }
 
-
     </script>
-
 </body>
 </html>

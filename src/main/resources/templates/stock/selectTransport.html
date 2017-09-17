@@ -18,6 +18,14 @@
     <form id="form" class="smart-form" novalidate="novalidate">
         <fieldset>
             <section>
+                <label class="select">
+                    <select name="deliverWarehouseId" id="deliverWarehouseId">
+                        <option value="">发货仓库</option>
+                        <option th:each="w:${warehouses}" th:value="${w.id}">[[${w.name}]]</option>
+                    </select><i></i>
+                </label>
+            </section>
+            <section>
                 <label class="input">
                     <input type="text" name="deliverAddress" id="deliverAddress" placeholder="收货地址" th:value="${stock.deliverAddress}" />
                 </label>

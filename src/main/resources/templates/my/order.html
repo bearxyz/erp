@@ -381,7 +381,7 @@
                         dfkTableHtml+="<tr>";
                         dfkTableHtml+="<td colspan=\"7\">总计</td>";
                         dfkTableHtml+="<td>￥"+(order.price+deliverFee)+"</td>";
-                        dfkTableHtml+="<td ><a class=\"btn btn-danger btn-sm\" >确定支付</a>  <a  class=\"btn btn-primary btn-sm\" href=\"javascript:toCleanOrder('"+order.id+"',9)\">取消订单</a></td>";
+                        dfkTableHtml+="<td ><a  class=\"btn btn-danger btn-sm\" href=\"javascript:toOkOrder('"+order.id+"',4)\">确定收货</a></td>";
                         dfkTableHtml+="</tr>";
                     }else if(orderItemLength==1){
                         dfkTableHtml+="<tr>";
@@ -504,21 +504,28 @@
                         dfkTableHtml+="<tr>";
                         dfkTableHtml+="<td colspan=\"7\">总计</td>";
                         dfkTableHtml+="<td>￥"+(order.price+deliverFee)+"</td>";
-                        dfkTableHtml+="<td ><a class=\"btn btn-danger btn-sm\" >确定支付</a>  <a  class=\"btn btn-primary btn-sm\" href=\"javascript:toCleanOrder('"+order.id+"',9)\">取消订单</a></td>";
                         dfkTableHtml+="</tr>";
                     }else if(orderItemLength==1){
                         dfkTableHtml+="<tr>";
                         dfkTableHtml+="<td>"+order.code+"</td>";
                         dfkTableHtml+="<td>"+orderItem[0].sale.name+"</td>";
                         dfkTableHtml+="<td>"+order.transport+"</td>";
-                        dfkTableHtml+="<td>"+order.transportNo+"</td>";
-                        dfkTableHtml+="<td>"+order.transportCompany+"</td>";
+                        if(order.transportNo=="null"){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportNo+"</td>";
+                        }
+                        if(order.transportCompany=="null"){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportCompany+"</td>";
+                        }
                         dfkTableHtml+="<td>￥"+orderItem[0].price+"</td>";
                         dfkTableHtml+="<td>"+orderItem[0].count+"</td>";
                         dfkTableHtml+="<td>￥"+orderItem[0].count*orderItem[0].price+"</td>";
                         dfkTableHtml+="</tr>";
                         dfkTableHtml+="<tr>";
-                        dfkTableHtml+="<td colspan=\"4\">运费</td>";
+                        dfkTableHtml+="<td colspan=\"7\">运费</td>";
                         dfkTableHtml+="<td>￥"+order.deliverFee+"</td>";
                         dfkTableHtml+="<td ></td>";
                         dfkTableHtml+="</tr>";
@@ -537,8 +544,16 @@
                             dfkTableHtml+="<td>"+orderItems.sale.name+"</td>";
                             if(k==0){
                                 dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transport+"</td>";
-                                dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transportNo+"</td>";
-                                dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transportCompany+"</td>";
+                                if(order.transportNo==null){
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\"></td>";
+                                }else{
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transportNo+"</td>";
+                                }
+                                if(order.transportCompany==null){
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\"></td>";
+                                }else{
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transportCompany+"</td>";
+                                }
                             }
                             dfkTableHtml+="<td>￥"+orderItems.price+"</td>";
                             dfkTableHtml+="<td>"+orderItems.count+"</td>";
@@ -546,7 +561,7 @@
                             dfkTableHtml+="</tr>";
                         }
                         dfkTableHtml+="<tr>";
-                        dfkTableHtml+="<td colspan=\"4\">运费</td>";
+                        dfkTableHtml+="<td colspan=\"7\">运费</td>";
                         dfkTableHtml+="<td>￥"+order.deliverFee+"</td>";
                         dfkTableHtml+="<td ></td>";
                         dfkTableHtml+="</tr>";

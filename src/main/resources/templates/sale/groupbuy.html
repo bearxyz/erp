@@ -44,6 +44,12 @@
                     </span>
                     <h2><strong> 团购折扣</strong></h2>
                     <div class="widget-toolbar">
+                        <a class="btn btn-danger" href="javascript:void(0);" id="delete">
+                            <i class="fa fa-trash-o"> </i>
+                            <span class="hidden-mobile">删 除</span>
+                        </a>
+                    </div>
+                    <div class="widget-toolbar">
                         <a class="btn btn-primary" id="create">
                             <i class="fa fa-edit"> </i>
                             <span class="hidden-mobile">新 增</span><input id="id" type="hidden" value="">
@@ -56,9 +62,10 @@
                                width="100%">
                             <thead>
                             <tr>
+                                <th class="smart-form" style="padding:5px;"><label class="checkbox"><input name="check-all" type="checkbox"/><i> </i></label>
+                                </th>
                                 <th>团购人数</th>
                                 <th>折扣</th>
-                                <th>操作</th>
                             </tr>
                             </thead>
                         </table>
@@ -107,15 +114,9 @@
                 }
             },
             "columns": [
-                {"data": "name"},
-                {"data": "discount"},
-                {
-                    "data": "operate",
-                    "sClass": "text-center",
-                    width: "160px",
-                    orderable: false,
-                    render: formatAction
-                }
+                CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                {"data": "manCount"},
+                {"data": "disCount"}
             ],
             "autoWidth": true,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
@@ -153,16 +154,59 @@
             $(":checkbox[name='check-all']", "#dt_basic").prop("checked", checkbox.length == checkbox.filter(":checked"));
         }
     });
-    function formatAction(cellValue, options, rowObject) {
-        var html = '<div class="btn-group btn-group-justified">';
-        html += '<a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#remoteModal" href="client/setBenefit/'+rowObject.id+'">设置折扣</a>';
-        html += '</div>';
-        return html;
-    }
+
     $('#create').on('click', function () {
         var id = saleId;
-        $('#remoteModal').modal({remote: '/sale/createGroupBuy?id=' + id});
+        $('#remoteModal').modal({remote: '/sale/createGroupbuy/' + id});
     })
+
+    $('#delete').on('click', function (e) {
+        var ids = [];
+        $('input[name="check-id"]:checked').each(function () {
+            ids.push($(this).val());
+        });
+        if (ids !== "") {
+            del(ids);
+        }
+        else {
+            $.SmartMessageBox({
+                title: "注 意!",
+                content: "请先选择需要操作的数据项！",
+                buttons: '[确 定]'
+            });
+            e.preventDefault();
+        }
+    });
+
+    function del(id) {
+        $.SmartMessageBox({
+                title: "注 意!",
+                content: "确定要删除选定的数据项吗？",
+                buttons: '[取 消][确 定]'
+            },
+            function (ButtonPressed) {
+                if (ButtonPressed === "确 定") {
+                    $.ajax({
+                        url: '/sale/deleteGroupbuy',
+                        type: 'POST',
+                        data: {ids: id.toString()},
+                        success: function () {
+                            $('#dt_basic').DataTable().ajax.reload();
+                        },
+                        error: function (e) {
+                            $.bigBox({
+                                title: "系统内部错误！",
+                                content: "该错误已被记录，请联系管理员，并稍后重试！",
+                                color: "#C46A69",
+                                icon: "fa fa-warning shake animated",
+                                timeout: 6000
+                            });
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+    }
 </script>
 </body>
 </html>

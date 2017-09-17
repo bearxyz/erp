@@ -6,6 +6,7 @@ import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +49,7 @@ public class ClientService {
     }
 
     public DataTable<Company> getCompanyByConditions(String uid, Boolean signed){
+        Sort sort = new Sort(Sort.Direction.fromString("desc"), "lastUpdated");
         Specification<Company> specification = (root, query, cb)->{
             Predicate predicate = cb.conjunction();
             if(!StringUtils.isEmpty(uid))
@@ -56,7 +58,7 @@ public class ClientService {
                 predicate.getExpressions().add(cb.equal(root.get("signed"),signed));
             return predicate;
         };
-        List<Company> content = companyRepository.findAll(specification);
+        List<Company> content = companyRepository.findAll(specification, sort);
         DataTable<Company> companies = new DataTable<>();
         companies.setRecordsTotal((long)content.size());
         companies.setRecordsFiltered((long)content.size());

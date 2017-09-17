@@ -54,6 +54,7 @@
                             <th>执行人</th>
                             <th>开始时间</th>
                             <th>批准时间</th>
+                            <th>入库单号</th>
                             <th></th>
                             </thead>
                         </table>
@@ -89,13 +90,13 @@
         var breakpointDefinition = {tablet: 1024, phone: 480};
 
         function format(d) {
-            var html='';
+            var html = '';
             $.ajax({
-                url:'/purchasingorder/getItems',
-                type:'POST',
+                url: '/purchasingorder/getItems',
+                type: 'POST',
                 async: false,
-                data:{id: d.id},
-                success:function (data) {
+                data: {id: d.id},
+                success: function (data) {
                     var items = eval(data);
                     html = '<table cellpadding="5" cellspacing="0" border="0" class="table table-hover table-condensed">';
                     html += "<thead><th>商品名称</th><th>规格</th><th>采购数量</th><th>单位</th><th>采购单价</th><th>供应商</th><th>单品数量</th></thead>";
@@ -139,6 +140,7 @@
                 {"data": "applyer"},
                 {"data": "dateCeated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
                 {"data": "finishedDate", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
+                {"data": null, "sClass": "text-center", render: formatCode},
                 {"data": "taskName", "sClass": "text-center", render: formatStatus}
             ],
             "autoWidth": true,
@@ -198,6 +200,22 @@
         }
         return html;
     }
+
+    function formatCode(cellValue, options, rowObject) {
+        var html = "";
+        if (rowObject.stockInCode != null) {
+            var code = "";
+            for (i = 0;
+                 i < rowObject.stockInCode.length;
+                 i++
+            ) {
+                code += rowObject.stockInCode[i] + "<br />";
+            }
+            html = code;
+        }
+        return html;
+    }
+
 </script>
 </body>
 </html>

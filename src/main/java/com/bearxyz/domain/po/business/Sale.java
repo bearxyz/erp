@@ -47,6 +47,8 @@ public class Sale extends BaseDomain {
     private Integer ammount = 0;
     @Column(length = 36)
     private String packageId = "";
+    @Column
+    private Integer days = 0;
 
     @Column
     private java.sql.Date startDate;
@@ -98,9 +100,18 @@ public class Sale extends BaseDomain {
     @Transient
     private String stock = "";
     @Transient
+    private String statusName="";
+
+    @Transient
     private Goods goods;
     @Transient
     private Package aPackage;
+    @Transient
+    private String saleId;
+    @Transient
+    private int saleStatus=0;
+    @Transient
+    private float salePrice=(float) 0.0;
 
     public String getCategory() {
         return category;
@@ -399,11 +410,51 @@ public class Sale extends BaseDomain {
         this.packageId = packageId;
     }
 
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
     public Package getaPackage() {
         return aPackage;
     }
 
     public void setaPackage(Package aPackage) {
         this.aPackage = aPackage;
+    }
+
+    public float getSalePrice() {
+        return salePrice;
+    }
+
+    public void setSalePrice(float salePrice) {
+        this.salePrice = salePrice;
+    }
+
+    public String getSaleId() {
+        return saleId;
+    }
+
+    public void setSaleId(String saleId) {
+        this.saleId = saleId;
+    }
+
+    public int getSaleStatus() {
+        return saleStatus;
+    }
+
+    public void setSaleStatus(int saleStatus) {
+        this.saleStatus = saleStatus;
+    }
+
+    public Integer getDays() {
+        return days;
+    }
+
+    public void setDays(Integer days) {
+        this.days = days;
     }
 }

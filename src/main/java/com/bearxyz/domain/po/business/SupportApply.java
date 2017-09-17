@@ -21,7 +21,7 @@ public class SupportApply extends BaseDomain {
     @Column(length = 36)
     private String companyId = "";
     @Column
-    private Float price = (float)0.0;
+    private Float price = (float) 0.0;
     //1 已受理 2 申请通过 3 不通过
     @Column
     private Integer status = 0;
@@ -29,6 +29,20 @@ public class SupportApply extends BaseDomain {
     private String processInstanceId = "";
     @Column(length = 1000)
     private String memo = "";
+    @Column
+    private java.sql.Date startDate;
+    @Column
+    private java.sql.Date endDate;
+    @Column
+    private Integer manCount = 0;
+    @Column
+    private java.sql.Date realStartDate;
+    @Column
+    private java.sql.Date realEndDate;
+    @Column
+    private Integer realManCount = 0;
+    @Column
+    private Float realPrice = (float) 0.0;
 
     @Transient
     private Sale sale;
@@ -129,5 +143,59 @@ public class SupportApply extends BaseDomain {
         this.memo = memo;
     }
 
+    public java.sql.Date getStartDate() {
+        return startDate;
+    }
 
+    public void setStartDate(java.sql.Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public java.sql.Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(java.sql.Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public Integer getManCount() {
+        return manCount;
+    }
+
+    public void setManCount(Integer manCount) {
+        this.manCount = manCount;
+    }
+
+    public java.sql.Date getRealStartDate() {
+        return realStartDate;
+    }
+
+    public void setRealStartDate(java.sql.Date realStartDate) {
+        this.realStartDate = realStartDate;
+    }
+
+    public java.sql.Date getRealEndDate() {
+        return realEndDate;
+    }
+
+    public void setRealEndDate(java.sql.Date realEndDate) {
+        this.realEndDate = realEndDate;
+    }
+
+    public Integer getRealManCount() {
+        return realManCount;
+    }
+
+    public void setRealManCount(Integer realManCount) {
+        this.realManCount = realManCount;
+    }
+
+    public Float getRealPrice() {
+        return realPrice;
+    }
+
+    public void setRealPrice(Float realPrice) {
+        this.realPrice = realPrice;
+    }
 }

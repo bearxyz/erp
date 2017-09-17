@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 出库单打印</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form" class="smart-form" novalidate="novalidate">
+        <fieldset>
+            <table id="print" class="table table-border">
+                <tr><td>出库单号：</td><td>[[${stock.code}]]</td></tr>
+            </table>
+        </fieldset>
+        <footer>
+            <button type="button" class="btn btn-primary">
+                打 印
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                关 闭
+            </button>
+        </footer>
+    </form>
+</div>
+
+</body>
+</html>

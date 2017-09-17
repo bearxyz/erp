@@ -55,16 +55,16 @@
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
-                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"></th>
                                 <th class="hasinput"></th>
                             </tr>
                             <tr>
-                                <th>学校名称</th>
-                                <th>地址</th>
-                                <th>联系人</th>
+                                <th>代理区域</th>
+                                <th>合同签署人</th>
                                 <th>联系电话</th>
-                                <th>合同开始日期</th>
-                                <th>合同结束日期</th>
+                                <th>代理项目</th>
+                                <th>项目发展级别</th>
+                                <th>状态</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
@@ -112,12 +112,12 @@
                 }
             },
             "columns": [
-                {"data": "name"},
-                {"data": "fullAddress"},
-                {"data": "contactor"},
-                {"data": "contactPhone"},
-                {"data": "currentStartDate", render: CONSTANT.DATA_TABLES.RENDER.DATE},
-                {"data": "currentEndDate", render: CONSTANT.DATA_TABLES.RENDER.DATE},
+                {"data": null, render: formatArea},
+                {"data": null, render: formatSign},
+                {"data": null, render: formatPhone},
+                {"data": null, render: formatProject},
+                {"data": null, render: formatLevel},
+                {"data": "enabled", "sClass": "text-center", render: formatStatus, width: "50px"},
                 {
                     "data": "operate",
                     "sClass": "text-center",
@@ -172,13 +172,73 @@
     function formatAction(cellValue, options, rowObject) {
         var html = '<div class="btn-group btn-group-justified">';
         if (!rowObject.hasAccount)
-            html += '<a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#remoteModal" href="client/setAccount/'+rowObject.id+'">分配账号</a>';
+            html += '<a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#remoteModal" href="client/setAccount/' + rowObject.id + '">分配账号</a>';
+        else
+            html += '<a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#remoteModal" href="client/resetPwd/' + rowObject.id + '">重置密码</a>';
         try {
             if (setEditBtn) html += setEditBtn(rowObject.id);
         } catch (e) {
         }
         html += '</div>';
         return html;
+    }
+    function formatStatus(cellValue, options, rowObject) {
+        var html = "";
+        if (rowObject.hasAccount) {
+            html = "<span class='onoffswitch'>";
+            html += '<input name="checkbox-toggle" id="' + rowObject.id + '" class="onoffswitch-checkbox" onclick="setStatus(&quot;' + rowObject.id + '&quot;)"';
+            if (rowObject.user.enabled) html += "checked='checked' ";
+            html += "type='checkbox' />";
+            html += "<label class='onoffswitch-label' for='" + rowObject.id + "'><span class='onoffswitch-inner' data-swchon-text='启用' data-swchoff-text='停用'></span><span class='onoffswitch-switch'></span></label></span>";
+        }
+        return html;
+    }
+    function formatArea(cellValue, options, rowObject) {
+        var contracts = rowObject.contracts;
+        var area = "";
+        for (i = 0; i < contracts.length; i++) {
+            area += contracts[i].agentProvince + contracts[i].agentCity + contracts[i].agentDistrict + "<br/>";
+        }
+        return area;
+    }
+    function formatSign(cellValue, options, rowObject) {
+        var contracts = rowObject.contracts;
+        var area = "";
+        for (i = 0; i < contracts.length; i++) {
+            area += contracts[i].signPerson + "<br/>";
+        }
+        return area;
+    }
+    function formatPhone(cellValue, options, rowObject) {
+        var contracts = rowObject.contracts;
+        var area = "";
+        for (i = 0; i < contracts.length; i++) {
+            area += contracts[i].signPhone + "<br/>";
+        }
+        return area;
+    }
+    function formatProject(cellValue, options, rowObject) {
+        var contracts = rowObject.contracts;
+        var area = "";
+        for (i = 0; i < contracts.length; i++) {
+            area += contracts[i].project + "<br/>";
+        }
+        return area;
+    }
+    function formatLevel(cellValue, options, rowObject) {
+        var contracts = rowObject.contracts;
+        var area = "";
+        for (i = 0; i < contracts.length; i++) {
+            area += contracts[i].contractLevel + "<br/>";
+        }
+        return area;
+    }
+    function setStatus(id) {
+        $.ajax({
+            type: "POST",
+            url: "/client/setStatus",
+            data: {id: id}
+        });
     }
 </script>
 <script type="text/javascript" shiro:hasPermission="/clientres/edit">

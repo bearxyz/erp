@@ -5,6 +5,7 @@ import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.domain.po.sys.Dict;
+import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.*;
 import com.bearxyz.service.sys.SysService;
 import com.bearxyz.service.workflow.WorkflowService;
@@ -148,6 +149,43 @@ public class SaleService {
         //    return repository.findAll();
         //}
         return repository.findAllByCategoryAndOnSale(category, true);
+    }
+
+    public DataTable<Sale> getSecordSaleList(String category,  String companyId){
+        List<Sale> saleList =this.repository.findAllByCategory(category);
+        if(saleList !=null && saleList.size()>0){
+            for(Sale sale:saleList){
+                List<Sale> campanySaleList =repository.findCompanySaleByCompanyIdAndSaleId(companyId,sale.getId());
+                if(campanySaleList==null || campanySaleList.size()<=0){
+                    sale.setStatusName("上架");
+                }else{
+                    sale.setStatusName("下架");
+                }
+            }
+
+        }
+        DataTable dt = new DataTable<Sale>();
+        dt.setData(saleList);
+        dt.setRecordsTotal((long)saleList.size());
+        dt.setRecordsFiltered((long)saleList.size());
+        return dt;
+    }
+
+    public void insertCompanySale(String companyId, String saleId,float price,int status){
+        repository.insertCompanySale(companyId,saleId,price,status);
+    }
+
+    public void deleteCompaySale(String companyId,String saleId){
+        repository.deleteCompaySale(companyId,saleId);
+    }
+
+    public DataTable<Sale> secSaleList(String companyId){
+        List<Sale> saleList =this.repository.secSaleList(companyId);
+        DataTable dt = new DataTable<Sale>();
+        dt.setData(saleList);
+        dt.setRecordsTotal((long)saleList.size());
+        dt.setRecordsFiltered((long)saleList.size());
+        return dt;
     }
 
 }

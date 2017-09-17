@@ -13,6 +13,7 @@ import com.bearxyz.service.workflow.WorkflowService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,29 +62,29 @@ public class SupportApplyService {
         repository.save(supportApply);
     }
 
-    public DataTable<SupportApply> getApplyByConditions(String uid, String companyId){
-        Specification<SupportApply> specification = (root, query, cb)->{
+    public DataTable<SupportApply> getApplyByConditions(String uid, String companyId) {
+        Sort sort = new Sort(Sort.Direction.fromString("desc"), "lastUpdated");
+        Specification<SupportApply> specification = (root, query, cb) -> {
             Predicate predicate = cb.conjunction();
-            if(!StringUtils.isEmpty(uid))
+            if (!StringUtils.isEmpty(uid))
                 predicate.getExpressions().add(cb.equal(root.get("createdBy"), uid));
-            if(companyId!=null)
-                predicate.getExpressions().add(cb.equal(root.get("companyId"),companyId));
+            if (companyId != null)
+                predicate.getExpressions().add(cb.equal(root.get("companyId"), companyId));
             return predicate;
         };
-        List<SupportApply> content = repository.findAll(specification);
-        for(SupportApply sa: content){
+        List<SupportApply> content = repository.findAll(specification, sort);
+        for (SupportApply sa : content) {
             Sale sale = saleRepository.findOne(sa.getSaleId());
             sa.setSale(sale);
 
             Task task = workflowService.getTaskByBussinessId(sa.getId());
-            if(task!=null) {
+            if (task != null) {
                 sa.setTaskId(task.getId());
                 sa.setTaskName(task.getName());
                 sa.setFinishedDate(task.getDueDate());
-            }
-            else {
+            } else {
                 HistoricProcessInstance historicTaskInstance = workflowService.getHistoryProcessByBussinessId(sa.getId());
-                if (historicTaskInstance!=null) {
+                if (historicTaskInstance != null) {
                     if (workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(), "deptLeaderPass") != null && (boolean) workflowService.getHistoryVarByProcessId(historicTaskInstance.getId(), "deptLeaderPass"))
                         sa.setTaskName("已完成");
                     else
@@ -97,8 +98,8 @@ public class SupportApplyService {
             sa.setApplyer(company.getName());
         }
         DataTable<SupportApply> companies = new DataTable<>();
-        companies.setRecordsTotal((long)content.size());
-        companies.setRecordsFiltered((long)content.size());
+        companies.setRecordsTotal((long) content.size());
+        companies.setRecordsFiltered((long) content.size());
         companies.setData(content);
         return companies;
     }

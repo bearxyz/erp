@@ -19,18 +19,21 @@
         <input type="hidden" id="saleId" name="saleId" th:value="${sale.id}">
         <fieldset>
             <section>
+                <label class="label">商品名称 :</label>
                 <label class="input">
-                    <input type="text" name="mask" id="mask" placeholder="字典标识"/>
+                    <input type="text" name="name" th:value="${sale.name}"/>
                 </label>
             </section>
             <section>
+                <label class="label">团购人数 :</label>
                 <label class="input">
-                    <input type="text" name="name" id="name" placeholder="字典项名称"/>
+                    <input type="text" name="manCount" id="manCount" class="number"/>
                 </label>
             </section>
             <section>
+                <label class="label">优惠金额 :</label>
                 <label class="input">
-                    <input type="text" name="value" id="value" placeholder="字典项值"/>
+                    <input type="text" name="price" id="price" class="number" />
                 </label>
             </section>
         </fieldset>
@@ -51,26 +54,22 @@
     var pagefunction = function () {
         var $form = $("#form").validate({
             rules: {
-                name: {required: true},
-                mask: {required: true},
-                value: {required: true}
+                manCount: {required: true},
+                price: {required: true}
             },
             messages: {
-                name: {required: '请输入字典项名称'},
-                mask: {required: '请输入字典标识'},
-                value: {required: '请输入字典值'}
+                manCount: {required: '请输入团购人数'},
+                price: {required: '请输入优惠金额'}
             },
             onsubmit: true,
             submitHandler: function () {
                 $.ajax({
-                    url: '/dict/create',
+                    url: '/sale/createGroupbuy',
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function () {
                         $('#remoteModal').modal('hide');
                         $('#dt_basic').DataTable().ajax.reload();
-                        jQuery('#jstree').jstree(true).settings.core.data.url="/dict/tree";
-                        jQuery('#jstree').jstree(true).refresh(false, true);
                     },
                     error: function (e) {
                         $.bigBox({

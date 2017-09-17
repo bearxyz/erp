@@ -34,11 +34,6 @@ public class ContractFinished implements ExecutionListener {
     public void notify(DelegateExecution execution) throws Exception {
         Contract contract = contractRepository.findOne(execution.getProcessBusinessKey());
         Company company = companyRepository.findOne(contract.getCompanyId());
-        List<Contract> contracts = contractRepository.findAllByCompanyId(contract.getCompanyId());
-        for(Contract c: contracts){
-            c.setInvalid(true);
-            contractRepository.save(c);
-        }
         contract.setApproved(true);
         contract.setInvalid(false);
         company.setSigned(true);

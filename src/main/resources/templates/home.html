@@ -28,7 +28,8 @@
         <!-- Note: The activity badge color changes when clicked and resets the number to 0
              Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
         <span id="activity" class="activity-dropdown" onclick="window.location='#/common/task/todo';"
-              th:if="${user.type=='USER_TYPE_SYSTEM'}"> <i class="fa fa-user"></i> <b id="taskCount" class="badge bg-color-red bounceIn animated"
+              th:if="${user.type=='USER_TYPE_SYSTEM'}"> <i class="fa fa-user"></i> <b id="taskCount"
+                                                                                      class="badge bg-color-red bounceIn animated"
                                                                                       style="display: none;"> </b> </span>
         <!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
         <!-- END AJAX-DROPDOWN -->
@@ -96,9 +97,15 @@
         </div>
         <!-- end fullscreen button -->
 
-        <div id="downloadSoftware" class="btn-header transparent pull-right" shiro:hasAnyRoles="ROLE_AGENT,ROLE_TEACHER">
+        <div id="downloadSoftware" class="btn-header transparent pull-right"
+             shiro:hasAnyRoles="ROLE_AGENT,ROLE_TEACHER">
             <span> <a href="/soft/xjd.zip" target="_blank" title="下载客户端"><i
                     class="fa fa-cloud-download"></i></a> </span>
+        </div>
+
+        <div id="changePwd" class="btn-header transparent pull-right">
+            <span><a href="#/common/changepwd" title="修改密码"><i
+                    class="fa fa-lock"></i></a></span>
         </div>
 
     </div>
@@ -133,7 +140,8 @@
                 <a th:href="${permission.url}">
                     <i th:class="'fa fa-lg fa-fw '+${permission.css}"></i>
                     <span class="menu-item-parent" th:text="${permission.name}"></span>
-                    <span class="badge bg-color-red bounceIn animated pull-right inbox-badge margin-right-13" th:id="${permission.mask}" style="display: none"></span>
+                    <span class="badge bg-color-red bounceIn animated pull-right inbox-badge margin-right-13"
+                          th:id="${permission.mask}" style="display: none"></span>
                 </a>
             </li>
         </ul>
@@ -205,17 +213,6 @@
 </div>
 <!-- END FOOTER -->
 
-
-<!-- Dynamic Modal -->
-<div class="modal fade" id="homeModal" tabindex="-1" role="dialog" aria-labelledby="homeModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        </div>
-    </div>
-</div>
-<!-- /.modal -->
-
 <script th:src="@{js/jquery.min.js}"></script>
 <script th:src="@{js/jquery-ui.min.js}"></script>
 <script th:src="@{js/app.config.js}"></script>
@@ -237,15 +234,14 @@
 <script th:src="@{js/plugin/fileinput/zh.js}"></script>
 <script th:src="@{js/app.min.js}"></script>
 <script th:src="@{js/settings.js}"></script>
-
 <script th:if="${user.type=='USER_TYPE_SYSTEM'}">
     $(function () {
         function checkTask() {
             $.ajax({
-                url:'/alert/task',
-                type:'POST',
+                url: '/alert/task',
+                type: 'POST',
                 success: function (d) {
-                    if(d>0){
+                    if (d > 0) {
                         $("#taskCount").html(d);
                         $("#taskCount").show();
                     }
@@ -253,6 +249,7 @@
                 }
             });
         }
+
         setInterval(checkTask, 10000);
     });
 </script>
@@ -260,10 +257,10 @@
     $(function () {
         function checkStock() {
             $.ajax({
-                url:'/alert/stock',
-                type:'POST',
+                url: '/alert/stock',
+                type: 'POST',
                 success: function (d) {
-                    if(d>0){
+                    if (d > 0) {
                         $("#PERMISSION_STOCK").html(d);
                         $("#PERMISSION_STOCK").show();
                     }
@@ -271,6 +268,7 @@
                 }
             });
         }
+
         setInterval(checkStock, 10000);
     });
 </script>
@@ -278,10 +276,10 @@
     $(function () {
         function checkStocks() {
             $.ajax({
-                url:'/alert/stock',
-                type:'POST',
+                url: '/alert/stock',
+                type: 'POST',
                 success: function (d) {
-                    if(d>0){
+                    if (d > 0) {
                         $("#PERMISSION_SALE_LIST").html(d);
                         $("#PERMISSION_SALE_LIST").show();
                     }
@@ -289,6 +287,7 @@
                 }
             });
         }
+
         setInterval(checkStocks, 10000);
     });
 </script>
@@ -296,10 +295,10 @@
     $(function () {
         function checkPo() {
             $.ajax({
-                url:'/alert/po',
-                type:'POST',
+                url: '/alert/po',
+                type: 'POST',
                 success: function (d) {
-                    if(d>0){
+                    if (d > 0) {
                         $("#PERMISSION_PURCHASING_ORDER").html(d);
                         $("#PERMISSION_PURCHASING_ORDER").show();
                     }
@@ -307,6 +306,7 @@
                 }
             });
         }
+
         setInterval(checkPo, 10000);
     });
 </script>
@@ -314,10 +314,10 @@
     $(function () {
         function checkStockin() {
             $.ajax({
-                url:'/alert/stockin',
-                type:'POST',
+                url: '/alert/stockin',
+                type: 'POST',
                 success: function (d) {
-                    if(d>0){
+                    if (d > 0) {
                         $("#PERMISSION_STOCK_PURCHASING_IN").html(d);
                         $("#PERMISSION_STOCK_PURCHASING_IN").show();
                     }
@@ -325,6 +325,7 @@
                 }
             });
         }
+
         setInterval(checkStockin, 10000);
     });
 </script>
@@ -332,10 +333,10 @@
     $(function () {
         function checkStockout() {
             $.ajax({
-                url:'/alert/stockout',
-                type:'POST',
+                url: '/alert/stockout',
+                type: 'POST',
                 success: function (d) {
-                    if(d>0){
+                    if (d > 0) {
                         $("#PERMISSION_DELIVERY").html(d);
                         $("#PERMISSION_DELIVERY").show();
                     }
@@ -343,6 +344,7 @@
                 }
             });
         }
+
         setInterval(checkStockout, 10000);
     });
 </script>

@@ -58,12 +58,12 @@ public class Person extends BaseDomain {
     private String performance = "";
     @Column(length = 50)
     private String modeOfThinking = "";
+    @Column(length = 50)
+    private String communication = "";
     @Column(length = 100)
     private String hobby = "";
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "COMPANY_ID")
-    private Company company;
+    @Column(length = 36)
+    private String companyId = "";
 
     public String getName() {
         return name;
@@ -249,11 +249,19 @@ public class Person extends BaseDomain {
         this.hobby = hobby;
     }
 
-    public Company getCompany() {
-        return company;
+    public String getCompanyId() {
+        return companyId;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getCommunication() {
+        return communication;
+    }
+
+    public void setCommunication(String communication) {
+        this.communication = communication;
     }
 }

@@ -4,6 +4,7 @@ import com.bearxyz.domain.po.business.Order;
 import com.bearxyz.domain.po.business.SupportApply;
 import com.bearxyz.repository.OrderRepository;
 import com.bearxyz.repository.SupportApplyRepository;
+import com.bearxyz.utility.DateUtility;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,8 @@ public class SupportApplyAccept implements ExecutionListener {
         order.setApproved(true);
         order.setCompanyId(apply.getCompanyId());
         order.setSaleId(apply.getSaleId());
-        order.setPrice(apply.getPrice());
+        order.setPrice(apply.getPrice()* DateUtility.daysOfTwo(apply.getRealStartDate(),apply.getRealEndDate()));
+        order.setOrderCount(apply.getRealManCount());
         order.setStatus(1);
         repository.save(apply);
         orderRepository.save(order);

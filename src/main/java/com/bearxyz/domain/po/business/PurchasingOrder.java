@@ -27,8 +27,16 @@ public class PurchasingOrder extends BaseDomain {
     @Column(length = 36)
     private String operator = "";
     @Column
-    private Float advance = (float)0.0;
+    private Float advance = (float) 0.0;
+    @Column(length = 50)
+    private String bank = "";
+    @Column
+    private Date payDate;
+    @Column(length = 50)
+    private String advanceBig = "";
 
+    @Transient
+    private List<String> stockInCode = new ArrayList<>();
     @Transient
     private String goods = "";
     @Transient
@@ -151,5 +159,37 @@ public class PurchasingOrder extends BaseDomain {
 
     public void setAttachments(List<PurchasingOrderAttachment> attachments) {
         this.attachments = attachments;
+    }
+
+    public String getBank() {
+        return bank;
+    }
+
+    public void setBank(String bank) {
+        this.bank = bank;
+    }
+
+    public Date getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(Date payDate) {
+        this.payDate = payDate;
+    }
+
+    public String getAdvanceBig() {
+        return advanceBig;
+    }
+
+    public void setAdvanceBig(String advanceBig) {
+        this.advanceBig = advanceBig;
+    }
+
+    public List<String> getStockInCode() {
+        return stockInCode;
+    }
+
+    public void setStockInCode(List<String> stockInCode) {
+        this.stockInCode = stockInCode;
     }
 }

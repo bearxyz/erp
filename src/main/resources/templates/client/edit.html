@@ -4,318 +4,471 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
-    <title>新增客户</title>
+    <title></title>
 </head>
 <body>
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-        &times;
-    </button>
-    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 新增客户</h4>
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-edit fa-fw "></i>
+            客户信息
+        </h1>
+    </div>
 </div>
 
 
-<div class="modal-body no-padding">
-    <form id="form" class="smart-form" novalidate="novalidate" method="post">
-        <ul id="myTab" class="nav nav-tabs bordered">
-            <li class="active">
-                <a href="#ss1" data-toggle="tab"><i class="fa fa-info"></i> 基本信息</a>
-            </li>
-            <li>
-                <a href="#ss2" data-toggle="tab"><i class="fa fa-money"></i> 财务情况</a>
-            </li>
-            <!--<li>
-                <a href="#ss3" data-toggle="tab"><i class="fa fa-user"></i> 人员情况</a>
-            </li>-->
-            <li>
-                <a href="#ss4" data-toggle="tab"><i class="fa fa-info"></i> 主观信息</a>
-            </li>
-            <li>
-                <a href="#ss5" data-toggle="tab"><i class="fa fa-info"></i> 回访记录</a>
-            </li>
-            <li>
-                <a href="#ss6" data-toggle="tab"><i class="fa fa-info"></i> 合同管理</a>
-            </li>
-        </ul>
-        <div id="myTabContent" class="tab-content">
-            <div class="tab-pane fade in active" id="ss1">
-                <fieldset>
-                    <div class="row">
-                        <section class="col col-4">
-                            <label class="input">
-                                <input type="text" name="name" id="name" placeholder="学校名称" th:value="${company.name}"/>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="type" id="type"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="managementModel"
-                                        id="managementModel"></select><i></i>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row" id="dist1">
-                        <section class="col col-2">
-                            <label class="select"><select name="province">
-                            </select><i></i></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="select"><select name="city">
-                            </select><i></i></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="select"><select name="district">
-                            </select><i></i></label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="input">
-                                <input type="text" name="address" id="address" placeholder="详细地址" th:value="${company.address}"/>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-2">
-                            <label class="input"><input type="text" name="numberOfTeacher"
-                                                        id="numberOfTeacher" placeholder="员工人数" th:value="${company.numberOfTeacher}"/></label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="input"><input type="text" name="numberOfFulltime"
-                                                        id="numberOfFulltime"
-                                                        placeholder="专职作文教师人数" th:value="${company.numberOfFulltime}"/></label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="input"><input type="text" name="numberOfParttime"
-                                                        id="numberOfParttime"
-                                                        placeholder="兼职作文教师人数" th:value="${company.numberOfParttime}"/></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="input"><input type="text" name="numberOfOtherTeacher"
-                                                        id="numberOfOtherTeacher"
-                                                        placeholder="其他教师人数" th:value="${company.numberOfOtherTeacher}"/></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="input"><input type="text" name="numberOfOther" id="numberOfOther"
-                                                        placeholder="其他岗位人数" th:value="${company.numberOfOther}"/></label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-3">
-                            <label class="select">
-                                <select type="text" name="position" id="position"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="select">
-                                <select type="text" name="planning" id="planning"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="select">
-                                <select type="text" name="scale" id="scale"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-3">
-                            <label class="input"><input type="text" name="license" id="license"
-                                                        placeholder="办学许可证" th:value="${company.license}"/></label>
-                        </section>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <div class="row" id="dist2">
-                        <section class="col col-2">
-                            <label class="select"><select name="consultProvince">
-                            </select><i></i></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="select"><select name="consultCity">
-                            </select><i></i></label>
-                        </section>
-                        <section class="col col-2">
-                            <label class="select"><select name="consultDistrict">
-                            </select><i></i></label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="input"><input id="consultProject" name="consultProject" type="text"
-                                                        placeholder="咨询项目" th:value="${company.consultProject}"/></label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="input"><input id="contactor" name="contactor"
-                                                        type="text"
-                                                        placeholder="联系人" th:value="${company.contactor}"/></label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="input"><input id="contactPhone" name="contactPhone"
-                                                        type="text"
-                                                        placeholder="联系电话" th:value="${company.contactPhone}"/></label>
-                        </section>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="tab-pane fade" id="ss2">
-                <fieldset>
-                    <div class="row">
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="payment" id="payment"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="bank" id="bank"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="credit" id="credit"></select><i></i>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="fund" id="fund"></select><i></i>
-                            </label>
-                        </section>
-                        <section class="col col-4">
-                            <label class="select">
-                                <select type="text" name="attitudeOfPayment" id="attitudeOfPayment"></select><i></i>
-                            </label>
-                        </section>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="tab-pane fade" id="ss3"></div>
-            <div class="tab-pane fade" id="ss4">
-                <fieldset>
-
-                    <section>
-                        <label class="textarea textarea-resizable">
-                            <textarea class="custom-scroll" placeholder="原因" name="relationReason" id="relationReason">[[${company.relationReason}]]</textarea>
-                        </label>
-                    </section>
-
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="对客户的了解程度" name="understandingLevel" id="understandingLevel" th:value="${company.understandingLevel}"></textarea>
-                            </label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户对总部的态度"></textarea>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户长期事业目标"></textarea>
-                            </label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户短期事业目标"></textarea>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户目前最关切的"></textarea>
-                            </label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户更多思考的"></textarea>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户对什么特别有意见"></textarea>
-                            </label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户最热衷"></textarea>
-                            </label>
-                        </section>
-                    </div>
-                    <div class="row">
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="在客户眼中最关键的问题"></textarea>
-                            </label>
-                        </section>
-                        <section class="col col-6">
-                            <label class="textarea textarea-resizable">
-                                <textarea class="custom-scroll" placeholder="客户面临竞争（主要对手、竞争状况、客户对策）"></textarea>
-                            </label>
-                        </section>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="tab-pane fade" id="ss5">
-                <fieldset>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table id="dt_basic"
-                                   class="table table-striped table-bordered table-hover table-checkable"
-                                   width="100%">
-                                <thead>
-                                <th>沟通时间</th>
-                                <th>存在问题</th>
-                                <th>解决方案</th>
-                                <th>备注</th>
-                                <th>沟通人</th>
-                                </thead>
-                            </table>
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget well" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>客户信息</h2>
+                </header>
+                <div role="content">
+                    <div class="widget-body">
+                        <div class="row" id="result" style="display: none;">
+                            <article class="col-sm-12">
+                                <div class="alert alert-success fade in">
+                                    <button class="close" data-dismiss="alert">
+                                        ×
+                                    </button>
+                                    <i class="fa-fw fa fa-check"></i>
+                                    <strong>保存成功</strong>
+                                </div>
+                            </article>
                         </div>
+                        <form id="form" class="smart-form" novalidate="novalidate" method="post">
+                            <ul id="myTab" class="nav nav-tabs bordered">
+                                <li class="active">
+                                    <a href="#ss1" data-toggle="tab"><i class="fa fa-info"></i> 学校信息</a>
+                                </li>
+                                <li>
+                                    <a href="#ss2" data-toggle="tab"><i class="fa fa-money"></i> 财务信息</a>
+                                </li>
+                                <li>
+                                    <a href="#ss3" data-toggle="tab"><i class="fa fa-info"></i> 项目信息</a>
+                                </li>
+                                <li>
+                                    <a href="#ss4" data-toggle="tab"><i class="fa fa-info"></i> 主观信息</a>
+                                </li>
+                                <li>
+                                    <a href="#ss5" data-toggle="tab"><i class="fa fa-info"></i> 维护记录</a>
+                                </li>
+                                <li>
+                                    <a href="#ss6" data-toggle="tab"><i class="fa fa-info"></i> 合同管理</a>
+                                </li>
+                                <li>
+                                    <a href="#ss7" data-toggle="tab"><i class="fa fa-info"></i> 教师账号</a>
+                                </li>
+                            </ul>
+                            <div id="myTabContent" class="tab-content">
+                                <div class="tab-pane fade in active" id="ss1">
+                                    <fieldset>
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="label">学校名称：</label>
+                                                <label class="input">
+                                                    <input type="text" name="name" id="name"
+                                                           th:value="${company.name}"/>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="label">学校类型：</label>
+                                                <label class="select">
+                                                    <select type="text" name="type" id="type"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="label">经营类型：</label>
+                                                <label class="select">
+                                                    <select type="text" name="managementModel"
+                                                            id="managementModel"></select><i></i>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row" id="dist1">
+                                            <section class="col col-2">
+                                                <label class="label">省：</label>
+                                                <label class="select"><select name="province">
+                                                </select><i></i></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="label">市：</label>
+                                                <label class="select"><select name="city">
+                                                </select><i></i></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="label">区：</label>
+                                                <label class="select"><select name="district">
+                                                </select><i></i></label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="label">详细地址：</label>
+                                                <label class="input">
+                                                    <input type="text" name="address" id="address" placeholder="详细地址"
+                                                           th:value="${company.address}"/>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-2">
+                                                <label class="label">员工人数：</label>
+                                                <label class="input"><input type="text" name="numberOfTeacher"
+                                                                            id="numberOfTeacher" placeholder="员工人数"
+                                                                            th:value="${company.numberOfTeacher}"/></label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="label">专职作文教师人数：</label>
+                                                <label class="input"><input type="text" name="numberOfFulltime"
+                                                                            id="numberOfFulltime"
+                                                                            placeholder="专职作文教师人数"
+                                                                            th:value="${company.numberOfFulltime}"/></label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="label">兼职作文教师人数：</label>
+                                                <label class="input"><input type="text" name="numberOfParttime"
+                                                                            id="numberOfParttime"
+                                                                            placeholder="兼职作文教师人数"
+                                                                            th:value="${company.numberOfParttime}"/></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="label">其他教师人数：</label>
+                                                <label class="input"><input type="text" name="numberOfOtherTeacher"
+                                                                            id="numberOfOtherTeacher"
+                                                                            placeholder="其他教师人数"
+                                                                            th:value="${company.numberOfOtherTeacher}"/></label>
+                                            </section>
+                                            <section class="col col-2">
+                                                <label class="label">其他岗位人数：</label>
+                                                <label class="input"><input type="text" name="numberOfOther"
+                                                                            id="numberOfOther"
+                                                                            placeholder="其他岗位人数"
+                                                                            th:value="${company.numberOfOther}"/></label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-3">
+                                                <label class="label">同行地位：</label>
+                                                <label class="select">
+                                                    <select type="text" name="position" id="position"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="label">发展规划：</label>
+                                                <label class="select">
+                                                    <select type="text" name="planning" id="planning"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="label">校区规模：</label>
+                                                <label class="select">
+                                                    <select type="text" name="scale" id="scale"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-3">
+                                                <label class="label">办学许可证：</label>
+                                                <label class="input"><input type="text" name="license" id="license"
+                                                                            placeholder="办学许可证"
+                                                                            th:value="${company.license}"/></label>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <a class="btn btn-sm btn-primary" data-toggle="modal" data-target="#remoteModal" th:href="@{'person/create/'+${company.id}+'/charge'}">投资人信息</a>
+                                                <table id="dt_basic_person"
+                                                       class="table table-striped table-bordered table-hover table-checkable"
+                                                       width="100%">
+                                                    <thead>
+                                                    <th>姓名</th>
+                                                    <th>性别</th>
+                                                    <th>生日</th>
+                                                    <th>出生地</th>
+                                                    <th>性格</th>
+                                                    <th>兴趣爱好</th>
+                                                    <th>学历</th>
+                                                    <th>语言表达</th>
+                                                    <th>思维方式</th>
+                                                    <th>沟通</th>
+                                                    <th></th>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="tab-pane fade" id="ss2">
+                                    <fieldset>
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="label">支付方式：</label>
+                                                <label class="select">
+                                                    <select type="text" name="payment" id="payment"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="label">常用银行：</label>
+                                                <label class="select">
+                                                    <select type="text" name="bank" id="bank"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="label">信用情况：</label>
+                                                <label class="select">
+                                                    <select type="text" name="credit" id="credit"></select><i></i>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-4">
+                                                <label class="label">资金状况：</label>
+                                                <label class="select">
+                                                    <select type="text" name="fund" id="fund"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-4">
+                                                <label class="label">付款态度：</label>
+                                                <label class="select">
+                                                    <select type="text" name="attitudeOfPayment"
+                                                            id="attitudeOfPayment"></select><i></i>
+                                                </label>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="tab-pane fade" id="ss3">
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="dt_basic_project"
+                                                       class="table table-striped table-bordered table-hover table-checkable"
+                                                       width="100%">
+                                                    <thead>
+                                                    <th>合作项目</th>
+                                                    <th>项目发展级别</th>
+                                                    <th>项目负责人</th>
+                                                    <th>联系电话</th>
+                                                    <th>员工人数</th>
+                                                    <th>单期规模</th>
+                                                    <th>项目学费</th>
+                                                    <th>发展年限</th>
+                                                    <th>发展规划/策略</th>
+                                                    <th>当前状态</th>
+                                                    <th>竞争对手</th>
+                                                    <th></th>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <a class="btn btn-sm btn-primary" data-toggle="modal" data-target="#remoteModal" th:href="@{'person/create/'+${company.id}+'/project'}">项目负责人信息</a>
+                                                <table id="dt_basic_project_person"
+                                                       class="table table-striped table-bordered table-hover table-checkable"
+                                                       width="100%">
+                                                    <thead>
+                                                    <th>姓名</th>
+                                                    <th>性别</th>
+                                                    <th>生日</th>
+                                                    <th>出生地</th>
+                                                    <th>性格</th>
+                                                    <th>兴趣爱好</th>
+                                                    <th>学历</th>
+                                                    <th>语言表达</th>
+                                                    <th>思维方式</th>
+                                                    <th>沟通</th>
+                                                    <th></th>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="tab-pane fade" id="ss4">
+                                    <fieldset>
+                                        <section class="col col-6">
+                                            <label class="label">关系是否良好：</label>
+                                            <div class="inline-group">
+                                                <label class="radio">
+                                                    <input name="relationship" value="1" th:checked="${company.relationship}" type="radio" /><i></i> 是
+                                                </label>
+                                                <label class="radio">
+                                                    <input name="relationship" value="0" th:checked="${!company.relationship}" type="radio" /><i></i> 否
+                                                </label>
+                                            </div>
+                                        </section>
+                                        <section class="col col-6">
+                                            <label class="label">原因：</label>
+                                            <label class="textarea textarea-resizable">
+                                                <textarea class="custom-scroll" name="relationReason"
+                                                          id="relationReason">[[${company.relationReason}]]</textarea>
+                                            </label>
+                                        </section>
+
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="label">对客户的了解程度：</label>
+                                                <label class="select">
+                                                    <select id="understandingLevel" name="understandingLevel"></select><i></i>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="label">客户对总部的态度：</label>
+                                                <label class="select">
+                                                    <select id="attitude" name="attitude"></select><i></i>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="label">客户长期事业目标：</label>
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea name="longGoal" class="custom-scroll">
+                                                        [[${company.longGoal}]]
+                                                    </textarea>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="label">客户短期事业目标：</label>
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea name="shortGoal" class="custom-scroll">
+                                                        [[${company.shortGoal}]]
+                                                    </textarea>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="label">客户目前最关切的：</label>
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea name="mostConcern" class="custom-scroll">
+                                                        [[${company.mostConcern}]]
+                                                    </textarea>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="label">客户对什么特别有意见：</label>
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea name="opinion" class="custom-scroll">
+                                                        [[${company.opinion}]]
+                                                    </textarea>
+                                                </label>
+                                            </section>
+                                        </div>
+                                        <div class="row">
+                                            <section class="col col-6">
+                                                <label class="label">客户最热衷：</label>
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea name="fond" class="custom-scroll">
+                                                        [[${company.fond}]]
+                                                    </textarea>
+                                                </label>
+                                            </section>
+                                            <section class="col col-6">
+                                                <label class="label">在客户眼中最关键的问题：</label>
+                                                <label class="textarea textarea-resizable">
+                                                    <textarea name="keyPoint" class="custom-scroll">
+                                                        [[${company.keyPoint}]]
+                                                    </textarea>
+                                                </label>
+                                            </section>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="tab-pane fade" id="ss5">
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="dt_basic"
+                                                       class="table table-striped table-bordered table-hover table-checkable"
+                                                       width="100%">
+                                                    <thead>
+                                                    <th>维护时间</th>
+                                                    <th>维护项目</th>
+                                                    <th>项目发展级别</th>
+                                                    <th>项目当前状态</th>
+                                                    <th>客户需求描述</th>
+                                                    <th>维护方法</th>
+                                                    <th>维护实施记录</th>
+                                                    <th>结果跟踪</th>
+                                                    <th></th>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="tab-pane fade" id="ss6">
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="dt_basic_1"
+                                                       class="table table-striped table-bordered table-hover table-checkable"
+                                                       width="100%">
+                                                    <thead>
+                                                    <th>代理项目</th>
+                                                    <th>代理类型</th>
+                                                    <th>代理级别</th>
+                                                    <th>合同名称</th>
+                                                    <th>生效时间</th>
+                                                    <th>结束时间</th>
+                                                    <th>签署时间</th>
+                                                    <th>签署人</th>
+                                                    <th>附件</th>
+                                                    <th></th>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="tab-pane fade" id="ss7">
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <table id="dt_basic_teacher"
+                                                       class="table table-striped table-bordered table-hover table-checkable"
+                                                       width="100%">
+                                                    <thead>
+                                                    <th>姓名</th>
+                                                    <th>账号</th>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    保 存
+                                </button>
+                                <a class="btn btn-warning" href="#/client/index">
+                                    返 回
+                                </a>
+                            </footer>
+                        </form>
                     </div>
-                </fieldset>
+                </div>
             </div>
-            <div class="tab-pane fade" id="ss6">
-                <fieldset>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <table id="dt_basic_1"
-                                   class="table table-striped table-bordered table-hover table-checkable"
-                                   width="100%">
-                                <thead>
-                                <th>代理项目</th>
-                                <th>代理类型</th>
-                                <th>代理级别</th>
-                                <th>合同名称</th>
-                                <th>生效时间</th>
-                                <th>结束时间</th>
-                                <th>签署时间</th>
-                                <th>签署人</th>
-                                <th>附件</th>
-                                <th></th>
-                                </thead>
-                            </table>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
+        </article>
+    </div>
+</section>
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
         </div>
-        <footer>
-            <button type="submit" class="btn btn-primary">
-                保 存
-            </button>
-            <a class="btn btn-warning" href="#/client/index">
-                返 回
-            </a>
-        </footer>
-    </form>
+    </div>
 </div>
+<!-- /.modal -->
 <script th:src="@{js/distpicker.js}"></script>
 <script th:inline="javascript">
     pageSetUp();
@@ -332,20 +485,25 @@
             district: [[${company.consultDistrict}]]
         });
 
-        BindDictItem("type", "COMPANY_TYPE", "学校类型",[[${company.type}]]);
-        BindDictItem("managementModel", "MANAGEMENT_MODEL", "经营模式",[[${company.managementModel}]]);
-        BindDictItem("position", "POSITION", "同行地位",[[${company.position}]]);
-        BindDictItem("planning", "PLANNING", "发展规划",[[${company.planning}]]);
-        BindDictItem("scale", "SCALE", "校区规模",[[${company.scale}]]);
+        BindDictItem("type", "COMPANY_TYPE", "学校类型", [[${company.type}]]);
+        BindDictItem("managementModel", "MANAGEMENT_MODEL", "经营模式", [[${company.managementModel}]]);
+        BindDictItem("position", "POSITION", "同行地位", [[${company.position}]]);
+        BindDictItem("planning", "PLANNING", "发展规划", [[${company.planning}]]);
+        BindDictItem("scale", "SCALE", "校区规模", [[${company.scale}]]);
 
-        BindDictItem("payment", "PAYMENT", "支付方式",[[${company.payment}]]);
-        BindDictItem("bank", "BANK", "常用银行",[[${company.bank}]]);
-        BindDictItem("credit", "CREDIT", "信用情况",[[${company.credit}]]);
-        BindDictItem("fund", "FUND", "资金情况",[[${company.fund}]]);
-        BindDictItem("attitudeOfPayment", "PAYMENT_ATTITUDE", "付款态度",[[${company.attitudeOfPayment}]]);
+        BindDictItem("payment", "PAYMENT", "支付方式", [[${company.payment}]]);
+        BindDictItem("bank", "BANK", "常用银行", [[${company.bank}]]);
+        BindDictItem("credit", "CREDIT", "信用情况", [[${company.credit}]]);
+        BindDictItem("fund", "FUND", "资金情况", [[${company.fund}]]);
+        BindDictItem("attitudeOfPayment", "PAYMENT_ATTITUDE", "付款态度", [[${company.attitudeOfPayment}]]);
+
+        BindDictItem("understandingLevel", "UNDERSTANDING_LEVLE", "", [[${company.understandingLevel}]]);
+        BindDictItem("attitude", "ATTITUDE", "", [[${company.attitude}]]);
+
+        var responsiveHelper_dt_basic_project = undefined;
+        var breakpointDefinition = {tablet: 1024, phone: 480};
 
         var responsiveHelper_dt_basic = undefined;
-        var breakpointDefinition = {tablet: 1024, phone: 480};
 
         $('#dt_basic').dataTable({
             "processing": true,
@@ -359,11 +517,15 @@
                 }
             },
             "columns": [
-                {"data": "dateCeated", render: CONSTANT.DATA_TABLES.RENDER.DATETIME},
+                {"data": "startDate"},
+                {"data": "project"},
+                {"data": "projectLevel"},
+                {"data": "projectStatus"},
                 {"data": "question"},
                 {"data": "solution"},
                 {"data": "memo"},
-                {"data": "operator"}
+                {"data": "result"},
+                {"data": null, render: formatReAction}
             ],
             "autoWidth": true,
             "searching": false,
@@ -384,8 +546,179 @@
             "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'<'toolbar'>><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
         });
 
-        $("div.toolbar").html('<div class="text-left"><a class="btn btn-primary" data-toggle="modal" data-target="#remoteModal" href="returnvisit/create/'+[[${company.id}]]+'"><i class="fa fa-edit"> </i> <span class="hidden-mobile">新增记录</span> </a></div>');
+        $("div.toolbar").html('<div class="text-left"><a class="btn btn-primary" data-toggle="modal" data-target="#remoteModal" href="returnvisit/create/' + [[${company.id}]] + '"><i class="fa fa-edit"> </i> <span class="hidden-mobile">新增记录</span> </a></div>');
 
+        function formatReAction(cellValue, options, rowObject) {
+            return "<a class='btn btn-xs btn-primary' data-toggle='modal' data-target='#remoteModal' href='returnvisit/edit/"+rowObject.id+"'>编辑</a>";
+        }
+
+        $('#dt_basic_project').dataTable({
+            "processing": true,
+            ajax: {
+                url: "/contract/list/" + [[${company.id}]],
+                "type": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            "columns": [
+                {"data": "project"},
+                {"data": "contractLevel"},
+                {"data": "inchargePerson"},
+                {"data": "inchargePhone"},
+                {"data": "empCount"},
+                {"data": "scale"},
+                {"data": "tuition"},
+                {"data": "devYear"},
+                {"data": "strategy"},
+                {"data": "currentStatus"},
+                {"data": "compitition"},
+                {"data": null, render: formatProjectAction}
+            ],
+            "autoWidth": true,
+            "searching": false,
+            "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+            "bStateSave": true,
+            "preDrawCallback": function () {
+                if (!responsiveHelper_dt_basic_project) {
+                    responsiveHelper_dt_basic_project = new ResponsiveDatatablesHelper($('#dt_basic_project'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_dt_basic_project.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_dt_basic_project.respond();
+            },
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'<'toolbar'>><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+
+        function formatProjectAction(cellValue, options, rowObject){
+            return "<a class='btn btn-xs btn-primary' data-toggle='modal' data-target='#remoteModal' href='contract/editproject/"+rowObject.id+"'>编辑</a>";
+        }
+
+        var responsiveHelper_dt_basic_project_person = undefined;
+        $('#dt_basic_project_person').dataTable({
+            "processing": true,
+            ajax: {
+                url: "/person/list/" + [[${company.id}]]+"/project",
+                "type": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            "columns": [
+                {"data": "name"},
+                {"data": "gender"},
+                {"data": "birthday"},
+                {"data": "birthPlace"},
+                {"data": "character"},
+                {"data": "interest"},
+                {"data": "qualifications"},
+                {"data": "performance"},
+                {"data": "modeOfThinking"},
+                {"data": "communication"},
+                {"data": null, render: formatProjectPersonAction}
+            ],
+            "autoWidth": true,
+            "searching": false,
+            "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+            "bStateSave": true,
+            "preDrawCallback": function () {
+                if (!responsiveHelper_dt_basic_project_person) {
+                    responsiveHelper_dt_basic_project_person = new ResponsiveDatatablesHelper($('#dt_basic_project_person'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_dt_basic_project_person.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_dt_basic_project_person.respond();
+            },
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'<'toolbar'>><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+
+        function formatProjectPersonAction(cellValue, options, rowObject){
+            return "<a class='btn btn-xs btn-primary' data-toggle='modal' data-target='#remoteModal' href='person/edit/"+rowObject.id+"'>编辑</a>";
+        }
+
+        var responsiveHelper_dt_basic_teacher = undefined;
+        $('#dt_basic_teacher').dataTable({
+            "processing": true,
+            ajax: {
+                url: "/teacher/list/" + [[${company.id}]],
+                "type": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            "columns": [
+                {"data": "fullName"},
+                {"data": "email"}
+            ],
+            "autoWidth": true,
+            "searching": false,
+            "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+            "bStateSave": true,
+            "preDrawCallback": function () {
+                if (!responsiveHelper_dt_basic_teacher) {
+                    responsiveHelper_dt_basic_teacher = new ResponsiveDatatablesHelper($('#dt_basic_teacher'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_dt_basic_teacher.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_dt_basic_teacher.respond();
+            },
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'<'toolbar'>><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+
+        var responsiveHelper_dt_basic_erson = undefined;
+        $('#dt_basic_person').dataTable({
+            "processing": true,
+            ajax: {
+                url: "/person/list/" + [[${company.id}]]+"/charge",
+                "type": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            "columns": [
+                {"data": "name"},
+                {"data": "gender"},
+                {"data": "birthday"},
+                {"data": "birthPlace"},
+                {"data": "character"},
+                {"data": "interest"},
+                {"data": "qualifications"},
+                {"data": "performance"},
+                {"data": "modeOfThinking"},
+                {"data": "communication"},
+                {"data": null, render: formatProjectPersonAction}
+            ],
+            "autoWidth": true,
+            "searching": false,
+            "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+            "bStateSave": true,
+            "preDrawCallback": function () {
+                if (!responsiveHelper_dt_basic_erson) {
+                    responsiveHelper_dt_basic_erson = new ResponsiveDatatablesHelper($('#dt_basic_person'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_dt_basic_erson.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_dt_basic_erson.respond();
+            },
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'<'toolbar'>><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+        
         var responsiveHelper_dt_basic_1 = undefined;
         $('#dt_basic_1').dataTable({
             "processing": true,
@@ -442,7 +775,7 @@
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function () {
-                        window.location.href="#/client/index";
+                        $("#result").show();
                     },
                     error: function (e) {
                         $.bigBox({
@@ -477,16 +810,16 @@
     function formatAttachment(cellValue, options, rowObject) {
         html = "";
         for (var i = 0; i < rowObject.attachments.length; i++) {
-            html += "<a href='/common/download/"+rowObject.attachments[i].id+"'>" + rowObject.attachments[i].name + "." + rowObject.attachments[i].fileType+"</a>;";
+            html += "<a href='/common/download/" + rowObject.attachments[i].id + "'>" + rowObject.attachments[i].name + "." + rowObject.attachments[i].fileType + "</a>;";
         }
         return html;
     }
     function formatStatus(cellValue, options, rowObject) {
-        html='';
-        if(rowObject.invalid)
-            html='<label class="label label-warning">无效</label>';
+        html = '';
+        if (rowObject.invalid)
+            html = '<label class="label label-warning">无效</label>';
         else
-            html='<label class="label label-success">生效</label>';
+            html = '<label class="label label-success">生效</label>';
         return html;
     }
 </script>

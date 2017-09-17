@@ -44,6 +44,8 @@ public class User extends BaseDomain {
     private String parentCompanyId = "";
     @Column(length = 36)
     private String imageId = "";
+    @Column
+    private Boolean passed = false;
 
     @Transient
     private String post = "";
@@ -194,5 +196,13 @@ public class User extends BaseDomain {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public Boolean getPassed() {
+        return passed;
+    }
+
+    public void setPassed(Boolean passed) {
+        this.passed = passed;
     }
 }

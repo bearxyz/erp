@@ -6,8 +6,11 @@ import com.bearxyz.domain.po.business.Company;
 import com.bearxyz.domain.po.business.Contract;
 import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.business.Present;
+import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.CompanyRepository;
+import com.bearxyz.repository.ContractRepository;
 import com.bearxyz.repository.GoodsRepository;
+import com.bearxyz.repository.UserRepository;
 import com.bearxyz.service.business.ContractService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,11 +46,15 @@ public class ContractController {
 
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private ContractRepository contractRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping(value = "/complete")
     public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
         Contract purchasing = service.getById(bid);
-        for(Present present: purchasing.getItems()){
+        for (Present present : purchasing.getItems()) {
             Goods goods = goodsRepository.findOne(present.getGoodsId());
             present.setGoods(goods);
         }
@@ -55,7 +62,7 @@ public class ContractController {
         model.addAttribute("contract", purchasing);
         model.addAttribute("applyer", applyer);
         Task task = taskService.createTaskQuery().taskId(tid).singleResult();
-        if (!task.getTaskDefinitionKey().equals("deptLeader")&&taskService.getVariable(task.getId(), "deptLeaderMemo") != null)
+        if (!task.getTaskDefinitionKey().equals("deptLeader") && taskService.getVariable(task.getId(), "deptLeaderMemo") != null)
             memo = taskService.getVariable(task.getId(), "deptLeaderMemo").toString();
         model.addAttribute("taskId", tid);
         model.addAttribute("taskKey", task.getTaskDefinitionKey());
@@ -65,7 +72,7 @@ public class ContractController {
 
     @RequestMapping(value = "/index/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public String index(@RequestBody PaginationCriteria req, @PathVariable("id")String id) throws JsonProcessingException {
+    public String index(@RequestBody PaginationCriteria req, @PathVariable("id") String id) throws JsonProcessingException {
         DataTable<Contract> records = service.getContacts(id, req);
         records.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
@@ -73,7 +80,7 @@ public class ContractController {
     }
 
     @RequestMapping(value = "/create/{id}", method = RequestMethod.GET)
-    public String createRecord(@PathVariable("id")String id, Model model) {
+    public String createRecord(@PathVariable("id") String id, Model model) {
         Company company = companyRepository.findOne(id);
         model.addAttribute("company", company);
         model.addAttribute("companyId", id);
@@ -83,18 +90,18 @@ public class ContractController {
 
     @ResponseBody
     @RequestMapping(value = {"/create"}, method = RequestMethod.POST)
-    public String save(@ModelAttribute("contract")Contract record, SessionStatus status, HttpServletRequest request) throws IOException {
-        List<MultipartFile> files = ((MultipartHttpServletRequest)request).getFiles("attachment");
+    public String save(@ModelAttribute("contract") Contract record, SessionStatus status, HttpServletRequest request) throws IOException {
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("attachment");
         service.apply(record, files);
         status.setComplete();
         return "{success: true}";
     }
 
     @RequestMapping(value = "/reApply/{id}", method = RequestMethod.GET)
-    public String reApply(@PathVariable("id")String id, Model model) {
+    public String reApply(@PathVariable("id") String id, Model model) {
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
         Contract contract = service.getById(id);
-        for(Present present: contract.getItems()){
+        for (Present present : contract.getItems()) {
             Goods goods = goodsRepository.findOne(present.getGoodsId());
             present.setGoods(goods);
         }
@@ -106,10 +113,84 @@ public class ContractController {
 
     @RequestMapping(value = "/reApply", method = RequestMethod.POST)
     @ResponseBody
-    public String doReApply(@ModelAttribute("contract")Contract contract, SessionStatus status, HttpServletRequest request) throws IOException {
-        List<MultipartFile> files = ((MultipartHttpServletRequest)request).getFiles("attachment");
+    public String doReApply(@ModelAttribute("contract") Contract contract, SessionStatus status, HttpServletRequest request) throws IOException {
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("attachment");
         service.save(contract, files);
         status.setComplete();
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/list/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public String list(@RequestBody PaginationCriteria req, @PathVariable("id")String id) throws JsonProcessingException {
+        DataTable<Contract> contractDataTable = new DataTable<>();
+        List<Contract> contracts = contractRepository.findAvaliableContractByCompanyId(id);
+        contractDataTable.setData(contracts);
+        contractDataTable.setRecordsTotal((long)contracts.size());
+        contractDataTable.setRecordsFiltered((long)contracts.size());
+        contractDataTable.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(contractDataTable);
+    }
+
+    @RequestMapping(value = "/editproject/{id}", method = RequestMethod.GET)
+    public String editProject(@PathVariable("id")String id, Model model){
+        Contract contract = contractRepository.findOne(id);
+        model.addAttribute("contract",contract);
+        return "/contract/editproject";
+    }
+
+    @RequestMapping(value = "/editproject", method = RequestMethod.POST)
+    @ResponseBody
+    public String doEditProject(@ModelAttribute("contract") Contract contract, SessionStatus status) throws IOException {
+        contractRepository.save(contract);
+        status.setComplete();
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/seccontract/{id}", method = RequestMethod.GET)
+    public String seccontract(@PathVariable("id")String id, Model model){
+        model.addAttribute("companyId", id);
+        model.addAttribute("contract", new Contract());
+        return "/agent/contract";
+    }
+
+    @RequestMapping(value = "/seccontract", method = RequestMethod.POST)
+    public String doseccontract(@ModelAttribute("contract") Contract contract, SessionStatus status, HttpServletRequest request) throws IOException {
+        List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("attachment");
+        contract.setSecond(true);
+        service.save(contract, files);
+        return "/agent/contract";
+    }
+
+    @RequestMapping(value = "/sec", method = RequestMethod.GET)
+    public String sec(){
+        return "/contract/sec";
+    }
+
+    @RequestMapping(value = "/sec", method = RequestMethod.POST)
+    @ResponseBody
+    public String dosec(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        List<Contract> contracts = contractRepository.findAllBySecond(true);
+        DataTable<Contract> result = new DataTable<>();
+        result.setData(contracts);
+        result.setRecordsTotal((long)contracts.size());
+        result.setRecordsFiltered((long)contracts.size());
+        result.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
+    @RequestMapping(value = "/accept", method = RequestMethod.POST)
+    @ResponseBody
+    public String accept(String id){
+        Contract contract = contractRepository.findOne(id);
+        contract.setApproved(true);
+        contractRepository.save(contract);
+        User user = userRepository.findOne(contract.getCompanyId());
+        user.setEnabled(true);
+        user.setPassed(true);
+        userRepository.save(user);
         return "{success: true}";
     }
 

@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -153,6 +154,17 @@ public class PurchasingOrderController {
         model.addAttribute("taskKey", task.getTaskDefinitionKey());
         model.addAttribute("memo", memo);
         return "/purchasingorder/complete";
+    }
+
+    @RequestMapping(value = "/pay", method = RequestMethod.POST)
+    @ResponseBody
+    public String pay(String id, String bank, Date payDate, Float advance, String advanceBig) throws IOException {
+        PurchasingOrder order = service.getOneById(id);
+        order.setBank(bank);
+        order.setPayDate(payDate);
+        order.setAdvance(advance);
+        order.setAdvanceBig(advanceBig);
+        return "{success: true}";
     }
 
 }

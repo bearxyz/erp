@@ -110,6 +110,33 @@
                                     </label>
                                 </section>
                             </fieldset>
+                            <fieldset th:if="${taskKey=='confirm'}">
+                                <input id="id" name="id" th:value="${purchasingOrder.id}" type="hidden"/>
+                                <section>
+                                    <label class="label">付款银行:</label>
+                                    <label class="input">
+                                        <input id="bank" name="bank"/>
+                                    </label>
+                                </section>
+                                <section>
+                                    <label class="label">付款日期:</label>
+                                    <label class="input">
+                                        <input id="payDate" name="payDate"/>
+                                    </label>
+                                </section>
+                                <section>
+                                    <label class="label">付款金额:</label>
+                                    <label class="input">
+                                        <input id="advance" name="advance" class="number"/>
+                                    </label>
+                                </section>
+                                <section>
+                                    <label class="label">金额大写:</label>
+                                    <label class="input">
+                                        <input id="advanceBig" name="advanceBig"/>
+                                    </label>
+                                </section>
+                            </fieldset>
                             <fieldset th:if="${memo!=null and memo!=''}">
                                 <section>
                                     <label class="label">部门经理意见：</label>
@@ -129,10 +156,10 @@
                                 </section>
                             </fieldset>
                             <footer>
-                                <button type="button" class="btn btn-primary" id="pass"th:if="${taskKey!='confirm'}">
+                                <button type="button" class="btn btn-primary" id="pass" th:if="${taskKey!='confirm'}">
                                     同 意
                                 </button>
-                                <button type="button" class="btn btn-primary" id="pass"th:if="${taskKey=='confirm'}">
+                                <button type="button" class="btn btn-primary" id="pass" th:if="${taskKey=='confirm'}">
                                     已支付
                                 </button>
                                 <button type="button" class="btn btn-danger" id="deny" th:if="${taskKey!='confirm'}">
@@ -149,7 +176,6 @@
         </article>
     </div>
 </section>
-
 <script th:inline="javascript">
     pageSetUp();
 
@@ -159,13 +185,60 @@
     };
 
     $('#pass').on('click', function () {
+        if (taskKey == 'comfirm') {
+            var $form1 = $("#form_1").validate({
+                rules: {
+                    bank: {required: true},
+                    payDate: {required: true},
+                    advance: {required: true},
+                    advanceBig: {required: true}
+                },
+                messages: {
+                    bank: {required: '请输入付款银行'},
+                    payDate: {required: '请选择付款日期'},
+                    advance: {required: '请输入付款金额'},
+                    advanceBig: {required: '请输入金额大写'}
+                },
+                onsubmit: true,
+                submitHandler: function () {
+                    $.ajax({
+                        url: '/purchasingorder/pay',
+                        type: 'post',
+                        data: $('#form').serialize(),
+                        success: function () {
+                            doPass();
+                        },
+                        error: function (e) {
+                            $.bigBox({
+                                title: "系统内部错误！",
+                                content: "该错误已被记录，请联系管理员，并稍后重试！",
+                                color: "#C46A69",
+                                icon: "fa fa-warning shake animated",
+                                timeout: 6000
+                            });
+                            e.preventDefault();
+                        }
+                    });
+                },
+
+                // Do not change code below
+                errorPlacement: function (error, element) {
+                    error.insertAfter(element.parent());
+                }
+            });
+        }
+        else
+            doPass();
+    });
+
+    function doPass() {
         var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
         completeTask([[${taskId}]], [{key: taskKey + 'Pass', value: true, type: 'B'}, {
             key: taskKey + 'Memo',
             value: memo,
             type: 'S'
         }]);
-    });
+    }
 
     $('#deny').on('click', function () {
         var memo = ($('#memo').val() != "") ? $('#memo').val() : '不同意';
@@ -174,6 +247,13 @@
             value: memo,
             type: 'S'
         }]);
+    });
+
+    $('#payDate').datetimepicker({
+        format: 'yyyy-mm-dd',
+        minView: 'month',
+        language: 'zh-CN',
+        autoclose: true
     });
 
 </script>

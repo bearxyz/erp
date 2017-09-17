@@ -4,10 +4,7 @@ import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.sys.User;
-import com.bearxyz.repository.GoodsRepository;
-import com.bearxyz.repository.OfficialPartnerRepository;
-import com.bearxyz.repository.PurchasingOrderRepository;
-import com.bearxyz.repository.UserRepository;
+import com.bearxyz.repository.*;
 import com.bearxyz.service.workflow.WorkflowService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.task.Task;
@@ -50,6 +47,9 @@ public class PurchasingOrderService {
 
     @Autowired
     private PurchasingOrderAttachmentService attachmentService;
+
+    @Autowired
+    private StockRepository stockRepository;
 
     public void apply(PurchasingOrder order) {
         Map<String, Object> variables = new HashMap<String, Object>();
@@ -113,6 +113,10 @@ public class PurchasingOrderService {
         List<PurchasingOrder> content = page.getContent();
         for (PurchasingOrder purchasingOrder : content) {
             giveValueToItems(purchasingOrder);
+            List<Stock> stocks = stockRepository.findAllByPurchasingOrderIdAndApproved(purchasingOrder.getId(),true);
+            for(Stock stock:stocks){
+                purchasingOrder.getStockInCode().add(stock.getCode());
+            }
             if (purchasingOrder.getOperator() != null) {
                 User user = userRepository.findOne(purchasingOrder.getOperator());
                 purchasingOrder.setApplyer(user.getFirstName() + user.getLastName());

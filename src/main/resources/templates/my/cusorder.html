@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+
+</head>
+<body>
+
+<!-- Bread crumb is created dynamically -->
+<!-- row -->
+<div class="row">
+
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <!-- PAGE HEADER -->
+            <i class="fa-fw fa fa-table"></i>
+            我的订单
+        </h1>
+    </div>
+    <!-- end col -->
+
+</div>
+<!-- end row -->
+<input type="hidden" id="userType" name="userType" th:value="${userType}">
+<!-- end col -->
+<section id="widget-grid">
+    <div class="container">
+        <div class="row">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#con1" rel="external nofollow" data-toggle="tab">待支付</a></li>
+                <li><a href="#con2" rel="external nofollow" data-toggle="tab">待发货</a></li>
+                <li><a href="#con3" rel="external nofollow" data-toggle="tab">待收货</a></li>
+                <li><a href="#con4" rel="external nofollow" data-toggle="tab">已完成</a></li>
+            </ul>
+            <div class="tab-content"><!--选项卡的内容-->
+                <div id="con1" class="tab-pane  fade in active">
+                    <table class="table table-hover" id="dzfTable">
+                        <thead>
+                        <tr>
+                            <th>订单编号</th>
+                            <th>商品名称</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>小计</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                    </table>
+
+                </div>
+                <div id="con2" class="tab-pane fade">
+                    <table class="table table-hover" id="dfhTable">
+                        <thead>
+                        <tr>
+                            <th>订单编号</th>
+                            <th>商品名称</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>小计</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                    </table>
+                </div>
+                <div id="con3" class="tab-pane fade">
+                    <table class="table table-hover" id="dshTable">
+                        <thead>
+                        <tr>
+                            <th>订单编号</th>
+                            <th>商品名称</th>
+                            <th>运输方式</th>
+                            <th>订单号</th>
+                            <th>订单公司</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>小计</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                    </table>
+                </div>
+                <div id="con4" class="tab-pane fade">
+                    <table class="table table-hover" id="ywcTable">
+                        <thead>
+                        <tr>
+                            <th>订单编号</th>
+                            <th>商品名称</th>
+                            <th>运输方式</th>
+                            <th>订单号</th>
+                            <th>订单公司</th>
+                            <th>单价</th>
+                            <th>数量</th>
+                            <th>小计</th>
+                        </tr>
+
+
+                        </thead>
+                        <tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end row -->
+
+</section>
+
+<!-- 取消订单信息 -->
+<div class="modal fade" id="cleanOrderModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">提示信息</h4>
+            </div>
+            <div class="modal-body">
+                <p>您确认要取消该订单信息吗？</p>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="status"/>
+                <input type="hidden" id="orderId"/>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a  onclick="toOrderStatus()" class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- 确定收货信息 -->
+<div class="modal fade" id="okOrderModel">
+    <div class="modal-dialog">
+        <div class="modal-content message_align">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title">提示信息</h4>
+            </div>
+            <div class="modal-body">
+                <p>您确认要收货吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <a  onclick="toOrderStatus()" class="btn btn-success" data-dismiss="modal">确定</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<script type="text/javascript">
+    var pagefunction = function() {
+        dzfOrder();
+        dfhOrder();
+        dshOrder();
+        ywcOrder();
+
+    };
+    pagefunction();
+    function dzfOrder(){
+        var userType=$("#userType").val();
+        $.ajax({
+            url: '/my/getSecordOrderState',
+            type: 'POST',
+            async: false,
+            data: {"status":1},
+            success: function (data) {
+                var items = eval(data);
+                $("#dzfTable  tr:not(:first)").empty("");
+                var dfkTableHtml="";
+                var orderLength=items.length;
+                for(var i=0;i<orderLength;i++){
+                    var order =items[i];
+                    var orderItem=order.items;
+                    var deliverFee=0.0;
+                    if(order.deliverFee!=null){
+                        deliverFee=order.deliverFee;
+                    }
+                    var orderItemLength=orderItem.length;
+                    if(orderItemLength==0 && order.sale !=null) {
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td>"+order.code+"</td>";
+                        dfkTableHtml+="<td>"+order.sale.name+"</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="<td>1</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="<td></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">运费</td>";
+                        dfkTableHtml+="<td>￥"+deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">总计</td>";
+                        dfkTableHtml+="<td>￥"+(order.price+deliverFee)+"</td>";
+                        if(userType=="USER_TYPE_AGENT"){
+                            dfkTableHtml+="<td ></td>";
+                        }else{
+                            dfkTableHtml+="<td ><a class=\"btn btn-danger btn-sm\" >确定支付</a>  <a  class=\"btn btn-primary btn-sm\" href=\"javascript:toCleanOrder('"+order.id+"',9)\">取消订单</a></td>";
+                        }
+                        dfkTableHtml+="</tr>";
+                    }else if(orderItemLength==1){
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td>"+order.code+"</td>";
+                        dfkTableHtml+="<td>"+orderItem[0].sale.name+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td>"+orderItem[0].count+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].count*orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">运费</td>";
+                        dfkTableHtml+="<td>￥"+deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">总计</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        if(userType=="USER_TYPE_AGENT"){
+                            dfkTableHtml+="<td ></td>";
+                        }else{
+                            dfkTableHtml+="<td ><a class=\"btn btn-danger btn-sm\" >确定支付</a>  <a  class=\"btn btn-primary btn-sm\" href=\"javascript:toCleanOrder('"+order.id+"',9)\">取消订单</a></td>";
+                        }
+                        dfkTableHtml+="</tr>";
+                    }else{
+
+                        for(var k=0;k<orderItemLength;k++){
+                            var orderItems =orderItem[k];
+                            dfkTableHtml+="<tr>";
+                            if(k==0) {
+                                dfkTableHtml += "<td rowspan=\""+orderItemLength+"\" style='vertical-align: middle;'>" + order.code + "</td>";
+                            }
+                            dfkTableHtml+="<td>"+orderItems.sale.name+"</td>";
+                            dfkTableHtml+="<td>￥"+orderItems.price+"</td>";
+                            dfkTableHtml+="<td>"+orderItems.count+"</td>";
+                            dfkTableHtml+="<td>￥"+orderItems.count*orderItems.price+"</td>";
+                            dfkTableHtml+="<td></td>";
+                            dfkTableHtml+="</tr>";
+                        }
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">运费</td>";
+                        dfkTableHtml+="<td>￥"+deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">总计</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        if(userType=="USER_TYPE_AGENT"){
+                            dfkTableHtml+="<td ></td>";
+                        }else{
+                            dfkTableHtml+="<td ><a class=\"btn btn-danger btn-sm\" >确定支付</a>  <a  class=\"btn btn-primary btn-sm\" href=\"javascript:toCleanOrder('"+order.id+"',9)\">取消订单</a></td>";
+                        }
+                        dfkTableHtml+="</tr>";
+                    }
+                }
+                $("#dzfTable").append(dfkTableHtml);
+            }
+        });
+    }
+    function dfhOrder(){
+        $.ajax({
+            url: '/my/getSecordOrderState',
+            type: 'POST',
+            async: false,
+            data: {"status":2},
+            success: function (data) {
+                var items = eval(data);
+                $("#dfhTable  tr:not(:first)").empty("");
+                var dfkTableHtml="";
+                var orderLength=items.length;
+                for(var i=0;i<orderLength;i++){
+                    var order =items[i];
+                    var orderItem=order.items;
+                    var deliverFee=0.0;
+                    if(order.deliverFee!=null){
+                        deliverFee=order.deliverFee;
+                    }
+                    var orderItemLength=orderItem.length;
+                    if(orderItemLength==0 && order.sale !=null) {
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td>"+order.code+"</td>";
+                        dfkTableHtml+="<td>"+order.sale.name+"</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="<td>1</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="<td></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">运费</td>";
+                        dfkTableHtml+="<td>￥"+deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">总计</td>";
+                        dfkTableHtml+="<td>￥"+(order.price+deliverFee)+"</td>";
+                        dfkTableHtml+="</tr>";
+                    }else if(orderItemLength==1){
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td>"+order.code+"</td>";
+                        dfkTableHtml+="<td>"+orderItem[0].sale.name+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td>"+orderItem[0].count+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].count*orderItem[0].price+"</td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">运费</td>";
+                        dfkTableHtml+="<td>￥"+deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">总计</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="</tr>";
+                    }else{
+
+                        for(var k=0;k<orderItemLength;k++){
+                            var orderItems =orderItem[k];
+                            dfkTableHtml+="<tr>";
+                            if(k==0) {
+                                dfkTableHtml += "<td rowspan=\""+orderItemLength+"\" style='vertical-align: middle;'>" + order.code + "</td>";
+                            }
+                            dfkTableHtml+="<td>"+orderItems.sale.name+"</td>";
+                            dfkTableHtml+="<td>￥"+orderItems.price+"</td>";
+                            dfkTableHtml+="<td>"+orderItems.count+"</td>";
+                            dfkTableHtml+="<td>￥"+orderItems.count*orderItems.price+"</td>";
+                            dfkTableHtml+="</tr>";
+                        }
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"4\">运费</td>";
+                        dfkTableHtml+="<td>￥"+deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<td colspan=\"4\">总计</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="</tr>";
+                    }
+                }
+                $("#dfhTable").append(dfkTableHtml);
+            }
+        });
+    }
+    function dshOrder(){
+        var userType=$("#userType").val();
+        $.ajax({
+            url: '/my/getSecordOrderState',
+            type: 'POST',
+            async: false,
+            data: {"status":3},
+            success: function (data) {
+                var items = eval(data);
+                $("#dshTable  tr:not(:first)").empty("");
+                var dfkTableHtml="";
+                var orderLength=items.length;
+                for(var i=0;i<orderLength;i++){
+                    var order =items[i];
+                    var orderItem=order.items;
+                    var deliverFee=0.0;
+                    if(order.deliverFee!=null){
+                        deliverFee=order.deliverFee;
+                    }
+                    var orderItemLength=orderItem.length;
+                    if(orderItemLength==0 && order.sale !=null) {
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td>"+order.code+"</td>";
+                        dfkTableHtml+="<td>"+order.sale.name+"</td>";
+                        dfkTableHtml+="<td>"+order.transport+"</td>";
+                        if(order.transportNo==null){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportNo+"</td>";
+                        }
+                        if(order.transportCompany==null){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportCompany+"</td>";
+                        }
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="<td>1</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="<td></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">运费</td>";
+                        dfkTableHtml+="<td>￥"+deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">总计</td>";
+                        dfkTableHtml+="<td>￥"+(order.price+deliverFee)+"</td>";
+
+                        if(userType=="USER_TYPE_AGENT"){
+                            dfkTableHtml+="<td ></td>";
+                        }else{
+                            dfkTableHtml+="<td >  <a  class=\"btn btn-danger btn-sm\" href=\"javascript:toOkOrder('"+order.id+"',4)\">确定收货</a></td>";
+                        }
+                        dfkTableHtml+="</tr>";
+                    }else if(orderItemLength==1){
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td>"+order.code+"</td>";
+                        dfkTableHtml+="<td>"+orderItem[0].sale.name+"</td>";
+                        dfkTableHtml+="<td>"+order.transport+"</td>";
+                        if(order.transportNo==null){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportNo+"</td>";
+                        }
+                        if(order.transportCompany==null){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportCompany+"</td>";
+                        }
+                        dfkTableHtml+="<td>￥"+orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td>"+orderItem[0].count+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].count*orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">运费</td>";
+                        dfkTableHtml+="<td>￥"+deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">总计</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        if(userType=="USER_TYPE_AGENT"){
+                            dfkTableHtml+="<td ></td>";
+                        }else{
+                            dfkTableHtml+="<td >  <a  class=\"btn btn-danger btn-sm\" href=\"javascript:toOkOrder('"+order.id+"',4)\">确定收货</a></td>";
+                        }
+                        dfkTableHtml+="</tr>";
+                    }else{
+
+                        for(var k=0;k<orderItemLength;k++){
+                            var orderItems =orderItem[k];
+                            dfkTableHtml+="<tr>";
+                            if(k==0) {
+                                dfkTableHtml += "<td rowspan=\""+orderItemLength+"\" style='vertical-align: middle;'>" + order.code + "</td>";
+                            }
+                            dfkTableHtml+="<td>"+orderItems.sale.name+"</td>";
+                            if(k==0){
+                                dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transport+"</td>";
+                                if(order.transportNo==null){
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\"></td>";
+                                }else{
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transportNo+"</td>";
+                                }
+                                if(order.transportCompany==null){
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\"></td>";
+                                }else{
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transportCompany+"</td>";
+                                }
+                            }
+
+                            dfkTableHtml+="<td>￥"+orderItems.price+"</td>";
+                            dfkTableHtml+="<td>"+orderItems.count+"</td>";
+                            dfkTableHtml+="<td>￥"+orderItems.count*orderItems.price+"</td>";
+                            dfkTableHtml+="<td></td>";
+                            dfkTableHtml+="</tr>";
+                        }
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">运费</td>";
+                        dfkTableHtml+="<td>￥"+deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<td colspan=\"7\">总计</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        if(userType=="USER_TYPE_AGENT"){
+                            dfkTableHtml+="<td ></td>";
+                        }else{
+                            dfkTableHtml+="<td >  <a  class=\"btn btn-danger btn-sm\" href=\"javascript:toOkOrder('"+order.id+"',4)\">确定收货</a></td>";
+                        }
+                        dfkTableHtml+="</tr>";
+                    }
+                }
+                $("#dshTable").append(dfkTableHtml);
+            }
+        });
+    }
+    function ywcOrder(){
+        $.ajax({
+            url: '/my/getSecordOrderState',
+            type: 'POST',
+            async: false,
+            data: {"status":4},
+            success: function (data) {
+                var items = eval(data);
+                $("#ywcTable  tr:not(:first)").empty("");
+                var dfkTableHtml="";
+                var orderLength=items.length;
+                for(var i=0;i<orderLength;i++){
+                    var order =items[i];
+                    var orderItem=order.items;
+                    var deliverFee=0.0;
+                    if(order.deliverFee!=null){
+                        deliverFee=order.deliverFee;
+                    }
+                    var orderItemLength=orderItem.length;
+                    if(orderItemLength==0 && order.sale !=null) {
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td>"+order.code+"</td>";
+                        dfkTableHtml+="<td>"+order.sale.name+"</td>";
+                        dfkTableHtml+="<td>"+order.transport+"</td>";
+                        if(order.transportNo==null){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportNo+"</td>";
+                        }
+                        if(order.transportCompany==null){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportCompany+"</td>";
+                        }
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="<td>1</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="<td></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">运费</td>";
+                        dfkTableHtml+="<td>￥"+order.deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">总计</td>";
+                        dfkTableHtml+="<td>￥"+(order.price+deliverFee)+"</td>";
+                        dfkTableHtml+="<td ><a class=\"btn btn-danger btn-sm\" >确定支付</a>  <a  class=\"btn btn-primary btn-sm\" href=\"javascript:toCleanOrder('"+order.id+"',9)\">取消订单</a></td>";
+                        dfkTableHtml+="</tr>";
+                    }else if(orderItemLength==1){
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td>"+order.code+"</td>";
+                        dfkTableHtml+="<td>"+orderItem[0].sale.name+"</td>";
+                        dfkTableHtml+="<td>"+order.transport+"</td>";
+                        if(order.transportNo==null){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportNo+"</td>";
+                        }
+                        if(order.transportCompany==null){
+                            dfkTableHtml+="<td></td>";
+                        }else{
+                            dfkTableHtml+="<td>"+order.transportCompany+"</td>";
+                        }
+                        dfkTableHtml+="<td>￥"+orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td>"+orderItem[0].count+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].count*orderItem[0].price+"</td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">运费</td>";
+                        dfkTableHtml+="<td>￥"+order.deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">总计</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="</tr>";
+                    }else{
+
+                        for(var k=0;k<orderItemLength;k++){
+                            var orderItems =orderItem[k];
+                            dfkTableHtml+="<tr>";
+                            if(k==0) {
+                                dfkTableHtml += "<td rowspan=\""+orderItemLength+"\" style='vertical-align: middle;'>" + order.code + "</td>";
+                            }
+                            dfkTableHtml+="<td>"+orderItems.sale.name+"</td>";
+                            if(k==0){
+                                dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transport+"</td>";
+                                if(order.transportNo==null){
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\"></td>";
+                                }else{
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transportNo+"</td>";
+                                }
+                                if(order.transportCompany==null){
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\"></td>";
+                                }else{
+                                    dfkTableHtml+="<td rowspan=\""+orderItemLength+"\">"+order.transportCompany+"</td>";
+                                }
+                            }
+                            dfkTableHtml+="<td>￥"+orderItems.price+"</td>";
+                            dfkTableHtml+="<td>"+orderItems.count+"</td>";
+                            dfkTableHtml+="<td>￥"+orderItems.count*orderItems.price+"</td>";
+                            dfkTableHtml+="</tr>";
+                        }
+                        dfkTableHtml+="<tr>";
+                        dfkTableHtml+="<td colspan=\"7\">运费</td>";
+                        dfkTableHtml+="<td>￥"+order.deliverFee+"</td>";
+                        dfkTableHtml+="<td ></td>";
+                        dfkTableHtml+="</tr>";
+                        dfkTableHtml+="<td colspan=\"7\">总计</td>";
+                        dfkTableHtml+="<td>￥"+order.price+"</td>";
+                        dfkTableHtml+="</tr>";
+                    }
+                }
+                $("#ywcTable").append(dfkTableHtml);
+            }
+        });
+    }
+    function    toCleanOrder(orderId,status){
+        $("#orderId").val(orderId);
+        $("#status").val(status);
+        $('#cleanOrderModel').modal();
+    }
+    function toOkOrder(orderId,status){
+        $("#orderId").val(orderId);
+        $("#status").val(status);
+        $('#okOrderModel').modal();
+    }
+    function toOrderStatus(){
+                var orderId=$("#orderId").val();
+                var status=$("#status").val();
+                $.ajax({
+                    url: '/my/updateSecordOrderState',
+                    type: 'post',
+                    data: {"orderId":orderId,"status":status},
+                    success: function (e) {
+                        window.location.reload();
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+    }
+    </script>
+
+</body>
+</html>

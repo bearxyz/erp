@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -98,10 +99,16 @@ public class SaleController {
     public String reApply(@PathVariable("id")String id, Model model) {
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(id).singleResult();
         Sale sale = service.getById(id);
-        Package pk = packageRepository.findOne(sale.getPackageId());
-        Goods goods = goodsService.getById(sale.getGoodsId());
-        sale.setGoods(goods);
-        sale.setaPackage(pk);
+        if(sale.getPackageId()!=null) {
+            Package pk = packageRepository.findOne(sale.getPackageId());
+            if(pk!=null)
+                sale.setaPackage(pk);
+        }
+        if(sale.getGoodsId()!=null) {
+            Goods goods = goodsService.getById(sale.getGoodsId());
+            if(goods!=null)
+                sale.setGoods(goods);
+        }
         model.addAttribute("sale", sale);
         model.addAttribute("taskId", task.getId());
         model.addAttribute("taskKey", task.getTaskDefinitionKey());
@@ -128,10 +135,16 @@ public class SaleController {
     @RequestMapping(value = "/complete", method = RequestMethod.GET)
     public String complete(@RequestParam("bid") String bid, @RequestParam("tid") String tid, @RequestParam("applyer") String applyer, Model model) {
         Sale sale = service.getById(bid);
-        Package pk = packageRepository.findOne(sale.getPackageId());
-        Goods goods = goodsService.getById(sale.getGoodsId());
-        sale.setGoods(goods);
-        sale.setaPackage(pk);
+        if(sale.getPackageId()!=null) {
+            Package pk = packageRepository.findOne(sale.getPackageId());
+            if(pk!=null)
+                sale.setaPackage(pk);
+        }
+        if(sale.getGoodsId()!=null) {
+            Goods goods = goodsService.getById(sale.getGoodsId());
+            if(goods!=null)
+                sale.setGoods(goods);
+        }
         model.addAttribute("sale", sale);
         String memo = "";
         model.addAttribute("applyer", applyer);
@@ -210,6 +223,32 @@ public class SaleController {
         Sale sale = saleRepository.findOne(id);
         model.addAttribute("sale", sale);
         return "/sale/createGroupbuy";
+    }
+
+    @RequestMapping(value = "/createGroupbuy", method = RequestMethod.POST)
+    @ResponseBody
+    public String doGroupBuy(String saleId, Integer manCount, Float price){
+        GroupBuy groupBuy = new GroupBuy();
+        groupBuy.setSaleId(saleId);
+        groupBuy.setManCount(manCount);
+        groupBuy.setDisCount(price);
+        groupBuyRepository.save(groupBuy);
+        return "{success: true}";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/deleteGroupbuy"}, method = RequestMethod.POST)
+    public String delete(@Param("ids") String[] ids) {
+        for(String id: ids){
+            groupBuyRepository.delete(id);
+        }
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/company", method = RequestMethod.GET)
+    public String company(@PathVariable("id")String id){
+
+        return "/sale/company";
     }
 
 }

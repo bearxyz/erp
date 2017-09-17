@@ -46,7 +46,7 @@ public class Contract extends BaseDomain {
     @Column(length = 50)
     private String agentDistrict = "";
     @Column(length = 50)
-    private String agentAddress="";
+    private String agentAddress = "";
     @Column
     private Integer duration = 0;
     @Column(length = 50)
@@ -57,6 +57,8 @@ public class Contract extends BaseDomain {
     private String agentType = "";
     @Column(length = 50)
     private String agentLevel = "";
+    @Column(length = 50)
+    private String contractLevel = "";
     @Column
     private Date signDate;
     @Column
@@ -79,6 +81,26 @@ public class Contract extends BaseDomain {
     private Boolean invalid = false;
     @Column
     private Float goal = (float) 0.0;
+    @Column
+    private Integer empCount = 0;
+    @Column
+    private Integer scale = 0;
+    @Column
+    private Float tuition = (float) 0.0;
+    @Column(length = 50)
+    private String devYear = "";
+    @Column(length = 500)
+    private String strategy = "";
+    @Column(length = 50)
+    private String currentStatus = "";
+    @Column(length = 100)
+    private String compitition = "";
+    @Column(length = 50)
+    private String inchargePerson="";
+    @Column(length = 50)
+    private String inchargePhone="";
+    @Column
+    private Boolean second = false;
 
     @Transient
     private String projectName = "";
@@ -436,4 +458,94 @@ public class Contract extends BaseDomain {
     public void setAgentAddress(String agentAddress) {
         this.agentAddress = agentAddress;
     }
+
+    public String getContractLevel() {
+        return contractLevel;
+    }
+
+    public void setContractLevel(String contractLevel) {
+        this.contractLevel = contractLevel;
+    }
+
+    public Integer getEmpCount() {
+        return empCount;
+    }
+
+    public void setEmpCount(Integer empCount) {
+        this.empCount = empCount;
+    }
+
+    public Integer getScale() {
+        return scale;
+    }
+
+    public void setScale(Integer scale) {
+        this.scale = scale;
+    }
+
+    public Float getTuition() {
+        return tuition;
+    }
+
+    public void setTuition(Float tuition) {
+        this.tuition = tuition;
+    }
+
+    public String getDevYear() {
+        return devYear;
+    }
+
+    public void setDevYear(String devYear) {
+        this.devYear = devYear;
+    }
+
+    public String getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(String strategy) {
+        this.strategy = strategy;
+    }
+
+    public String getCurrentStatus() {
+        return currentStatus;
+    }
+
+    public void setCurrentStatus(String currentStatus) {
+        this.currentStatus = currentStatus;
+    }
+
+    public String getCompitition() {
+        return compitition;
+    }
+
+    public void setCompitition(String compitition) {
+        this.compitition = compitition;
+    }
+
+    public String getInchargePerson() {
+        return inchargePerson;
+    }
+
+    public void setInchargePerson(String inchargePerson) {
+        this.inchargePerson = inchargePerson;
+    }
+
+    public String getInchargePhone() {
+        return inchargePhone;
+    }
+
+    public void setInchargePhone(String inchargePhone) {
+        this.inchargePhone = inchargePhone;
+    }
+
+    public Boolean getSecond() {
+        return second;
+    }
+
+    public void setSecond(Boolean second) {
+        this.second = second;
+    }
+
+
 }

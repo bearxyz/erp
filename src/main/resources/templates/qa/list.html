@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+
+<!-- Bread crumb is created dynamically -->
+<!-- row -->
+<div class="row">
+
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+
+            <!-- PAGE HEADER -->
+            <i class="fa-fw fa fa-table"></i>
+            常见问题
+        </h1>
+    </div>
+    <!-- end col -->
+
+</div>
+<!-- end row -->
+
+<!-- widget grid -->
+
+
+<section id="widget-grid" class="">
+
+    <!-- row -->
+    <div class="row">
+        <!-- NEW WIDGET START -->
+        <div class="col col-12">
+            <div class="well well-light" th:each="type:${list}">
+                <h3>[[${type.type}]]</h3>
+                <div th:each="qa:${type.qas}">
+                    <div class="accordion ui-accordion ui-widget ui-helper-reset">
+                        <h4 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all"
+                            role="tab" th:id="${'ui-accordion-accordion-header-'+qa.id}"
+                            th:attr="aria-controls='ui-accordion-accordion-panel-'+${qa.id}"
+                            aria-selected="false" tabindex="-1"><span
+                                class="ui-accordion-header-icon ui-icon fa fa-plus"></span>[[${qa.question}]]</h4>
+                        <div class="padding-10 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom"
+                             style="display: none;" th:id="${'ui-accordion-accordion-panel-'+qa.id}"
+                             th:attr="aria-labelledby='ui-accordion-accordion-header-'+${qa.id}"
+                              role="tabpanel" aria-expanded="false"
+                             aria-hidden="true">
+                            [[${qa.answer}]]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- WIDGET END -->
+
+    </div>
+    </div>
+
+    <!-- end row -->
+
+</section>
+<!-- end widget grid -->
+<script type="text/javascript">
+
+    pageSetUp();
+
+    var pagefunction = function () {
+        $(".accordion").accordion({
+            autoHeight: false,
+            heightStyle: "content",
+            collapsible: true,
+            animate: 300,
+            icons: accordionIcons,
+            header: "h4",
+        })
+    }
+</script>
+</body>
+</html>

@@ -19,9 +19,11 @@ public class Coupon extends BaseDomain {
     @Column(length = 100)
     private String code = "";
     @Column
-    private Float price = (float)0.0;
+    private Float price = (float) 0.0;
     @Column
     private Boolean used = false;
+    @Column
+    private Integer needCount = 0;
 
     public String getActivityId() {
         return activityId;
@@ -54,4 +56,13 @@ public class Coupon extends BaseDomain {
     public void setUsed(Boolean used) {
         this.used = used;
     }
+
+    public Integer getNeedCount() {
+        return needCount;
+    }
+
+    public void setNeedCount(Integer needCount) {
+        this.needCount = needCount;
+    }
+
 }

@@ -237,6 +237,7 @@
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASE_MANAGER,ROLE_LEASING_EXECUTIVE">
     function setContactBtn(id) {
         h = '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">合同变更</span></a>';
+        h += '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">续约/转让</span></a>';
         return h;
     }
 </script>

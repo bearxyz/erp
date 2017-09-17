@@ -97,4 +97,13 @@ public class TeacherController {
         return "/teacher/resetPwd";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/list/{id}", method = RequestMethod.POST)
+    public String list(@RequestBody PaginationCriteria req, @PathVariable("id")String id) throws JsonProcessingException {
+        DataTable<User> users = sysService.getUsersByCompanyId(id,"USER_TYPE_TEACHER");
+        users.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(users);
+    }
+
 }

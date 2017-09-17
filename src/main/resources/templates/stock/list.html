@@ -118,7 +118,6 @@
 
         var dt = $('#dt_basic').DataTable({
             "processing": true,
-            "serverSide": true,
             ajax: {
                 url: "/stock/list?type=" + [[${type}]],
                 "contentType": "application/json; charset=utf-8",
@@ -142,7 +141,6 @@
                 {"data": "taskName", "sClass": "text-center", render: formatStatus}
             ],
             "autoWidth": true,
-            "searching": false,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
             "bStateSave": true,
             "preDrawCallback": function () {
@@ -193,14 +191,16 @@
             html = "<a href='#/purchasingorder/apply/" + rowObject.id + "' class='btn btn-primary btn-sm'>采购单</a>";
         }
         else if (rowObject.type == "STOCK-OUT") {
-            if (!rowObject.approved)
-                html = "<a href='stock/selectTransport/" + rowObject.id + "' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#remoteModal'>发货</a>";
-            else
+            html = "<a href='stock/selectTransport/" + rowObject.id + "' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#remoteModal'>信息</a>";
+            if (rowObject.approved)
                 html = "<a href='stock/print/" + rowObject.id + "' class='btn btn-primary btn-sm' data-toggle='modal' data-target='#remoteModal'>打印</a>";
         }
         else {
             var css = rowObject.taskName == '已结束' ? 'label-success' : 'label-warning';
-            html = '<lable class="label ' + css + '">' + rowObject.taskName + '</lable>';
+            if (rowObject.approved)
+                html = '<lable class="label ' + css + '">' + rowObject.taskName + '</lable>';
+            else
+                html = '<label class="label label-warning">未通过验收</label>';
         }
         return html;
     }

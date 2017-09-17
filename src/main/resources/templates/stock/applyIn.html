@@ -31,6 +31,7 @@
                         </tr>
                         </thead>
                         <tbody>
+                        <input id="purchasingOrderId" name="purchasingOrderId" type="hidden" th:value="${oid}"/>
                         <tr th:each="item,i:${list}">
                             <td><label class='input'><input name='spec' th:value="${item.order.code}" disabled='disabled' /></label></td>
                             <td><label class='input'>

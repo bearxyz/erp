@@ -10,10 +10,12 @@ import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.domain.vo.TaskVO;
 import com.bearxyz.domain.vo.Variable;
 import com.bearxyz.repository.SaleAttachmentRepository;
+import com.bearxyz.repository.UserRepository;
 import com.bearxyz.service.business.AttachmentService;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.PurchasingOrderAttachmentService;
 import com.bearxyz.service.sys.SysService;
+import com.bearxyz.utility.BCrypt;
 import com.bearxyz.utility.RelativeDateFormat;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,6 +49,8 @@ import java.util.Map;
 @RequestMapping("/common")
 public class CommonController {
 
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private AttachmentService attachmentService;
 
@@ -299,6 +303,30 @@ public class CommonController {
         outputStream.write(data);
         outputStream.flush();
         outputStream.close();
+    }
+
+    @RequestMapping(value = "/changepwd", method = RequestMethod.GET)
+    public String changePwd(){
+        return "/common/changepwd";
+    }
+
+    @RequestMapping(value = "/changepwd", method = RequestMethod.POST)
+    @ResponseBody
+    public String doChangePwd(String oldpwd, String newpwd) throws JsonProcessingException {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        ObjectMapper mapper = new ObjectMapper();
+        ActionResponse response = new ActionResponse();
+        if(BCrypt.checkpw(oldpwd, user.getPassword())){
+            user.setPassword(BCrypt.hashpw(newpwd, BCrypt.gensalt()));
+            userRepository.saveAndFlush(user);
+            response.setSuccess(true);
+        }
+        else{
+            response.setMsg("原始密码输入不正确！");
+            response.setSuccess(false);
+        }
+
+        return mapper.writeValueAsString(response);
     }
 
 }

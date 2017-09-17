@@ -58,14 +58,14 @@ public class ClientController {
     private ContractRepository contractRepository;
 
     @RequestMapping(value = "/setAccount/{cid}", method = RequestMethod.GET)
-    public String setAccount(@PathVariable("cid")String cid, Model model){
+    public String setAccount(@PathVariable("cid") String cid, Model model) {
         model.addAttribute("cid", cid);
         return "/client/setAccount";
     }
 
     @RequestMapping(value = "/setAccount", method = RequestMethod.POST)
     @ResponseBody
-    public String doSetAccount(@RequestParam("cid")String cid, @RequestParam("email")String email, @RequestParam("password")String password, @RequestParam("firstName")String firstName,@RequestParam("lastName")String lastName,Model model) throws JsonProcessingException {
+    public String doSetAccount(@RequestParam("cid") String cid, @RequestParam("email") String email, @RequestParam("password") String password, @RequestParam("firstName") String firstName, @RequestParam("lastName") String lastName, Model model) throws JsonProcessingException {
         Company company = companyRepository.findOne(cid);
         User user = new User();
         user.setEmail(email);
@@ -83,15 +83,13 @@ public class ClientController {
             sysService.saveUser(user);
             sysService.assignRolesToUser(user.getId(), role);
             ar.setSuccess(true);
-        }
-        catch (NameRepeatedException nre){
+        } catch (NameRepeatedException nre) {
             ar.setSuccess(false);
             ar.setMsg(nre.getMessage());
         }
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(ar);
     }
-
 
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
@@ -106,25 +104,28 @@ public class ClientController {
         DataTable<Company> companys = new DataTable<>();
         if (u.hasRole("ROLE_SERVICE_MANAGER")) {
             companys = service.getCompanyByConditions(null, true);
-        }
-        else {
-            List<Company> c= companyRepository.findCompaniesByUserProvince(((User) u.getPrincipal()).getId());
+        } else {
+            List<Company> c = companyRepository.findCompaniesByUserProvince(((User) u.getPrincipal()).getId());
             companys.setData(c);
-            companys.setRecordsFiltered((long)c.size());
-            companys.setRecordsTotal((long)c.size());
+            companys.setRecordsFiltered((long) c.size());
+            companys.setRecordsTotal((long) c.size());
         }
-        for(Company c: companys.getData()){
+        for (Company c : companys.getData()) {
             Integer count = userRepository.countUsersByCompanyId(c.getId());
-            if(count>0)
+            if (count > 0) {
                 c.setHasAccount(true);
-            else
+                User user = userRepository.findUserByCompanyIdAndRole(c.getId(),"ROLE_AGENT");
+                c.setUser(user);
+            } else
                 c.setHasAccount(false);
             Contract contract = contractRepository.findNewestContractByCompanyId(c.getId());
-            if(contract!=null) {
+            if (contract != null) {
                 c.setCurrentStartDate(contract.getStartDate());
                 c.setCurrentEndDate(contract.getEndDate());
             }
-            c.setFullAddress(c.getProvince()+c.getCity()+c.getDistrict()+c.getAddress());
+            c.setFullAddress(c.getProvince() + c.getCity() + c.getDistrict() + c.getAddress());
+            List<Contract> contracts = contractRepository.findAvaliableContractByCompanyId(c.getId());
+            c.setContracts(contracts);
         }
         companys.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
@@ -147,25 +148,25 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/benefit", method = RequestMethod.GET)
-    public String benefit(){
+    public String benefit() {
         return "/client/benefit";
     }
 
     @RequestMapping(value = "/getclientlevel", method = RequestMethod.POST)
     @ResponseBody
     public String getClientLevel(@RequestBody PaginationCriteria req) throws JsonProcessingException {
-        List<Dict> dicts= sysService.getAllDictByParentMask("CLIENT_LEVEL_TYPE");
+        List<Dict> dicts = sysService.getAllDictByParentMask("CLIENT_LEVEL_TYPE");
         DataTable<Dict> result = new DataTable<>();
         result.setData(dicts);
-        result.setRecordsFiltered((long)dicts.size());
-        result.setRecordsTotal((long)dicts.size());
+        result.setRecordsFiltered((long) dicts.size());
+        result.setRecordsTotal((long) dicts.size());
         result.setDraw(req.getDraw());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(result);
     }
 
     @RequestMapping(value = "/setBenefit/{id}", method = RequestMethod.GET)
-    public String setBenefit(@PathVariable("id")String id, Model model){
+    public String setBenefit(@PathVariable("id") String id, Model model) {
         Dict dict = sysService.getDictById(id);
         model.addAttribute("dict", dict);
         return "/client/setBenefit";
@@ -173,10 +174,36 @@ public class ClientController {
 
     @RequestMapping(value = "/setBenefit", method = RequestMethod.POST)
     @ResponseBody
-    public String doBenefit(String id, Float discount){
+    public String doBenefit(String id, Float discount) {
         Dict dict = sysService.getDictById(id);
         dict.setDiscount(discount);
         sysService.saveDict(dict);
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/resetPwd/{id}", method = RequestMethod.GET)
+    public String resetPwd(@PathVariable("id") String id, Model model) {
+        model.addAttribute("id", id);
+        return "/client/resetPwd";
+    }
+
+    @RequestMapping(value = "/resetPwd", method = RequestMethod.POST)
+    @ResponseBody
+    public String doResetPwd(String id, String password) {
+        User user = userRepository.findUserByCompanyIdAndRole(id, "ROLE_AGENT");
+        user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+        userRepository.save(user);
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/setStatus", method = RequestMethod.POST)
+    @ResponseBody
+    public String setStatus(String id){
+        User u = userRepository.findUserByCompanyIdAndRole(id, "ROLE_AGENT");
+        List<User> users = userRepository.findAllByCompanyIdOrParentCompanyId(id,id);
+        for(User user: users){
+            user.setEnabled(!u.getEnabled());
+        }
         return "{success: true}";
     }
 

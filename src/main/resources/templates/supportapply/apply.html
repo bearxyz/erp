@@ -32,31 +32,50 @@
                             <input id="saleId" type="hidden" name="saleId" th:value="${sale.id}"/>
                             <fieldset>
                                 <div class="row">
-                                    <section class="col col-6">
+                                    <section class="col col-4">
                                         <label class="label">扶持名称：</label>
                                         <label class="input"><input id="name" name="name" th:value="${sale.name}"
                                                                     disabled="disabled"/></label>
                                     </section>
-                                    <section class="col col-6">
+                                    <section class="col col-4">
                                         <label class="label">价格：</label>
                                         <label class="input"><input id="price" name="price" th:value="${sale.price}"
                                                                     disabled="disabled"/></label>
                                     </section>
+                                    <section class="col col-4">
+                                        <label class="label">天数：</label>
+                                        <label class="input"><input id="days" name="days" th:value="${sale.days}"
+                                                                    disabled="disabled"/></label>
+                                    </section>
                                 </div>
                                 <div class="row">
-                                    <section class="col col-6">
+                                    <section class="col col-3">
+                                        <label class="label">期望开始日期：</label>
                                         <label class="input">
                                             <i class="icon-append fa fa-calendar"></i>
                                             <input id="startDate" class="hasDatepicker" name="startDate"
-                                                   th:value="${sale.startDate}" disabled="disabled"
+                                                   th:value="${supportapply.startDate}" disabled="disabled"
                                                    type="text">
                                         </label>
                                     </section>
-                                    <section class="col col-6">
+                                    <section class="col col-3">
+                                        <label class="label">期望结束日期：</label>
                                         <label class="input">
                                             <i class="icon-append fa fa-calendar"></i>
                                             <input id="endDate" class="hasDatepicker" name="endDate"
-                                                   th:value="${sale.endDate}" type="text" disabled="disabled">
+                                                   th:value="${supportapply.endDate}" type="text" disabled="disabled">
+                                        </label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">参与人数：</label>
+                                        <label class="input">
+                                            <input id="manCount" name="manCount" th:value="${supportapply.manCount}" type="text" class="number" disabled="disabled" />
+                                        </label>
+                                    </section>
+                                    <section class="col col-3">
+                                        <label class="label">费用：</label>
+                                        <label class="input">
+                                            <input id="total" name="total" th:value="${supportapply.manCount*sale.price}" type="text" class="number" disabled="disabled" />
                                         </label>
                                     </section>
                                 </div>
@@ -68,10 +87,10 @@
                                     </label>
                                 </section>
                                 <section>
-                                    <label class="label">要求：</label>
+                                    <label class="label">申请要求：</label>
                                     <label class="textarea textarea-resizable">
                                         <textarea class="custom-scroll" id="memo" name="memo" disabled="disabled"
-                                        ></textarea>
+                                        >[[${supportapply.memo}]]</textarea>
                                     </label>
                                 </section>
                             </fieldset>

@@ -5,10 +5,9 @@ import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.common.TreeNode;
 import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.sys.User;
-import com.bearxyz.repository.CompanyRepository;
-import com.bearxyz.repository.OrderRepository;
-import com.bearxyz.repository.WorkOrderRepository;
+import com.bearxyz.repository.*;
 import com.bearxyz.service.business.SaleService;
+import com.bearxyz.service.business.SecordOrderService;
 import com.bearxyz.service.business.SupportApplyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +37,12 @@ public class MyOrderController {
     private WorkOrderRepository workOrderRepository;
     @Autowired
     private CompanyRepository companyRepository;
+    @Autowired
+    private SaleRepository saleRepository;
+    @Autowired
+    private SecordOrderService secordOrderService;
+    @Autowired
+    private SecordOrderRepository secordOrderRepository;
 
     @RequestMapping("/order")
     public String order() {
@@ -105,16 +110,18 @@ public class MyOrderController {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         List<WorkOrder> list = workOrderRepository.findAllByCompanyId(user.getCompanyId());
         for (WorkOrder wo : list) {
-            String result = "";
-            if (wo.getClientMemo() != null)
-                result = wo.getClientMemo();
-            if (wo.getDepMemo() != null)
-                result += "<br/>" + wo.getDepMemo();
-            if (wo.getCooMemo() != null)
-                result += "<br />" + wo.getCooMemo();
-            if (wo.getCeoMemo() != null)
-                result += "<br />" + wo.getCeoMemo();
-            wo.setResult(result);
+            if(wo.getFinished()) {
+                String result = "";
+                if (wo.getCeoMemo() != null)
+                    result += "<br />" + wo.getCeoMemo();
+                else if (wo.getCooMemo() != null)
+                    result += "<br />" + wo.getCooMemo();
+                else if(wo.getDepMemo() != null)
+                    result += "<br/>" + wo.getDepMemo();
+                else if(wo.getClientMemo() != null)
+                    result = wo.getClientMemo();
+                wo.setResult(result);
+            }
         }
         DataTable<WorkOrder> workOrder = new DataTable<>();
         workOrder.setData(list);
@@ -176,4 +183,88 @@ public class MyOrderController {
         companyRepository.save(company);
         return "{success: true}";
     }
+
+    @RequestMapping(value = "/goods", method = RequestMethod.GET)
+    public String goods() {
+        return "/my/goods";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/goods", method = RequestMethod.POST)
+    public String goodsList(@RequestBody PaginationCriteria req) throws JsonProcessingException {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        DataTable<Sale> sales = saleService.getSecordSaleList("GOODS_NORMAL",user.getCompanyId());
+        sales.setDraw(req.getDraw());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(sales);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = {"/setStatus"}, method = RequestMethod.POST)
+    public String setStatus(String saleId,float price,String statusName){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        if(statusName.equals("上架")){
+            saleRepository.insertCompanySale(user.getCompanyId(),saleId,price,1);
+        }else{
+            saleRepository.deleteCompaySale(user.getCompanyId(),saleId);
+        }
+        return "{success: true}";
+    }
+
+
+    @RequestMapping("/cusorder")
+    public String cusorder(Model model) {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        model.addAttribute("userType",user.getType());
+        return "/my/cusorder";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/getSecordOrderState", method = RequestMethod.POST)
+    public String getSecordOrderState(int status) throws JsonProcessingException {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        List<SecordOrder> secordOrderList = secordOrderService.getSecordOrderByStateList(status, user.getCompanyId());
+        if (secordOrderList != null && secordOrderList.size() > 0) {
+            for (SecordOrder secordOrder : secordOrderList) {
+                if (secordOrder.getSaleId() != null && (!secordOrder.getSaleId().equals(""))) {
+                    secordOrder.setSale(saleService.getById(secordOrder.getSaleId()));
+                }
+                if (secordOrder != null && secordOrder.getItems() != null && secordOrder.getItems().size() > 0) {
+                    for (SecordOrderItem secordOrderItem : secordOrder.getItems()) {
+                        if (secordOrderItem.getSaleId() != null && (!secordOrderItem.getSaleId().equals(""))) {
+                            Sale sale = saleService.getById(secordOrderItem.getSaleId());
+                            if (sale != null) {
+                                secordOrderItem.setSale(sale);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(secordOrderList);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateSecordOrderState", method = RequestMethod.POST)
+    public String updateSecordOrderState(String orderId, int status) throws JsonProcessingException {
+        SecordOrder secordOrder = secordOrderService.getOrderById(orderId);
+        secordOrder.setStatus(status);
+        secordOrderRepository.save(secordOrder);
+        return "{success: true}";
+    }
+
+
+
+
+
+
+    @RequestMapping("/secorder")
+    public String secorder() {
+        return "/my/secorder";
+    }
+
+
+
+
 }

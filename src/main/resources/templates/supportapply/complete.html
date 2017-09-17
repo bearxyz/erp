@@ -49,19 +49,27 @@
                                     </section>
                                 </div>
                                 <div class="row">
-                                    <section class="col col-6">
+                                    <section class="col col-4">
+                                        <label class="label">期望开始日期：</label>
                                         <label class="input">
                                             <i class="icon-append fa fa-calendar"></i>
                                             <input id="startDate" class="hasDatepicker" name="startDate"
-                                                   th:value="${supportapply.sale.startDate}" disabled="disabled"
+                                                   th:value="${supportapply.startDate}" disabled="disabled"
                                                    type="text">
                                         </label>
                                     </section>
-                                    <section class="col col-6">
+                                    <section class="col col-4">
+                                        <label class="label">期望结束日期：</label>
                                         <label class="input">
                                             <i class="icon-append fa fa-calendar"></i>
                                             <input id="endDate" class="hasDatepicker" name="endDate"
-                                                   th:value="${supportapply.sale.endDate}" type="text" disabled="disabled">
+                                                   th:value="${supportapply.endDate}" type="text" disabled="disabled">
+                                        </label>
+                                    </section>
+                                    <section class="col col-4">
+                                        <label class="label">期望人数：</label>
+                                        <label class="input">
+                                            <input id="manCount" name="manCount" th:value="${supportapply.manCount}" type="text" disabled="disabled" />
                                         </label>
                                     </section>
                                 </div>
@@ -72,6 +80,33 @@
                                         >[[${supportapply.memo}]]</textarea>
                                     </label>
                                 </section>
+                            </fieldset>
+                            <fieldset>
+                                <div class="row">
+                                    <section class="col col-4">
+                                        <label class="label">确认开始日期：</label>
+                                        <label class="input">
+                                            <i class="icon-append fa fa-calendar"></i>
+                                            <input id="realStartDate" class="hasDatepicker" name="realStartDate"
+                                                   th:value="${supportapply.realStartDate}"
+                                                   type="text">
+                                        </label>
+                                    </section>
+                                    <section class="col col-4">
+                                        <label class="label">确认结束日期：</label>
+                                        <label class="input">
+                                            <i class="icon-append fa fa-calendar"></i>
+                                            <input id="realEndDate" class="hasDatepicker" name="realEndDate"
+                                                   th:value="${supportapply.realEndDate}" type="text">
+                                        </label>
+                                    </section>
+                                    <section class="col col-4">
+                                        <label class="label">确认人数：</label>
+                                        <label class="input">
+                                            <input id="realManCount" name="realManCount" th:value="${supportapply.realManCount}" type="text" />
+                                        </label>
+                                    </section>
+                                </div>
                             </fieldset>
                             <fieldset th:if="${memo!=null and memo!=''}">
                                 <section>
@@ -125,18 +160,26 @@
     pageSetUp();
 
     var taskKey = $('#taskKey').val();
+    var id = [[${supportapply.id}]];
 
     var pagefunction = function () {
 
     };
 
     $('#pass').on('click', function () {
-        var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
-        completeTask([[${taskId}]], [{key: taskKey+'Pass', value: true, type: 'B'}, {
-            key: taskKey+'Memo',
-            value: memo,
-            type: 'S'
-        }]);
+        $.ajax({
+            url:'/supportapply/setReal',
+            type:'POST',
+            data:{id:id, realStartDate:$('#realStartDate').val(), realEndDate: $('#realEndDate').val(), realManCount: $('#realManCount').val()},
+            success: function () {
+                var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
+                completeTask([[${taskId}]], [{key: taskKey+'Pass', value: true, type: 'B'}, {
+                    key: taskKey+'Memo',
+                    value: memo,
+                    type: 'S'
+                }]);
+            }
+        });
     });
 
     $('#deny').on('click', function () {
@@ -146,6 +189,24 @@
             value: memo,
             type: 'S'
         }]);
+    });
+
+    $('#realStartDate').datetimepicker({
+        format: 'yyyy-mm-dd',
+        minView: 'month',
+        language: 'zh-CN',
+        autoclose: true
+    }).on("click", function () {
+        $("#realStartDate").datetimepicker("setEndDate", $("#realEndDate").val())
+    });
+
+    $('#realEndDate').datetimepicker({
+        format: 'yyyy-mm-dd',
+        minView: 'month',
+        language: 'zh-CN',
+        autoclose: true
+    }).on("click", function () {
+        $("#realEndDate").datetimepicker("setStartDate", $("#realStartDate").val())
     });
 
 </script>

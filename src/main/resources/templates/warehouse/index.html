@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+
+<!-- Bread crumb is created dynamically -->
+<!-- row -->
+<div class="row">
+
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+
+            <!-- PAGE HEADER -->
+            <i class="fa-fw fa fa-table"></i>
+            仓库管理
+        </h1>
+    </div>
+    <!-- end col -->
+
+</div>
+<!-- end row -->
+
+<!-- widget grid -->
+
+
+<section id="widget-grid" class="">
+
+    <!-- row -->
+    <div class="row">
+
+        <!-- NEW WIDGET START -->
+        <article class="col-sm-12">
+            <div class="jarviswidget" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon">
+                        <i class="fa fa-table"></i>
+                    </span>
+                    <h2><strong>仓库管理</strong></h2>
+                    <div class="widget-toolbar">
+                        <a class="btn btn-danger" href="javascript:void(0);" id="delete">
+                            <i class="fa fa-trash-o"> </i>
+                            <span class="hidden-mobile">删 除</span>
+                        </a>
+                    </div>
+                    <div class="widget-toolbar">
+                        <a class="btn btn-primary" id="create">
+                            <i class="fa fa-edit"> </i>
+                            <span class="hidden-mobile">新 增</span><input id="id" type="hidden" value="">
+                        </a>
+                    </div>
+                </header>
+                <div>
+                    <div class="widget-body no-padding" id="grid-content">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable" width="100%">
+                            <thead>
+                            <th class="smart-form" style="padding:5px;"><label class="checkbox"><input name="check-all" type="checkbox"/><i> </i></label>
+                            </th>
+                            <th>仓库名称</th>
+                            <th>仓库负责人</th>
+                            <th>操作</th>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <!-- WIDGET END -->
+
+    </div>
+
+    <!-- end row -->
+
+</section>
+<!-- end widget grid -->
+
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+
+<script type="text/javascript">
+
+    pageSetUp();
+
+    var pagefunction = function () {
+
+        var responsiveHelper_dt_basic = undefined;
+        var breakpointDefinition = {tablet: 1024, phone: 480};
+
+        $('#dt_basic').dataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "/warehouse/index",
+                "type": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            "columns": [
+                CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                {"data": "name"},
+                {"data": "user"},
+                {
+                    "data": "operate",
+                    "sClass":"text-center",
+                    render: formatAction
+                }
+            ],
+            "autoWidth": true,
+            "ordering": false,
+            "searching": false,
+            "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+            "preDrawCallback": function () {
+                if (!responsiveHelper_dt_basic) {
+                    responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_dt_basic.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_dt_basic.respond();
+                $(":checkbox[name='check-all']").prop('checked', false);
+            },
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'l><'col-sm-6 col-xs-12 hidden-xs'>r>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+
+    }
+
+    loadScript("js/plugin/datatables/jquery.dataTables.min.js", function () {
+        loadScript("js/plugin/datatables/dataTables.colVis.min.js", function () {
+            loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
+                loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
+                    loadScript("js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+                });
+            });
+        });
+    });
+
+    $('#dt_basic').on("change", ":checkbox", function () {
+        if($(this).is("[name='check-all']"))
+            $(":checkbox", "#dt_basic").prop("checked", $(this).prop("checked"));
+        else{
+            var checkbox = $("tbody:checkbox","#dt_basic");
+            $(":checkbox[name='check-all']", "#dt_basic").prop("checked", checkbox.length==checkbox.filter(":checked"));
+        }
+    });
+
+    function formatAction(cellValue, options, rowObject) {
+        var html = '<div class="btn-group">';
+        html += '<a href="/warehouse/edit/' + rowObject.id + '" class="btn-warning btn btn-xs" data-toggle="modal" data-target="#remoteModal"><i class="fa fa-edit"></i> <span class="hidden-mobile">修 改</span></a>';
+        html += '</div>';
+        return html;
+    }
+
+    $('#create').on('click', function () {
+        var id = $('#id').val();
+        $('#remoteModal').modal({remote: '/warehouse/create'});
+    })
+
+</script>
+<script type="text/javascript">
+    $('#delete').on('click', function (e) {
+        var ids = [];
+        $('input[name="check-id"]:checked').each(function () {
+            ids.push($(this).val());
+        });
+        if (ids !== "") {
+            del(ids);
+        }
+        else {
+            $.SmartMessageBox({
+                title: "注 意!",
+                content: "请先选择需要操作的数据项！",
+                buttons: '[确 定]'
+            });
+            e.preventDefault();
+        }
+    });
+
+    function del(id) {
+        $.SmartMessageBox({
+                title: "注 意!",
+                content: "确定要删除选定的数据项吗？",
+                buttons: '[取 消][确 定]'
+            },
+            function (ButtonPressed) {
+                if (ButtonPressed === "确 定") {
+                    $.ajax({
+                        url: '/warehouse/delete',
+                        type: 'POST',
+                        data: {ids: id.toString()},
+                        success: function () {
+                            $('#dt_basic').DataTable().ajax.reload();
+                        },
+                        error: function (e) {
+                            $.bigBox({
+                                title: "系统内部错误！",
+                                content: "该错误已被记录，请联系管理员，并稍后重试！",
+                                color: "#C46A69",
+                                icon: "fa fa-warning shake animated",
+                                timeout: 6000
+                            });
+                            e.preventDefault();
+                        }
+                    });
+                }
+            });
+    }
+
+</script>
+
+
+</body>
+</html>

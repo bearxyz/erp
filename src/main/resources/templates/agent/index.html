@@ -44,12 +44,6 @@
                     </span>
                     <h2><strong> 二级代理管理</strong></h2>
                     <div class="widget-toolbar">
-                        <a class="btn btn-danger" href="javascript:void(0);" id="delete">
-                            <i class="fa fa-trash-o"> </i>
-                            <span class="hidden-mobile">删 除</span>
-                        </a>
-                    </div>
-                    <div class="widget-toolbar">
                         <a class="btn btn-primary" data-toggle="modal" data-target="#remoteModal"
                            th:href="@{agent/create}">
                             <i class="fa fa-edit"> </i>
@@ -63,20 +57,14 @@
                                width="100%">
                             <thead>
                             <tr>
-                                <th class="hasinput"></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
-                                <th class="hasinput"></th>
                             </tr>
                             <tr>
-                                <th class="smart-form" style="padding:5px;"><label class="checkbox"><input name="check-all"
-                                                                                                           type="checkbox"/><i> </i></label>
-                                </th>
                                 <th>账号</th>
                                 <th>真实姓名</th>
                                 <th>状态</th>
-                                <th></th>
                             </tr>
                             </thead>
                         </table>
@@ -95,7 +83,7 @@
 <!-- Dynamic Modal -->
 <div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="width: 800px;">
         <div class="modal-content">
         </div>
     </div>
@@ -123,16 +111,9 @@
                 }
             },
             "columns": [
-                CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
                 {"data": "email"},
                 {"data": "fullName"},
-                {"data": "enabled", "sClass": "text-center", render: formatStatus, width: "50px"},
-                {
-                    "data": "operate",
-                    "sClass": "text-center",
-                    width: "160px",
-                    render: formatAction
-                }
+                {"data": "enabled", "sClass": "text-center", render: formatStatus, width: "50px"}
             ],
             "autoWidth": true,
             "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
@@ -147,7 +128,6 @@
             },
             "drawCallback": function (oSettings) {
                 responsiveHelper_dt_basic.respond();
-                $(":checkbox[name='check-all']").prop('checked', false);
             },
             "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'l><'col-sm-6 col-xs-12 hidden-xs'>r>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
         });
@@ -182,33 +162,19 @@
 
     function formatStatus(cellValue, options, rowObject) {
         var html = "";
-        try{if(setStatusBtn) html+=setStatusBtn(rowObject.id,cellValue);}catch(e){}
-        if(html==""){
-            if(rowObject.enabled)
-                html+="<span class='label label-success'>启用</span>";
-            else
-                html+="<span class='label label-default'>停用</span>";
+        if (rowObject.passed) {
+            html = "<span class='onoffswitch'>";
+            html += '<input name="checkbox-toggle" id="' + rowObject.id + '" class="onoffswitch-checkbox" onclick="setStatus(&quot;' + rowObject.id + '&quot;)"';
+            if (cellValue) html += "checked='checked' ";
+            html += "type='checkbox' />";
+            html += "<label class='onoffswitch-label' for='" + rowObject.id + "'><span class='onoffswitch-inner' data-swchon-text='启用' data-swchoff-text='终止'></span><span class='onoffswitch-switch'></span></label></span>";
+        }
+        else {
+            html += '<a href="/contract/seccontract/' + rowObject.id + '" class="btn btn-xs btn-primary" data-toggle="modal" data-target="#remoteModal">提交合同</a>';
         }
         return html;
     }
 
-    function formatAction(cellValue, options, rowObject) {
-        var html = '<div class="btn-group btn-group-justified">';
-        try {
-            if(setassignBtn) html += setassignBtn(rowObject.id);
-            if(setresetPwdBtn) html+=setresetPwdBtn(rowObject.id);
-        }catch (e){}
-        html += '</div>';
-        return html;
-    }
-    function setStatusBtn(id,cellValue){
-        var html = "<span class='onoffswitch'>";
-        html += '<input name="checkbox-toggle" id="' + id + '" class="onoffswitch-checkbox" onclick="setStatus(&quot;' +id + '&quot;)"';
-        if (cellValue) html += "checked='checked' ";
-        html += "type='checkbox' />";
-        html += "<label class='onoffswitch-label' for='" + id + "'><span class='onoffswitch-inner' data-swchon-text='启用' data-swchoff-text='停用'></span><span class='onoffswitch-switch'></span></label></span>";
-        return html;
-    }
     function setStatus(id) {
         $.ajax({
             type: "POST",
@@ -216,56 +182,6 @@
             data: {id: id}
         });
     }
-    function setresetPwdBtn(id) {
-        return '<a href="/agent/resetPwd?id=' + id + '" class="btn-warning btn btn-xs" data-toggle="modal" data-target="#remoteModal"><i class="fa fa-lock"></i> <span class="hidden-mobile">重置密码</span></a>';
-    }
-</script>
-
-<script type="text/javascript">
-    $('#delete').on('click', function (e) {
-        var ids = [];
-        $('input[name="check-id"]:checked').each(function () {
-            ids.push($(this).val());
-        });
-        if (ids != "") {
-            $.SmartMessageBox({
-                    title: "注 意!",
-                    content: "确定要删除选定的数据项吗？",
-                    buttons: '[取 消][确 定]'
-                },
-                function (ButtonPressed) {
-                    if (ButtonPressed === "确 定") {
-                        $.ajax({
-                            url: '/agent/delete',
-                            type: 'POST',
-                            data: {ids: ids.toString()},
-                            success: function () {
-                                $('#dt_basic').DataTable().ajax.reload();
-                            },
-                            error: function (e) {
-                                $.bigBox({
-                                    title: "系统内部错误！",
-                                    content: "该错误已被记录，请联系管理员，并稍后重试！",
-                                    color: "#C46A69",
-                                    icon: "fa fa-warning shake animated",
-                                    timeout: 6000
-                                });
-                                e.preventDefault();
-                            }
-                        });
-                    }
-                });
-            e.preventDefault();
-        }
-        else {
-            $.SmartMessageBox({
-                title: "注 意!",
-                content: "请先选择需要操作的数据项！",
-                buttons: '[确 定]'
-            });
-            e.preventDefault();
-        }
-    });
 </script>
 </body>
 </html>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title>产品订购</title>
+    <link rel="stylesheet" type="text/css" media="screen" th:href="@{css/plugin/jstree/style.css}"/>
+</head>
+<body>
+<!-- Bread crumb is created dynamically -->
+<!-- row -->
+<div class="row">
+
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <!-- PAGE HEADER -->
+            <i class="fa-fw fa fa-table"></i>
+            产品订购
+        </h1>
+    </div>
+    <!-- end col -->
+
+</div>
+<!-- end row -->
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+
+    <!-- row -->
+    <div class="row">
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon">
+                        <i class="fa fa-table"></i>
+                    </span>
+                    <h2><strong> 产品订购</strong></h2>
+                    <input type="hidden" id="id" name="id"/>
+                    <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8 text-right">
+
+                        <a href="javascript:toOrder()" class="btn btn-default shop-btn">
+                            <i class="fa fa-3x fa-shopping-cart"></i>
+                            <span class="air air-top-right label-danger txt-color-white padding-5" id="carCount">0</span>
+                        </a>
+
+                    </div>
+
+                </header>
+                <div>
+                    <div class="widget-body no-padding" id="grid-content">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
+                               width="100%">
+                            <thead>
+                            <tr>
+                                <th class="hasinput"></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                               <!-- <th class="hasinput"><input type="text" class="form-control"/></th>-->
+                                <th class="hasinput"></th>
+                            </tr>
+                            <tr>
+                                <th class="smart-form" style="padding:5px;"><label class="checkbox"><input
+                                        name="check-all"
+                                        type="checkbox"/><i> </i></label>
+                                </th>
+                                <th>商品编号</th>
+                                <th>商品名称</th>
+                                <th>商品分类</th>
+                                <th>项目</th>
+                                <th>单价</th>
+                                <!--<th>状态</th>-->
+                                <th></th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <!-- WIDGET END -->
+
+    </div>
+
+    <!-- end row -->
+
+</section>
+<!-- end widget grid -->
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width: 900px;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+<script th:src="@{js/jquery.cookie.js}"></script>
+<script type="text/javascript">
+
+    pageSetUp();
+    //购物车
+    var Cart = function () {
+        this.Count = 0;
+        this.Total = 0;
+        this.Items = new Array();
+    };
+    //购物车集合对象
+    var CartItem = function () {
+        this.Id = 0;
+        //this.Name = "";
+        this.Count = 0;
+        this.Price = 0;
+        //this.Projcet="";
+        // this.Type="";
+        //this.Subtype="";
+    };
+    function cleanCart() {
+        var cartHelper =new CartHelper();
+        cartHelper.Clear();
+    }
+    function toAddCart(id, count, price){
+        var cartHelper =new CartHelper();
+        cartHelper.Add(id, count, price);
+    }
+    //购物车操作
+    var CartHelper = function () {
+        this.cookieName = "yxhCart";
+        this.Clear = function () {
+            var cart = new Cart();
+            this.Save(cart);
+            return cart;
+        };
+        //向购物车添加
+        this.Add = function (id ,count, price) {
+            var carCount=parseInt($("#carCount").html());
+
+            var cart = this.Read();
+            var index = this.Find(id);
+            if (index != -1) {
+                cart.Items[index].Count = Number(cart.Items[index].Count)+ Number(1);
+                cart.Total +=(((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            } else {
+                var item = new CartItem();
+                item.Id = id;
+                item.Count = count;
+                item.Price = price;
+                cart.Items.push(item);
+                cart.Count++;
+                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            }
+            $("#carCount").html(carCount+1);
+            this.Save(cart);
+            return cart;
+        };
+        //改变数量
+        this.Change = function (id, count) {
+            var cart = this.Read();
+            var index = this.Find(id);
+            cart.Items[index].Count = count;
+            this.Save(cart);
+            return cart;
+        };
+        //移出购物车
+        this.Del = function (id) {
+            var cart = this.Read();
+            var index = this.Find(id);
+            if (index > -1) {
+                var item = cart.Items[index];
+                cart.Count--;
+                cart.Total = cart.Total - 1;
+                cart.Items.splice(index, 1);
+                this.Save(cart);
+            }
+            return cart;
+        };
+        //根据ID查找
+        this.Find = function (id) {
+            var cart = this.Read();
+            var index = -1;
+            for (var i = 0; i < cart.Items.length; i++) {
+                if (cart.Items[i].Id == id) {
+                    index = i;
+                }
+            }
+            return index;
+        };
+        //COOKIE操作
+        this.Save = function (cart) {
+            var source = "";
+            for (var i = 0; i < cart.Items.length; i++) {
+                if (source != "") { source += "|$|"; }
+                source += this.ItemToString(cart.Items[i]);
+            }
+            $.cookie(this.cookieName, source);
+        };
+        this.Read = function () {
+            //读取COOKIE中的集合
+            var source = $.cookie(this.cookieName);
+            var cart = new Cart();
+            if (source == null || source == "") {
+                return cart;
+            }
+            var arr = source.split("|$|");
+            cart.Count = arr.length;
+            for (var i = 0; i < arr.length; i++) {
+                var item = this.ItemToObject(arr[i]);
+                cart.Items.push(item);
+                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
+            }
+            return cart;
+        };
+        this.ItemToString = function (item) {
+            return item.Id +  "||" + item.Count + "||" + item.Price;
+        };
+        this.ItemToObject = function (str) {
+            var arr = str.split('||');
+            var item = new CartItem();
+            item.Id = arr[0];
+            // item.Name = unescape(arr[1]);
+            item.Count = arr[1];
+            item.Price = arr[2];
+            // item.Projcet =arr[4];
+            // item.Type= arr[5];
+            // item.Subtype=arr[6];
+            return item;
+        };
+    };
+
+    function toOrder(){
+        var carCount=$("#carCount").html();
+        if(carCount==0){
+            alert("购物车为空，不能提交订单");
+        }else{
+            window.location.href="#/product/secordOrder";
+        }
+    }
+    var pagefunction = function () {
+        //清空购物车
+        cleanCart();
+        var responsiveHelper_dt_basic = undefined;
+        var breakpointDefinition = {tablet: 1024, phone: 480};
+
+        var otable = $('#dt_basic').DataTable({
+            "processing": true,
+            ajax: {
+                url: "/product/secSaleList",
+                "type": "POST",
+                "contentType": "application/json; charset=utf-8",
+                "data": function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            "columns": [
+                CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
+                {"data": "code"},
+                {"data": "name"},
+                {"data": "category"},
+                {"data": "project"},
+                {"data": "price"},
+               /* {"data": "statusName"},*/
+                {
+                    "data": "operate",
+                    "sClass": "text-center",
+                    width: "80px",
+                    orderable: false,
+                    render: formatAction
+                }
+            ],
+            "autoWidth": true,
+            "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+            "bStateSave": true,
+            "preDrawCallback": function () {
+                if (!responsiveHelper_dt_basic) {
+                    responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_dt_basic.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_dt_basic.respond();
+                $(":checkbox[name='check-all']").prop('checked', false);
+            },
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+
+        $("#dt_basic thead th input[type=text]").on('keyup change', function () {
+            otable.column($(this).parent().index() + ':visible')
+                .search(this.value)
+                .draw();
+
+        });
+
+    }
+
+    loadScript("js/plugin/datatables/jquery.dataTables.min.js", function () {
+        loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
+            loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
+                loadScript("js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+            });
+        });
+    });
+
+    $('#dt_basic').on("change", ":checkbox", function () {
+        if ($(this).is("[name='check-all']"))
+            $(":checkbox", "#dt_basic").prop("checked", $(this).prop("checked"));
+        else {
+            var checkbox = $("tbody:checkbox", "#dt_basic");
+            $(":checkbox[name='check-all']", "#dt_basic").prop("checked", checkbox.length == checkbox.filter(":checked"));
+        }
+    });
+    function formatAction(cellValue, options, rowObject) {
+        var html = '<div class="btn-group btn-group-justified">';
+        try {
+            if (setEditBtn) html += setEditBtn(rowObject.id,rowObject.price);
+        } catch (e) {
+        }
+        html += '</div>';
+        return html;
+    }
+    jQuery('#jstree').on("changed.jstree", function (e, data) {
+        var id = data.node.id;
+        $('#id').val(id);
+        $('#dt_basic').DataTable().ajax.reload();
+    });
+
+
+
+</script>
+<script type="text/javascript" >
+    function setEditBtn(id,price) {
+        var ahtml="<a href=\"javascript:toAddCart('"+id+"',1,'"+price+"')\" class=\"btn-warning btn btn-xs\" ><i class=\"fa fa-edit\"></i> <span class=\"hidden-mobile\"  >添加购物车</span></a>";
+        return  ahtml;
+    }
+
+</script>
+
+</body>
+</html>

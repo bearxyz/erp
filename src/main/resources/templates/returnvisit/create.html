@@ -11,29 +11,64 @@
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
         &times;
     </button>
-    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 回访记录</h4>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 维护记录</h4>
 </div>
 
 <div class="modal-body no-padding">
     <form id="form_1" class="smart-form" novalidate="novalidate">
-        <input type="hidden" id="companyId" name="companyId" th:value="${companyId}">
+        <input type="hidden" id="companyId" name="companyId" th:value="${companyId}"/>
         <fieldset>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="label">维护时间：</label>
+                    <label class="input">
+                        <i class="icon-append fa fa-calendar"></i>
+                        <input id="startDate" name="startDate" class="hasDatepicker" type="text"/>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">维护项目：</label>
+                    <label class="select">
+                        <select id="project" name="project"></select><i></i>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="label">项目发展级别：</label>
+                    <label class="select">
+                        <select id="projectLevel" name="projectLevel"></select><i></i>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">项目当前状态：</label>
+                    <label class="select">
+                        <select id="projectStatus" name="projectStatus"></select><i></i>
+                    </label>
+                </section>
+            </div>
             <section>
+                <label class="label">客户需求描述：</label>
                 <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll"
-                                                              placeholder="存在的问题" name="question"></textarea>
+                    <textarea class="custom-scroll" name="question"></textarea>
                 </label>
             </section>
             <section>
+                <label class="label">维护方法：</label>
                 <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll"
-                                                              placeholder="解决方案" name="solution"></textarea>
+                    <textarea class="custom-scroll" name="solution"></textarea>
                 </label>
             </section>
             <section>
+                <label class="label">维护实施记录：</label>
                 <label class="textarea textarea-resizable">
-                                                    <textarea class="custom-scroll"
-                                                              placeholder="备注" name="memo"></textarea>
+                    <textarea class="custom-scroll" name="memo"></textarea>
+                </label>
+            </section>
+            <section>
+                <label class="label">结果跟踪：</label>
+                <label class="textarea textarea-resizable">
+                    <textarea class="custom-scroll" name="result"></textarea>
                 </label>
             </section>
         </fieldset>
@@ -52,6 +87,18 @@
     pageSetUp();
 
     var pagefunction = function () {
+
+        BindDictItem("project", "PROJECT_TYPE", "");
+        BindDictItem("projectLevel", "CLIENT_TYPE", "");
+        BindDictItem("projectStatus", "PROJECT_STATUS", "");
+
+        $('#startDate').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: 'month',
+            language: 'zh-CN',
+            autoclose: true
+        });
+
         var $form1 = $("#form_1").validate({
             rules: {
                 question: {required: true},

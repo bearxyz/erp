@@ -1,6 +1,7 @@
 package com.bearxyz.domain.po.business;
 
 import com.bearxyz.domain.po.BaseDomain;
+import com.bearxyz.domain.po.sys.User;
 
 import javax.persistence.*;
 import java.net.Inet4Address;
@@ -88,9 +89,9 @@ public class Company extends BaseDomain {
     private boolean relationship;
     @Column(length = 1000)
     private String relationReason = "";
-    @Column(length = 1000)
+    @Column(length = 50)
     private String understandingLevel = "";
-    @Column(length = 1000)
+    @Column(length = 50)
     private String attitude = "";
     @Column(length = 1000)
     private String longGoal = "";
@@ -139,14 +140,15 @@ public class Company extends BaseDomain {
     private java.sql.Date currentEndDate;
     @Transient
     private String createrName = "";
+    @Transient
+    private User user;
 
     @Transient
     private String goalPie = "";
     @Transient
     private String fullAddress = "";
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "company")
-    private List<Person> persons = new ArrayList<>();
+    @Transient
+    private List<Contract> contracts = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -412,14 +414,6 @@ public class Company extends BaseDomain {
         this.competition = competition;
     }
 
-    public List<Person> getPersons() {
-        return persons;
-    }
-
-    public void setPersons(List<Person> persons) {
-        this.persons = persons;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -626,5 +620,21 @@ public class Company extends BaseDomain {
 
     public void setBalance(Float balance) {
         this.balance = balance;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Contract> getContracts() {
+        return contracts;
+    }
+
+    public void setContracts(List<Contract> contracts) {
+        this.contracts = contracts;
     }
 }

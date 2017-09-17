@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 新增QA</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form" class="smart-form" novalidate="novalidate">
+        <fieldset>
+            <section>
+                <label class="label">类别：</label>
+                <label class="select">
+                    <select id="type" name="type"></select><i></i>
+                </label>
+            </section>
+            <section>
+                <label class="label">问题：</label>
+                <label class="input">
+                    <input type="text" name="question" id="question" />
+                </label>
+            </section>
+            <section>
+                <label class="label">答案：</label>
+                <label class="textarea textarea-resizable">
+                    <textarea class="custom-scroll" id="answer" name="answer"></textarea>
+                </label>
+            </section>
+        </fieldset>
+        <footer>
+            <button type="submit" class="btn btn-primary">
+                保 存
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                取 消
+            </button>
+        </footer>
+    </form>
+</div>
+
+<script>
+    pageSetUp();
+
+    var pagefunction = function () {
+
+        BindDictItem("type", "WORK_ORDER_TYPE", "");
+
+        var $form = $("#form").validate({
+            rules: {
+                type: {required: true},
+                question: {required: true},
+                answer: {required: true}
+            },
+            messages: {
+                type: {required: '请选择类别'},
+                question: {required: '请输入问题'},
+                answer: {required: '请输入答案'}
+            },
+            onsubmit: true,
+            submitHandler: function () {
+                $.ajax({
+                    url: '/qa/create',
+                    type: 'post',
+                    data: $('#form').serialize(),
+                    success: function () {
+                        $('#remoteModal').modal('hide');
+                        $('#dt_basic').DataTable().ajax.reload();
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+    };
+
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+</body>
+</html>

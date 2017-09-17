@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+        &times;
+    </button>
+    <h4 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> 人员信息</h4>
+</div>
+
+<div class="modal-body no-padding">
+    <form id="form_project_person" class="smart-form" novalidate="novalidate">
+        <fieldset>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="label">姓名：</label>
+                    <label class="input">
+                        <input type="text" name="name" id="name" th:value="${person.name}"/>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">性别：</label>
+                    <label class="input">
+                        <input type="text" name="gender" id="gender" th:value="${person.gender}"/>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="label">生日：</label>
+                    <label class="input">
+                        <input type="text" name="birthday" id="birthday" th:value="${person.birthday}"/>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">出生地：</label>
+                    <label class="input">
+                        <input type="text" name="birthPlace" id="birthPlace" th:value="${person.birthPlace}"/>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="label">性格：</label>
+                    <label class="input">
+                        <input type="text" name="character" id="character" th:value="${person.character}"/>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">兴趣爱好：</label>
+                    <label class="input">
+                        <input type="text" name="interest" id="interest" th:value="${person.interest}"/>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="label">学历：</label>
+                    <label class="select">
+                        <select type="text" name="qualifications" id="qualifications"></select><i></i>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">语言表达：</label>
+                    <label class="select">
+                        <select type="text" name="performance" id="performance"></select><i></i>
+                    </label>
+                </section>
+            </div>
+            <div class="row">
+                <section class="col col-6">
+                    <label class="label">思维方式：</label>
+                    <label class="select">
+                        <select type="text" name="modeOfThinking" id="modeOfThinking"></select><i></i>
+                    </label>
+                </section>
+                <section class="col col-6">
+                    <label class="label">沟通：</label>
+                    <label class="select">
+                        <select type="text" name="communication" id="communication"></select><i></i>
+                    </label>
+                </section>
+            </div>
+        </fieldset>
+        <footer>
+            <button type="submit" class="btn btn-primary">
+                保 存
+            </button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+                取 消
+            </button>
+        </footer>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    pageSetUp();
+
+    var pagefunction = function () {
+
+        BindDictItem("qualifications", "QUALIFICATION", "", [[${person.qualifications}]]);
+        BindDictItem("performance", "PERFORMANCE", "", [[${person.performance}]]);
+        BindDictItem("modeOfThinking", "THINKING_MODE", "", [[${person.modeOfThinking}]]);
+        BindDictItem("communication", "COMMUNICATION", "", [[${person.communication}]]);
+
+        $('#birthday').datetimepicker({
+            format: 'yyyy-mm-dd',
+            minView: 'month',
+            language: 'zh-CN',
+            autoclose: true
+        });
+
+        var $form_project_person = $("#form_project_person").validate({
+            rules: {
+                name: {required: true},
+                mask: {required: true},
+                value: {required: true}
+            },
+            messages: {
+                name: {required: '请输入字典项名称'},
+                mask: {required: '请输入字典标识'},
+                value: {required: '请输入字典值'}
+            },
+            onsubmit: true,
+            submitHandler: function () {
+                $.ajax({
+                    url: '/person/save',
+                    type: 'post',
+                    data: $('#form_project_person').serialize(),
+                    success: function () {
+                        $('#remoteModal').modal('hide');
+                        $('#dt_basic_project_person').DataTable().ajax.reload();
+                        $('#dt_basic_person').DataTable().ajax.reload();
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+    };
+
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+</body>
+</html>

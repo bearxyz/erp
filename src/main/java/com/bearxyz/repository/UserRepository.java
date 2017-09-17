@@ -33,4 +33,9 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     Integer countUsersByCompanyId(String id);
 
+    @Query(value = "SELECT u.* FROM SYS_USER u INNER JOIN SYS_ROLE_USER ru on ru.USER_ID=u.ID INNER JOIN SYS_ROLE r on r.ID=ru.ROLE_ID WHERE u.COMPANY_ID=?1 AND r.MASK=?2", nativeQuery = true)
+    User findUserByCompanyIdAndRole(String cid, String role);
+
+    List<User> findAllByCompanyIdOrParentCompanyId(String cid, String pcid);
+
 }
