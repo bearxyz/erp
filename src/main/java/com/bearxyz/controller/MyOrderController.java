@@ -43,6 +43,8 @@ public class MyOrderController {
     private SecordOrderService secordOrderService;
     @Autowired
     private SecordOrderRepository secordOrderRepository;
+    @Autowired
+    private CouponRepository couponRepository;
 
     @RequestMapping("/order")
     public String order() {
@@ -80,6 +82,19 @@ public class MyOrderController {
     public String updateOrderState(String orderId, int status) throws JsonProcessingException {
         Order order = orderServce.getOrderById(orderId);
         order.setStatus(status);
+        if(status==9){
+            if(order.getItems() !=null && order.getItems().size()>0){
+                for(OrderItem orderItem:order.getItems()){
+                    if(orderItem.getDiscountCode()!=null && (!orderItem.getDiscountCode().equals(""))){
+                        Coupon coupon=  couponRepository.findCouponByCodeAndUsed(orderItem.getDiscountCode(),true);
+                        if(coupon !=null){
+                            coupon.setUsed(false);
+                            couponRepository.save(coupon);
+                        }
+                    }
+                }
+            }
+        }
         orderRepository.save(order);
         return "{success: true}";
     }
@@ -254,17 +269,28 @@ public class MyOrderController {
         return "{success: true}";
     }
 
-
-
-
-
-
     @RequestMapping("/secorder")
     public String secorder() {
         return "/my/secorder";
     }
 
+    @RequestMapping(value = "/create", method = RequestMethod.GET)
+    public String create(Model model,String saleId){
+        model.addAttribute("saleId",saleId);
+        return "/my/create";
+    }
 
-
-
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    @ResponseBody
+    public String create(String saleId,Float salePrice){
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        String companyId=user.getCompanyId();
+        List<Sale> sales =saleRepository.findCompanySaleByCompanyIdAndSaleId(companyId,saleId);
+        if(sales !=null && sales.size()>0){
+            saleRepository.updateCompaySale(salePrice,companyId,saleId);
+        }else{
+            saleRepository.insertCompanySale(companyId,saleId,salePrice,1);
+        }
+        return "{success: true}";
+    }
 }

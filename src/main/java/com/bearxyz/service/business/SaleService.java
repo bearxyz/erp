@@ -157,10 +157,23 @@ public class SaleService {
             for(Sale sale:saleList){
                 List<Sale> campanySaleList =repository.findCompanySaleByCompanyIdAndSaleId(companyId,sale.getId());
                 if(campanySaleList==null || campanySaleList.size()<=0){
-                    sale.setStatusName("上架");
-                }else{
                     sale.setStatusName("下架");
+                }else{
+                    sale.setStatusName("上架");
                 }
+                if(sale.getProject() !=null && (!sale.getProject().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getProject());
+                    sale.setProjectName(dict.getName());
+                }
+                if(sale.getType() !=null && (!sale.getType().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getType());
+                    sale.setTypeName(dict.getName());
+                }
+                if(sale.getSubtype() !=null &&  (!sale.getSubtype().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getSubtype());
+                    sale.setSubtypeName(dict.getName());
+                }
+
             }
 
         }
@@ -181,11 +194,31 @@ public class SaleService {
 
     public DataTable<Sale> secSaleList(String companyId){
         List<Sale> saleList =this.repository.secSaleList(companyId);
+        if(saleList !=null && saleList.size()>0){
+            for(Sale sale:saleList){
+                if(sale.getProject() !=null && (!sale.getProject().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getProject());
+                    sale.setProjectName(dict.getName());
+                }
+                if(sale.getType() !=null && (!sale.getType().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getType());
+                    sale.setTypeName(dict.getName());
+                }
+                if(sale.getSubtype() !=null &&  (!sale.getSubtype().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getSubtype());
+                    sale.setSubtypeName(dict.getName());
+                }
+            }
+        }
         DataTable dt = new DataTable<Sale>();
         dt.setData(saleList);
         dt.setRecordsTotal((long)saleList.size());
         dt.setRecordsFiltered((long)saleList.size());
         return dt;
+    }
+
+    public List<Sale> getSaleByTypeList(List<String> category) {
+        return repository.getSaleByTypeList(category);
     }
 
 }

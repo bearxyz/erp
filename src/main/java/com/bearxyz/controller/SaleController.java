@@ -6,11 +6,13 @@ import com.bearxyz.domain.po.business.Goods;
 import com.bearxyz.domain.po.business.GroupBuy;
 import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.domain.po.business.Sale;
+import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.repository.GroupBuyRepository;
 import com.bearxyz.repository.PackageRepository;
 import com.bearxyz.repository.SaleRepository;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.SaleService;
+import com.bearxyz.service.sys.SysService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.TaskService;
@@ -41,16 +43,16 @@ public class SaleController {
 
     @Autowired
     private TaskService taskService;
-
     @Autowired
     private GoodsService goodsService;
     @Autowired
     private PackageRepository packageRepository;
-
     @Autowired
     private SaleRepository saleRepository;
     @Autowired
     private GroupBuyRepository groupBuyRepository;
+    @Autowired
+    private SysService sysService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String list(){
@@ -160,6 +162,18 @@ public class SaleController {
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
     public String detail(@PathVariable("id")String id, Model model) {
         Sale sale =service.getById(id);
+        if(sale.getProject() !=null && (!sale.getProject().equals(""))){
+            Dict dict =sysService.getDictByMask(sale.getProject());
+            sale.setProjectName(dict.getName());
+        }
+        if(sale.getType() !=null && (!sale.getType().equals(""))){
+            Dict dict =sysService.getDictByMask(sale.getType());
+            sale.setTypeName(dict.getName());
+        }
+        if(sale.getSubtype() !=null &&  (!sale.getSubtype().equals(""))){
+            Dict dict =sysService.getDictByMask(sale.getSubtype());
+            sale.setSubtypeName(dict.getName());
+        }
         model.addAttribute("sale",sale);
         return "/sale/detail";
     }

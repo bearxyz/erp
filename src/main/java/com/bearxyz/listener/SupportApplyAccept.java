@@ -1,10 +1,12 @@
 package com.bearxyz.listener;
 
 import com.bearxyz.domain.po.business.Order;
+import com.bearxyz.domain.po.business.OrderItem;
 import com.bearxyz.domain.po.business.SupportApply;
 import com.bearxyz.repository.OrderRepository;
 import com.bearxyz.repository.SupportApplyRepository;
 import com.bearxyz.utility.DateUtility;
+import com.bearxyz.utility.OrderUtils;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ public class SupportApplyAccept implements ExecutionListener {
         SupportApply apply = repository.findOne(execution.getProcessBusinessKey());
         apply.setStatus(2);
         Order order = new Order();
+        order.setCode(OrderUtils.genSerialnumber("O"));
         order.setType("GOODS_SUPPORT");
         order.setApproved(true);
         order.setCompanyId(apply.getCompanyId());
@@ -36,6 +39,11 @@ public class SupportApplyAccept implements ExecutionListener {
         order.setPrice(apply.getPrice()* DateUtility.daysOfTwo(apply.getRealStartDate(),apply.getRealEndDate()));
         order.setOrderCount(apply.getRealManCount());
         order.setStatus(1);
+        OrderItem item = new OrderItem();
+        item.setSaleId(order.getSaleId());
+        item.setPrice(order.getPrice());
+        item.setCount(order.getOrderCount());
+        order.getItems().add(item);
         repository.save(apply);
         orderRepository.save(order);
     }

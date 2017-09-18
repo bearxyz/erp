@@ -20,7 +20,7 @@ public class Order extends BaseDomain {
     @Column
     private Float price = (float) 0.0;
     @Column
-    private Float deliverFee=(float)0.0;
+    private Float deliverFee = (float) 0.0;
     @Column(length = 36)
     private String companyId = "";
     @Column(length = 50)
@@ -51,9 +51,13 @@ public class Order extends BaseDomain {
     @Column
     private String typeName = "";
     @Column
-    private Integer orderCount=0;
+    private Integer orderCount = 0;
     @Column
-    private Float totalPrice = (float)0.0;
+    private Float totalPrice = (float) 0.0;
+    @Column
+    private Float discountTotalPrice = (float) 0.0;
+    @Column(length = 64)
+    private String tradeNo = "";
 
 
     @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
@@ -279,5 +283,21 @@ public class Order extends BaseDomain {
 
     public void setTotalPrice(Float totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Float getDiscountTotalPrice() {
+        return discountTotalPrice;
+    }
+
+    public void setDiscountTotalPrice(Float discountTotalPrice) {
+        this.discountTotalPrice = discountTotalPrice;
+    }
+
+    public String getTradeNo() {
+        return tradeNo;
+    }
+
+    public void setTradeNo(String tradeNo) {
+        this.tradeNo = tradeNo;
     }
 }

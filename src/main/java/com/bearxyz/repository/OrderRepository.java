@@ -16,4 +16,6 @@ public interface OrderRepository extends JpaRepository<Order, String>, JpaSpecif
     List<Order> getOrderByStateList(int status, String companyId);
 
     Integer countOrderByCompanyIdAndStatus(String companyId, Integer Status);
+
+    Order findOrderByCode(String code);
 }

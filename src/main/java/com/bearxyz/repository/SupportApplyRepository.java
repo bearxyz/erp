@@ -18,4 +18,7 @@ public interface SupportApplyRepository extends JpaRepository<SupportApply, Stri
             "WHERE cp.USER_ID=?1", nativeQuery = true)
     List<SupportApply> getAllByClientId(String cid);
 
+    @Query(value = "SELECT count(*) FROM T_SUPPORT_APPLY s WHERE s.SALE_ID=?1", nativeQuery = true)
+    int getSupportApplyBySaleId(String saleId);
+
 }

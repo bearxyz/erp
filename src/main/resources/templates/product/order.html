@@ -67,7 +67,8 @@
                 <i></i>物流</label>
                 <input class="form-control" id="sourceDeliverFee" name="sourceDeliverFee" th:value="${deliverFee}" type="hidden">
                 <input class="form-control" id="deliverFee" name="deliverFee" th:value="${deliverFee}" type="hidden">
-
+                <input class="form-control" id="discount" name="discount" th:value="${discount}" type="hidden">
+                <input class="form-control" id="balance" name="discount" th:value="${balance}" type="hidden">
             </section>
                 </fieldset>
                 <fieldset>
@@ -77,23 +78,38 @@
                     <thead>
                     <tr>
                         <th>商品名称</th>
+                        <th>科目名称</th>
+                        <th>科目类型</th>
+                        <th>系列名称</th>
                         <th>单价</th>
                         <th>数量</th>
+                        <th>优惠券</th>
                         <th>小计</th>
                         <th>操作</th>
                     </tr>
-                    <tr>
-                        <th>aaa</th>
-                        <th>￥30.50</th>
-                        <th>2</th>
-                        <th>￥61.00</th>
-                        <th>删除</th>
+                  <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <td colspan="4">总计</td>
+                        <td colspan="7">运费</td>
                         <td>
-                            <strong>￥61.00</strong>
+                            <strong><span id="deliverFeeHtml"></span></strong>
                         </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">总计</td>
+                        <td>
+                            <strong><span id="totalPriceHtml"></span></strong>
+                        </td>
+                        <td></td>
                     </tr>
                     </thead>
                     <tbody>
@@ -112,12 +128,11 @@
     </div>
 </section>
 
-<script th:src="@{js/jquery.cookie.js}"></script>
+
 <script th:src="@{js/plugin/jquery-form/jquery-form.min.js}"></script>
 <script type="text/javascript">
 
     pageSetUp();
-
     //购物车
     var Cart = function () {
         this.Count = 0;
@@ -127,18 +142,20 @@
     //购物车集合对象
     var CartItem = function () {
         this.Id = 0;
-        this.Name = "";
+        //this.Name = "";
         this.Count = 0;
         this.Price = 0;
+        //this.Projcet="";
+       // this.Type="";
+        //this.Subtype="";
     };
     function cleanCart() {
         var cartHelper =new CartHelper();
         cartHelper.Clear();
-        toCartShow();
     }
-    function toAddCart(id, name, count, price){
+    function toAddCart(id, count, price){
         var cartHelper =new CartHelper();
-        cartHelper.Add(id, name, count, price);
+        cartHelper.Add(id, count, price);
     }
     //购物车操作
     var CartHelper = function () {
@@ -149,7 +166,7 @@
             return cart;
         };
         //向购物车添加
-        this.Add = function (id, name, count, price) {
+        this.Add = function (id, count, price) {
             var carCount=parseInt($("#carCount").html());
 
             var cart = this.Read();
@@ -160,7 +177,7 @@
             } else {
                 var item = new CartItem();
                 item.Id = id;
-                item.Name = name;
+                 //item.Name = name;
                 item.Count = count;
                 item.Price = price;
                 cart.Items.push(item);
@@ -186,7 +203,7 @@
             if (index > -1) {
                 var item = cart.Items[index];
                 cart.Count--;
-                cart.Total = cart.Total - (((item.Count * 100) * (item.Price * 100)) / 10000);
+                cart.Total = cart.Total - 1;
                 cart.Items.splice(index, 1);
                 this.Save(cart);
             }
@@ -224,20 +241,23 @@
             for (var i = 0; i < arr.length; i++) {
                 var item = this.ItemToObject(arr[i]);
                 cart.Items.push(item);
-                cart.Total += (((item.Count * 100) * (item.Price * 100)) / 10000)
+                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
             }
             return cart;
         };
         this.ItemToString = function (item) {
-            return item.Id + "||" + escape(item.Name) + "||" + item.Count + "||" + item.Price;
+            return item.Id + "||" + item.Count + "||" + item.Price;
         };
         this.ItemToObject = function (str) {
             var arr = str.split('||');
             var item = new CartItem();
             item.Id = arr[0];
-            item.Name = unescape(arr[1]);
-            item.Count = arr[2];
-            item.Price = arr[3];
+            //item.Name = unescape(arr[1]);
+            item.Count = arr[1];
+            item.Price = arr[2];
+           // item.Projcet =arr[4];
+           // item.Type= arr[5];
+           // item.Subtype=arr[6];
             return item;
         };
     };
@@ -266,7 +286,7 @@
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function (e) {
-                            window.location = '#/my/order';
+                        window.location = '#/my/order';
                     },
                     error: function (e) {
                         $.bigBox({
@@ -291,44 +311,104 @@
     function toCartShow(){
         $("#cartList  tr:not(:first)").empty("");
         var cartHtml="";
-        var cartHelper =new CartHelper();
-        var cart=cartHelper.Read();
-        var totalMoney=0;
-        var deliverFee=$("#deliverFee").val();
-        if(cart.Count>0){
-            for (var i = 0; i < cart.Count; i++) {
-                var item =  cart.Items[i];
-                var itemTotal=0;
-                itemTotal+=item.Price*item.Count;
-                totalMoney=totalMoney+itemTotal;
-                cartHtml+="<tr><input class=\"form-control\" name=\"items["+i+"].saleId\" value='"+item.Id+"' type=\"hidden\">";
-                cartHtml+="<td><input class=\"form-control\"  value=\""+item.Name+"\" type=\"hidden\"><span id=\"specHtml"+item.Id+"\">"+item.Name+"</span></td>";
-                cartHtml+="<td><input class=\"form-control\" id=\"unit"+item.Id+"\"  name=\"items["+i+"].price\" value=\""+item.Price+"\" type=\"hidden\"><span id=\"unitHtml"+item.Id+"\">￥"+item.Price+"</span></td>";
-                cartHtml+="<td><input class=\"form-control\" id=\"sourceCount"+item.Id+"\" name=\"sourceCount\" value=\""+item.Count+"\"  type=\"hidden\" ><input class=\"form-control\" id=\"count"+item.Id+"\" name=\"items["+i+"].count\" value=\""+item.Count+"\"  onchange=\"countChange('"+item.Id+"')\" ></td>";
-                cartHtml+="<td><input class=\"form-control\" id=\"price"+item.Id+"\"   value=\""+itemTotal+"\" type=\"hidden\"><span id=\"priceHtml"+item.Id+"\">￥"+itemTotal+"</span></td>";
-                cartHtml+="<td><a href=\"javascript:toDelCart('"+item.Id+"')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\">删除</span></a></td>";
-                cartHtml+="</tr>";
-            }
-            totalMoney=Number(totalMoney)+Number(deliverFee);
-            cartHtml+="<tr id=\"deliverFeeTr\">";
-            cartHtml+="<td  colspan=\"4\" >运费</td>";
-            cartHtml+="<td  ><strong><span id=\"deliverFeeHtml\">"+deliverFee+"</span></strong>";
-            cartHtml+="</tr>";
-            cartHtml+="<tr >";
-            cartHtml+="<td   colspan=\"4\" >总计</td>";
-            cartHtml+="<td  ><strong> <input class=\"form-control\" id=\"totalPrice\"  name=\"price\" value='"+totalMoney+"' type=\"hidden\"><span id=\"totalPriceHtml\">￥"+totalMoney+"</span></td></strong>";
-            cartHtml+="</tr>";
+        var supportAppId=$("#supportAppId").val();
+        if(supportAppId==""){
+
+
         }else{
-            cartHtml+="<tr>";
-            cartHtml+="<td ></td>";
-            cartHtml+="<td ></td>";
-            cartHtml+="<td ></td>";
-            cartHtml+="<td ></td>";
-            cartHtml+="<td >无购物车数据</td>";
-            cartHtml+="</tr>";
-            $('#addOrder').addClass('disabled');
+            var cartHelper =new CartHelper();
+            var cart=cartHelper.Read();
+            var totalMoney=0;
+            var deliverFee=$("#deliverFee").val();
+            var discount=$("#discount").val();
+            var balance=$("#balance").val();
+            if(cart.Count>0){
+                for (var i = 0; i < cart.Count; i++) {
+                    var item =  cart.Items[i];
+                    var saleId=item.Id;
+                    $.ajax({
+                        url: '/product/getOrderSaleId',
+                        type: 'POST',
+                        async: false,
+                        data: {"saleId":saleId},
+                        success: function (data) {
+                            var sale =eval(data);
+                            var itemTotal=0;
+                            itemTotal+=item.Price*item.Count;
+                            totalMoney=totalMoney+itemTotal;
+                            var name="";
+                            var project=sale[0].projectName;
+                            var type=sale[0].typeName;
+                            var subtype=sale[0].subtypeName;
+                            if(sale[0].name==null){
+                                name="";
+                            }else{
+                                name=sale[0].name;
+                            }
+                            cartHtml+=" <tr><td>";
+                            cartHtml+="<input class=\"form-control\" name=\"items["+i+"].saleId\" value='"+item.Id+"' type=\"hidden\">";
+                            cartHtml+="<input class=\"form-control\"  value=\""+name+"\" type=\"hidden\"><span id=\"specHtml"+item.Id+"\"><span >"+name+"</span></td>";
+                            cartHtml+="<td><input class=\"form-control\" id=\"project\" name=\"items["+i+"].project\" value=\""+project+"\" type=\"hidden\"><span >"+project+"</span></td>";
+                            cartHtml+="<td><input class=\"form-control\" id=\"type\" name=\"items["+i+"].type\" value=\""+type+"\" type=\"hidden\"><span >"+type+"</span></td>";
+                            cartHtml+="<td><input class=\"form-control\" id=\"subtype\" name=\"items["+i+"].subtype\" value=\""+subtype+"\" type=\"hidden\"><span >"+subtype+"</span></td>";
+                            cartHtml+="<td><input class=\"form-control\" id=\"unit"+item.Id+"\"  name=\"items["+i+"].price\" value=\""+item.Price+"\" type=\"hidden\"><span id=\"unitHtml"+item.Id+"\">￥"+item.Price+"</span></td>";
+                            cartHtml+="<td><input class=\"form-control\" id=\"sourceCount"+item.Id+"\" name=\"sourceCount\" value=\""+item.Count+"\"  type=\"hidden\" ><input class=\"form-control\" id=\"count"+item.Id+"\" name=\"items["+i+"].count\" value=\""+item.Count+"\"  onchange=\"countChange('"+item.Id+"')\" ></td>";
+                            if(sale[0].canUseCoupon==true && discount==1.0){
+                                cartHtml+="<td>优惠码;<input type='text' name='items["+i+"].discountCode' id='youhui"+item.Id+"' value=''><a href=\"javascript:toYouhui('"+item.Id+"')\">获取优惠价格</a><input type='text' name='items["+i+"].discountPrice' id='youhuiPrice"+item.Id+"' value='0.00' readonly></td>";
+                            }else{
+                                cartHtml+="<td></td>";
+                            }
+                            cartHtml+="<td><input class=\"form-control\"  name='items["+i+"].totalPrice' id=\"price"+item.Id+"\"   value=\""+itemTotal+"\" type=\"hidden\"><span id=\"priceHtml"+item.Id+"\">￥"+itemTotal+"</span></td>";
+                            cartHtml+="<td><a href=\"javascript:toDelCart('"+item.Id+"')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\">删除</span></a>&nbsp;&nbsp;" ;
+                            cartHtml+="</td>";
+                            cartHtml+="</tr>";
+                        }
+                    });
+                }
+                totalMoney=Number(totalMoney)+Number(deliverFee);
+                var discount=$("#discount").val();
+                var discountPrice=totalMoney*discount;
+                var youhuiPriceTotal=totalMoney-discountPrice;
+                cartHtml+="<tr id=\"deliverFeeTr\">";
+                cartHtml+="<td  colspan=\"7\" >运费</td>";
+                cartHtml+="<td  ><strong><span id=\"deliverFeeHtml\">"+deliverFee+"</span></strong>";
+                cartHtml+="</tr>";
+                cartHtml+="<tr id=\"deliverFeeTr\">";
+                cartHtml+="<td  colspan=\"7\" >优惠金额</td>";
+                cartHtml+="<td  ><input class=\"form-control\" name=\"discountTotalPrice\" id=\"youhuiPriceTotal\" type=\"hidden\" value='"+youhuiPriceTotal+"'><strong><span  id=\"youhuiPriceTotalHtml\">"+youhuiPriceTotal+"</span></strong>";
+                cartHtml+="</tr>";
+                cartHtml+="<tr id=\"deliverFeeTr\">";
+                cartHtml+="<td  colspan=\"7\" >钱包金额</td>";
+                cartHtml+="<td  ><strong><span >"+balance+"</span></strong>";
+                cartHtml+="</tr>";
+                cartHtml+="</tr>";
+                cartHtml+="<tr id=\"discountTr\">";
+                cartHtml+="<td  colspan=\"7\" >折扣</td>";
+                cartHtml+="<td >*"+discount+" </td>";
+                cartHtml+="</tr>";
+                cartHtml+="<tr >";
+                cartHtml+="<td   colspan=\"7\" >总计</td>";
+                cartHtml+="<td  ><strong> <input class=\"form-control\" id=\"totalPrice\"  name=\"price\" value='"+totalMoney+"' type=\"hidden\"><span id=\"totalPriceHtml\">￥"+totalMoney+"</span></td>";
+                cartHtml+="</tr>";
+            }else{
+                cartHtml+="<tr>";
+                cartHtml+="<td ></td>";
+                cartHtml+="<td ></td>";
+                cartHtml+="<td ></td>";
+                cartHtml+="<td ></td>";
+                cartHtml+="<td ></td>";
+                cartHtml+="<td ></td>";
+                cartHtml+="<td ></td>";
+                cartHtml+="<td >无购物车数据</td>";
+                cartHtml+="</tr>";
+                $('#addOrder').addClass('disabled');
+            }
+            $("#cartList").append(cartHtml);
+
         }
-        $("#cartList").append(cartHtml);
+
+
+
     }
     function toDelCart(id){
         var cartHelper =new CartHelper();
@@ -336,21 +416,26 @@
         toCartShow();
     }
     function countChange(saleId){
-         var count= $("#count"+saleId).val();
+        var count= $("#count"+saleId).val();
         if(/^\d+$/.test(count)){
             var sourceCount=$("#sourceCount"+saleId).val();
             if(sourceCount>count){
+                var discount=$("#discount").val();
                 var unit=$("#unit"+saleId).val();
                 var minPrice=(sourceCount-count)*unit;
                 var price=$("#price"+saleId).val();
                 var totalPrice=$("#totalPrice").val();
                 $("#price"+saleId).val(count*unit);
                 $("#priceHtml"+saleId).html(count*unit);
-                var totalPriceHtml=totalPrice-minPrice;
-                $("#totalPrice").val(totalPrice-minPrice);
+                var totalPriceHtml=(totalPrice-minPrice);
+                $("#totalPrice").val(totalPriceHtml);
                 $("#totalPriceHtml").html(totalPriceHtml);
+                var discountPrice=totalPriceHtml*discount;
+                $("#discountPrice").val(discountPrice);
+                $("#discountPriceHtml").html(discountPrice);
                 $("#sourceCount"+saleId).val(count);
             }else if(sourceCount<count){
+                var discount=$("#discount").val();
                 var unit=$("#unit"+saleId).val();
                 var price=$("#price"+saleId).val();
                 var minPrice=(count-sourceCount)*unit;
@@ -359,8 +444,10 @@
                 $("#priceHtml"+saleId).html(count*unit);
                 $("#totalPrice").val(Number(totalPrice)+Number(minPrice));
                 var totalPriceHtml=Number(totalPrice)+Number(minPrice);
-                alert(totalPriceHtml);
                 $("#totalPriceHtml").html(totalPriceHtml);
+                var discountPrice=totalPriceHtml*discount;
+                $("#discountPrice").val(discountPrice);
+                $("#discountPriceHtml").html(discountPrice);
                 $("#sourceCount"+saleId).val(count);
             }
         }else if(count<=0) {
@@ -373,21 +460,66 @@
     function changeDeliverFee(type){
         if(type==1){
             var sourceDeliverFee=$("#sourceDeliverFee").val();
-            $("#deliverFeeHtml").html("+"+sourceDeliverFee);
-            var deliverFee= sourceDeliverFee;
-            $("#deliverFee").val(deliverFee);
-            var totalPrice=$("#totalPrice").val();
-            $("#totalPrice").val(Number(totalPrice)+Number(sourceDeliverFee));
-            var totalPriceHtml=Number(totalPrice)+Number(sourceDeliverFee);
-            $("#totalPriceHtml").html(totalPriceHtml);
+            var deliverFee=$("#deliverFee").val();
+            if(deliverFee==0){
+                $("#deliverFeeHtml").html("+"+sourceDeliverFee);
+                var deliverFee= sourceDeliverFee;
+                $("#deliverFee").val(deliverFee);
+                var totalPrice=$("#totalPrice").val();
+                $("#totalPrice").val(Number(totalPrice)+Number(sourceDeliverFee));
+                var totalPriceHtml=Number(totalPrice)+Number(sourceDeliverFee);
+                $("#totalPriceHtml").html(totalPriceHtml);
+            }
+
         }else if(type==2){
+            var deliverFee=$("#deliverFee").val();
             var sourceDeliverFee=$("#sourceDeliverFee").val();
-            $("#deliverFeeHtml").html("+0.00");
-            $("#deliverFee").val("0.00");
-            var totalPrice=$("#totalPrice").val();
-            $("#totalPrice").val(Number(totalPrice)-Number(sourceDeliverFee));
-            var totalPriceHtml=Number(totalPrice)-Number(sourceDeliverFee);
-            $("#totalPriceHtml").html(totalPriceHtml);
+            if(sourceDeliverFee!=0) {
+                $("#deliverFeeHtml").html("+0.00");
+                $("#deliverFee").val("0.00");
+                var totalPrice = $("#totalPrice").val();
+                var totalPriceHtml = Number(totalPrice) - Number(sourceDeliverFee);
+                $("#totalPrice").val(totalPriceHtml);
+                $("#totalPriceHtml").html(totalPriceHtml);
+            }
+        }
+    }
+    function toYouhui(saleId){
+        var youhuiCode=$("#youhui"+saleId).val();
+        if(youhuiCode==""){
+            alert("请输入优惠码");
+        }else{
+            $.ajax({
+                url: '/product/getCouponDiscount',
+                type: 'POST',
+                async: false,
+                data: {"code": youhuiCode},
+                success: function (data) {
+                    var coupon=eval(data);
+                    if(coupon.length<=0){
+                       alert("优惠码已使用或者优惠码不存在");
+                    }else{
+                        var count=$("#count"+saleId).val();
+                        if(count<coupon[0].needCount){
+                            alert("购买数量没有达到"+coupon[0].needCount+"不能使用优惠券");
+                        }else{
+                            $("#youhuiPrice"+saleId).val(coupon[0].price);
+                            var youhuiPriceTotal=  $("#youhuiPriceTotal").val();
+                            var youhuiPriceTotalHtml=Number(youhuiPriceTotal)+Number(coupon[0].price);
+                            $("#youhuiPriceTotal").val(youhuiPriceTotalHtml);
+                            $("#youhuiPriceTotalHtml").val(youhuiPriceTotalHtml);
+                            var totalPrice = $("#totalPrice").val();
+                            var totalPriceHtml = Number(totalPrice) - Number(coupon[0].price);
+                            $("#totalPrice").val(totalPriceHtml);
+                            $("#totalPriceHtml").html(totalPriceHtml);
+                            var price=$("#price"+saleId).val();
+                            var priceHtml= Number(price) - Number(coupon[0].price);
+                            $("#price"+saleId).val(priceHtml);
+                            $("#priceHtml"+saleId).html(priceHtml);
+                        }
+                    }
+                }
+            });
         }
     }
     toCartShow();

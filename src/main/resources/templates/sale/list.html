@@ -189,7 +189,7 @@
             html += "type='checkbox' />";
             html += "<label class='onoffswitch-label' for='" + rowObject.id + "_p'><span class='onoffswitch-inner' data-swchon-text='公开' data-swchoff-text='加密'></span><span class='onoffswitch-switch'></span></label></span>";
         }
-        if(rowObject.category=="GOODS_SUPPORT") {
+        if(rowObject.category!="GOODS_VIRTUAL") {
             var html = "<span class='onoffswitch'>";
             html += '<input name="checkbox-toggle" id="' + rowObject.id + '_c" class="onoffswitch-checkbox" onclick="setCoupon(&quot;' + rowObject.id + '&quot;)"';
             if (rowObject.canUseCoupon) html += "checked='checked' ";

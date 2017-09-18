@@ -27,7 +27,7 @@
     </div>
     <!-- end col -->
 
-    <!-- col -->
+    <!-- col-->
     <div class="col-xs-12 col-sm-5 col-md-5 col-lg-8 text-right">
 
         <a href="#/product/order" class="btn btn-default shop-btn">
@@ -58,10 +58,14 @@
                                 <div class="carousel-inner">
                                     <!-- Slide 1 -->
                                     <div class="item" th:each="images:${sale.images}">
-                                        <img src="${images.name}" alt="">
+                                        <img th:src="@{'public/showImg/'+${images.id}}" alt="">
                                     </div>
 
                                 </div>
+                                <a class="left carousel-control" href="http://192.241.236.31/themes/preview/smartadmin/1.8.x/ajax/index.html#myCarousel-3" data-slide="prev"> <span class="glyphicon glyphicon-chevron-left"></span> </a>
+                                <a class="right carousel-control" href="http://192.241.236.31/themes/preview/smartadmin/1.8.x/ajax/index.html#myCarousel-3" data-slide="next"> <span class="glyphicon glyphicon-chevron-right"></span> </a>
+
+
                             </div>
                         </div>
                     </div>
@@ -69,8 +73,9 @@
 
                         <h2 class="name">
                             [[${sale.name}]]
-                            <small>[[${sale.project}]] </small>
-                            <small>[[${sale.category}]] </small>
+                            <small>[[${sale.projectName}]] </small>
+                            <small>[[${sale.typeName}]] </small>
+                            <small>[[${sale.subtypeName}]] </small>
                             <input class="form-control" id="id" name="id" th:value="${sale.id}" type="hidden">
                             <input class="form-control" id="name" name="name" th:value="${sale.name}" type="hidden">
                             <input class="form-control" id="price" name="price" th:value="${sale.price}" type="hidden">
@@ -78,7 +83,7 @@
                         <hr>
                     <fieldset th:if="${sale.category=='GOODS_NORMAL'}">
                         <div class="col-sm-12 col-md-6 col-lg-6">
-                            <a  href="javascript:toAddCart()" class="btn btn-success btn-lg">添加购物车 ￥[[${sale.price}]]</a>
+                            <a  href="javascript:toAddCart()" class="btn btn-success btn-lg">加入购物车 ￥[[${sale.price}]]</a>
                         </div>
                     </fieldset>
                         <fieldset th:if="${sale.category=='GOODS_VIRTUAL'}">
@@ -97,8 +102,8 @@
                             <div id="myTabContent" class="tab-content">
                                 <div class="tab-pane fade active in" id="more-information">
                                     <br>
-                                    <strong>商品详情</strong>
-                                    <p>[[${sale.content}]]</p>
+                                    <strong >商品详情</strong>
+                                    <p th:utext="${sale.content}"></p>
                                 </div>
                             </div>
                         </div>
@@ -116,6 +121,7 @@
 
 
     pageSetUp();
+
     //购物车
     var Cart = function () {
         this.Count = 0;
@@ -125,9 +131,12 @@
     //购物车集合对象
     var CartItem = function () {
         this.Id = 0;
-        this.Name = "";
+        //this.Name = "";
         this.Count = 0;
         this.Price = 0;
+        //this.Projcet="";
+        // this.Type="";
+        //this.Subtype="";
     };
     function cleanCart() {
         var cartHelper =new CartHelper();
@@ -136,9 +145,8 @@
     function toAddCart(){
         var cartHelper =new CartHelper();
         var id=$("#id").val();
-        var name=$("#name").val();
         var price=$("#price").val();
-        cartHelper.Add(id, name, 1, price);
+        cartHelper.Add(id, 1, price);
     }
     //购物车操作
     var CartHelper = function () {
@@ -149,8 +157,9 @@
             return cart;
         };
         //向购物车添加
-        this.Add = function (id, name, count, price) {
+        this.Add = function (id ,count, price) {
             var carCount=parseInt($("#carCount").html());
+
             var cart = this.Read();
             var index = this.Find(id);
             if (index != -1) {
@@ -159,9 +168,24 @@
             } else {
                 var item = new CartItem();
                 item.Id = id;
-                item.Name = name;
+                //item.Name = name;
                 item.Count = count;
                 item.Price = price;
+                //if (project == "null" ){
+                //  item.project="";
+                // }else{
+                // item.Projcet=project;
+                //  }
+                // if (type== "null"){
+                //    item.Type="";
+                //   }else{
+                //     item.Type=type;
+                //   }
+                //   if (subtype == "null"){
+                //      item.Subtype="";
+                //  }else{
+                //      item.Subtype=subtype;
+                // }
                 cart.Items.push(item);
                 cart.Count++;
                 cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
@@ -228,24 +252,37 @@
             return cart;
         };
         this.ItemToString = function (item) {
-            return item.Id + "||" + escape(item.Name) + "||" + item.Count + "||" + item.Price;
+            return item.Id +  "||" + item.Count + "||" + item.Price;
         };
         this.ItemToObject = function (str) {
             var arr = str.split('||');
             var item = new CartItem();
             item.Id = arr[0];
-            item.Name = unescape(arr[1]);
-            item.Count = arr[2];
-            item.Price = arr[3];
+            // item.Name = unescape(arr[1]);
+            item.Count = arr[1];
+            item.Price = arr[2];
+            // item.Projcet =arr[4];
+            // item.Type= arr[5];
+            // item.Subtype=arr[6];
             return item;
         };
     };
+
 
     var pagefunction = function () {
 
     }
     //清空购物车
     cleanCart();
+    function toOrder(){
+        var carCount=$("#carCount").html();
+        if(carCount==0){
+            alert("购物车为空，不能提交订单");
+        }else{
+            window.location.href="#/product/order";
+        }
+    }
+
 </script>
 </body>
 </html>

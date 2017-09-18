@@ -58,7 +58,6 @@
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"><input type="text" class="form-control"/></th>
-                                <th class="hasinput"><input type="text" class="form-control"/></th>
                                 <th class="hasinput"></th>
                             </tr>
                             <tr>
@@ -66,13 +65,12 @@
                                         name="check-all"
                                         type="checkbox"/><i> </i></label>
                                 </th>
-                                <th>商品编号</th>
                                 <th>商品名称</th>
+                                <th>科目名</th>
                                 <th>商品分类</th>
-                                <th>项目</th>
-                                <th>上架价格</th>
+                                <th>系列名</th>
                                 <th>状态</th>
-                                <th></th>
+                                <th>操作</th>
                             </tr>
                             </thead>
                         </table>
@@ -117,14 +115,13 @@
             },
             "columns": [
                 CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
-                {"data": "code"},
                 {"data": "name"},
-                {"data": "category"},
-                {"data": "project"},
-                {"data": "id", "sClass": "text-center", render: fomatPrice, width: "50px"},
-                {"data": "statusName", "sClass": "text-center", render: formatStatus, width: "50px"},
+                {"data": "projectName"},
+                {"data": "typeName"},
+                {"data": "subtypeName"},
+                {"data": "statusName"},
                 {
-                    "data": "operate",
+                    "data": "id",
                     "sClass": "text-center",
                     width: "80px",
                     orderable: false,
@@ -236,8 +233,10 @@
         }
     }
     function formatAction(cellValue, options, rowObject) {
-        var html = '<div class="btn-group btn-group-justified">';
-        html += '</div>';
+        var html = '<div class="widget-toolbar">';
+        html+=" <a class=\"btn btn-primary\" data-toggle=\"modal\" data-target=\"#remoteModal\"  href=\"my/create?saleId="+rowObject.id+"\">";
+        html+="<i class=\"fa fa-edit\"> </i> <span class=\"hidden-mobile\">修改价格</span>";
+        html+="</a></div>";
         return html;
     }
 

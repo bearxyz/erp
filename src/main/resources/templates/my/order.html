@@ -207,7 +207,7 @@
                         dfkTableHtml+="<td>"+orderItem[0].sale.name+"</td>";
                         dfkTableHtml+="<td>￥"+orderItem[0].price+"</td>";
                         dfkTableHtml+="<td>"+orderItem[0].count+"</td>";
-                        dfkTableHtml+="<td>￥"+orderItem[0].count*orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].totalPrice+"</td>";
                         dfkTableHtml+="<td></td>";
                         dfkTableHtml+="</tr>";
                         dfkTableHtml+="<tr>";
@@ -218,7 +218,7 @@
                         dfkTableHtml+="<tr>";
                         dfkTableHtml+="<td colspan=\"4\">总计</td>";
                         dfkTableHtml+="<td>￥"+order.price+"</td>";
-                        dfkTableHtml+="<td ><a class=\"btn btn-danger btn-sm\" >确定支付</a>  <a  class=\"btn btn-primary btn-sm\" href=\"javascript:toCleanOrder('"+order.id+"',9)\">取消订单</a></td>";
+                        dfkTableHtml+="<td ><a class=\"btn btn-danger btn-sm\" href=\"alipay/pay/"+order.code+"\">确定支付</a>  <a  class=\"btn btn-primary btn-sm\" href=\"javascript:toCleanOrder('"+order.id+"',9)\">取消订单</a></td>";
                         dfkTableHtml+="</tr>";
                     }else{
 
@@ -231,7 +231,7 @@
                             dfkTableHtml+="<td>"+orderItems.sale.name+"</td>";
                             dfkTableHtml+="<td>￥"+orderItems.price+"</td>";
                             dfkTableHtml+="<td>"+orderItems.count+"</td>";
-                            dfkTableHtml+="<td>￥"+orderItems.count*orderItems.price+"</td>";
+                            dfkTableHtml+="<td>￥"+orderItem[0].totalPrice+"</td>";
                             dfkTableHtml+="<td></td>";
                             dfkTableHtml+="</tr>";
                         }
@@ -295,7 +295,7 @@
                         dfkTableHtml+="<td>"+orderItem[0].sale.name+"</td>";
                         dfkTableHtml+="<td>￥"+orderItem[0].price+"</td>";
                         dfkTableHtml+="<td>"+orderItem[0].count+"</td>";
-                        dfkTableHtml+="<td>￥"+orderItem[0].count*orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].totalPrice+"</td>";
                         dfkTableHtml+="</tr>";
                         dfkTableHtml+="<tr>";
                         dfkTableHtml+="<td colspan=\"4\">运费</td>";
@@ -400,7 +400,7 @@
                         }
                         dfkTableHtml+="<td>￥"+orderItem[0].price+"</td>";
                         dfkTableHtml+="<td>"+orderItem[0].count+"</td>";
-                        dfkTableHtml+="<td>￥"+orderItem[0].count*orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].totalPrice+"</td>";
                         dfkTableHtml+="<td></td>";
                         dfkTableHtml+="</tr>";
                         dfkTableHtml+="<tr>";
@@ -438,7 +438,7 @@
 
                             dfkTableHtml+="<td>￥"+orderItems.price+"</td>";
                             dfkTableHtml+="<td>"+orderItems.count+"</td>";
-                            dfkTableHtml+="<td>￥"+orderItems.count*orderItems.price+"</td>";
+                            dfkTableHtml+="<td>￥"+orderItem[0].totalPrice+"</td>";
                             dfkTableHtml+="<td></td>";
                             dfkTableHtml+="</tr>";
                         }
@@ -522,7 +522,7 @@
                         }
                         dfkTableHtml+="<td>￥"+orderItem[0].price+"</td>";
                         dfkTableHtml+="<td>"+orderItem[0].count+"</td>";
-                        dfkTableHtml+="<td>￥"+orderItem[0].count*orderItem[0].price+"</td>";
+                        dfkTableHtml+="<td>￥"+orderItem[0].totalPrice+"</td>";
                         dfkTableHtml+="</tr>";
                         dfkTableHtml+="<tr>";
                         dfkTableHtml+="<td colspan=\"7\">运费</td>";
@@ -557,7 +557,7 @@
                             }
                             dfkTableHtml+="<td>￥"+orderItems.price+"</td>";
                             dfkTableHtml+="<td>"+orderItems.count+"</td>";
-                            dfkTableHtml+="<td>￥"+orderItems.count*orderItems.price+"</td>";
+                            dfkTableHtml+="<td>￥"+orderItem[0].totalPrice+"</td>";
                             dfkTableHtml+="</tr>";
                         }
                         dfkTableHtml+="<tr>";

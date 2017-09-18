@@ -99,7 +99,7 @@
 <!-- end widget grid -->
 <script type="text/javascript">
     var total=0;    //总条目: 可变
-    var show=1;    //每页显示条目数: 可变
+    var show=15;    //每页显示条目数: 可变
     var size=1;     //当前第几页
     var totalPage=0; //总页数
 
@@ -124,18 +124,10 @@
                         totalPage=parseInt(total/show)+1;
                     }
                     for (var i = 0; i < items.length; i++) {
-                        var category="";
-                        var project="";
+                        var projectName=items[i].projectName;
+                        var typeName=items[i].typeName;
+                        var subtypeName=items[i].subtypeName;
                         var content="";
-                        if(items[i].category !=null){
-                            category=items[i].category;
-                        }
-                        if(!items[i].project !=null) {
-                            project = items[i].project;
-                        }
-                        if(items[i].content !=null){
-                            content = items[i].content;
-                        }
                         var images=items[i].images;
                         var imgageId="";
                         if(images.length>0){
@@ -147,13 +139,15 @@
                             rowsHtml += "<div class=\"row\">";
                             rowsHtml += "<div class=\"col-md-5 col-sm-12 col-xs-12\">";
                             rowsHtml += "<div class=\"product-image\">";
-                            rowsHtml += "<img src=\"/public/showImg/"+imgageId+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            if(imgageId!="" && imgageId !=undefined){
+                                rowsHtml += "<img src=\"/public/showImg/"+imgageId+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            }
                             rowsHtml += "<span class=\"tag2 hot\">HOT</span>";
                             rowsHtml += "</div></div>";
                             rowsHtml += "<div class=\"col-md-7 col-sm-12 col-xs-12\">";
                             rowsHtml += "<div class=\"product-deatil\">";
                             rowsHtml += "<h5 class=\"name\">";
-                            rowsHtml += "<a href=\"#/sale/detail/"+items[i].id+"\" >" + items[i].name + "<span>" + project + "</span><span>" + category + "</span></a>";
+                            rowsHtml += "<a href=\"#/sale/detail/"+items[i].id+"\" >" + items[i].name + "<span>" + projectName + "</span><span>" + typeName + "</span><span>" + subtypeName + "</span></a>";
                             rowsHtml += "</h5>";
                             rowsHtml += "<p class=\"price-container\"><span>$"+items[i].price+"</span></p>";
                             rowsHtml += "<span class=\"tag1\"></span>";
@@ -161,7 +155,13 @@
                             rowsHtml += "<div class=\"description\"><p>"+content+"</p></div>";
                             rowsHtml += "<div class=\"product-info smart-form\">";
                             rowsHtml += "<div class=\"row\">";
-                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"#/resource/order/"+items[i].id+"\" class=\"btn btn-success\">立即购买</a> </div>";
+
+
+                            if(items[i].isPublic){
+                                rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a  class=\"btn btn-success\">资源下载</a> </div>";
+                            }else{
+                                rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a  class=\"btn btn-success\">加密盒子</a> </div>";
+                            }
                             rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"#/sale/detail/"+items[i].id+"\" class=\"btn btn-success\"> 详情</a> </div>";
                             rowsHtml += "</div></div></div></div></div></div>";
                         }else {
@@ -170,13 +170,15 @@
                             rowsHtml += "<div class=\"row\">";
                             rowsHtml += "<div class=\"col-md-5 col-sm-12 col-xs-12\">";
                             rowsHtml += "<div class=\"product-image\">";
-                            rowsHtml += "<img src=\"/public/showImg/"+imgageId.id+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            if(imgageId!="" && imgageId !=undefined){
+                                rowsHtml += "<img src=\"/public/showImg/"+imgageId+"\" alt=\"194x228\" class=\"img-responsive\">";
+                            }
                             rowsHtml += "<span class=\"tag2 hot\">HOT</span>";
                             rowsHtml += "</div></div>";
                             rowsHtml += "<div class=\"col-md-7 col-sm-12 col-xs-12\">";
                             rowsHtml += "<div class=\"product-deatil\">";
                             rowsHtml += "<h5 class=\"name\">";
-                            rowsHtml += "<a href=\"#/sale/detail/"+items[i].id+"\" >" + items[i].name + "<span>" + project + "</span><span>" + category + "</span></a>";
+                            rowsHtml += "<a href=\"#/sale/detail/"+items[i].id+"\" >" + items[i].name + "<span>" + projectName + "</span><span>" + typeName + "</span><span>" + subtypeName + "</span></a>";
                             rowsHtml += "</h5>";
                             rowsHtml += "<p class=\"price-container\"><span>$" + items[i].price + "</span></p>";
                             rowsHtml += "<span class=\"tag1\"></span>";
@@ -184,7 +186,11 @@
                             rowsHtml += "<div class=\"description\"><p>"+content+"</p></div>";
                             rowsHtml += "<div class=\"product-info smart-form\">";
                             rowsHtml += "<div class=\"row\">";
-                            rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"#/resource/order/"+items[i].id+"\" class=\"btn btn-success\">立即购买</a> </div>";
+                            if(items[i].isPublic){
+                                rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a  class=\"btn btn-success\">资源下载</a> </div>";
+                            }else{
+                                rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a  class=\"btn btn-success\">加密盒子</a> </div>";
+                            }
                             rowsHtml += "<div class=\"col-md-6 col-sm-6 col-xs-6\"> <a href=\"#/sale/detail/"+items[i].id+"\" class=\"btn btn-success\"> 详情</a> </div>";
                             rowsHtml += "</div></div></div></div></div></div>";
                         }

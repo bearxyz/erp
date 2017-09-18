@@ -4,11 +4,13 @@ import com.bearxyz.domain.po.business.Company;
 import com.bearxyz.domain.po.business.Config;
 import com.bearxyz.domain.po.business.Order;
 import com.bearxyz.domain.po.business.Sale;
+import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.CompanyRepository;
 import com.bearxyz.repository.ConfigRepository;
 import com.bearxyz.service.business.OrderService;
 import com.bearxyz.service.business.SaleService;
+import com.bearxyz.service.sys.SysService;
 import com.bearxyz.utility.OrderUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +43,8 @@ public class ResourceController {
     private OrderService orderService;
     @Autowired
     private ConfigRepository configRepository;
+    @Autowired
+    private SysService sysService;
 
     @RequestMapping("/list")
     public String index(){
@@ -52,6 +56,24 @@ public class ResourceController {
     public String getIndex(String category) throws JsonProcessingException {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         List<Sale> saleList =saleService.getSaleByTypeList(user.getCompanyId(),category);
+        if(saleList !=null && saleList.size()>0){
+            for(Sale sale:saleList){
+                if(sale.getProject() !=null && (!sale.getProject().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getProject());
+                    sale.setProjectName(dict.getName());
+                }
+                if(sale.getType() !=null && (!sale.getType().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getType());
+                    sale.setTypeName(dict.getName());
+                }
+                if(sale.getSubtype() !=null &&  (!sale.getSubtype().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getSubtype());
+                    sale.setSubtypeName(dict.getName());
+                }
+            }
+        }
+
+
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(saleList);
     }
@@ -85,7 +107,4 @@ public class ResourceController {
         orderService.apply(order);
         return "{success: true}";
     }
-
-
-
 }

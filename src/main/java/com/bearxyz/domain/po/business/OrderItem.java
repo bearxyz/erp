@@ -23,6 +23,13 @@ public class OrderItem extends BaseDomain {
     private String unit = "";
     @Column(length = 36)
     private String packageId = "";
+    @Column
+    private Float totalPrice= (float)0.0;
+    @Column
+    private Float discountPrice= (float)0.0;
+    @Column(length = 100)
+    private String discountCode="";
+
 
     @ManyToOne
     @JoinColumn(name = "ORDER_ID")
@@ -85,5 +92,29 @@ public class OrderItem extends BaseDomain {
 
     public void setSale(Sale sale) {
         this.sale = sale;
+    }
+
+    public Float getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(Float discountPrice) {
+        this.discountPrice = discountPrice;
+    }
+
+    public String getDiscountCode() {
+        return discountCode;
+    }
+
+    public void setDiscountCode(String discountCode) {
+        this.discountCode = discountCode;
+    }
+
+    public Float getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Float totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

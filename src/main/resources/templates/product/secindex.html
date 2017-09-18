@@ -74,10 +74,10 @@
                                         name="check-all"
                                         type="checkbox"/><i> </i></label>
                                 </th>
-                                <th>商品编号</th>
                                 <th>商品名称</th>
+                                <th>科目名</th>
                                 <th>商品分类</th>
-                                <th>项目</th>
+                                <th>系列名</th>
                                 <th>单价</th>
                                 <!--<th>状态</th>-->
                                 <th></th>
@@ -263,10 +263,10 @@
             },
             "columns": [
                 CONSTANT.DATA_TABLES.COLUMN.CHECKBOX,
-                {"data": "code"},
                 {"data": "name"},
-                {"data": "category"},
-                {"data": "project"},
+                {"data": "projectName"},
+                {"data": "typeName"},
+                {"data": "subtypeName"},
                 {"data": "price"},
                /* {"data": "statusName"},*/
                 {

@@ -3,13 +3,11 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
+import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
-import com.bearxyz.repository.CompanyRepository;
-import com.bearxyz.repository.SaleRepository;
-import com.bearxyz.service.business.ClientService;
-import com.bearxyz.service.business.OrderService;
-import com.bearxyz.service.business.SaleService;
-import com.bearxyz.service.business.SecordOrderService;
+import com.bearxyz.repository.*;
+import com.bearxyz.service.business.*;
+import com.bearxyz.service.sys.SysService;
 import com.bearxyz.utility.OrderUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import com.bearxyz.repository.ConfigRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -45,6 +42,14 @@ public class ProductController {
     private SecordOrderService secordOrderService;
     @Autowired
     private ClientService clientService;
+    @Autowired
+    private SysService sysService;
+    @Autowired
+    private SupportApplyService supportApplyService;
+    @Autowired
+    private SupportApplyRepository supportApplyRepository;
+    @Autowired
+    private CouponRepository couponRepository;
 
 
     @RequestMapping("/index")
@@ -57,7 +62,32 @@ public class ProductController {
     @RequestMapping(value = "/index", method = RequestMethod.POST)
     public String getIndex(String category) throws JsonProcessingException {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
-        List<Sale> saleList =saleService.getSaleByTypeList(user.getCompanyId(),category);
+        List<String> categorys = new ArrayList<String>();
+        if(category.equals("")){
+            categorys.add("GOODS_NORMAL");
+            categorys.add("GOODS_SUPPORT");
+        }else if(category.equals("GOODS_NORMAL")){
+            categorys.add("GOODS_NORMAL");
+        }else if(category.equals("GOODS_SUPPORT")){
+            categorys.add("GOODS_SUPPORT");
+        }
+        List<Sale> saleList =saleService.getSaleByTypeList(categorys);
+        if(saleList !=null && saleList.size()>0){
+            for(Sale sale:saleList){
+                if(sale.getProject() !=null && (!sale.getProject().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getProject());
+                    sale.setProjectName(dict.getName());
+                }
+                if(sale.getType() !=null && (!sale.getType().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getType());
+                    sale.setTypeName(dict.getName());
+                }
+                if(sale.getSubtype() !=null &&  (!sale.getSubtype().equals(""))){
+                    Dict dict =sysService.getDictByMask(sale.getSubtype());
+                    sale.setSubtypeName(dict.getName());
+                }
+            }
+        }
         ObjectMapper mapper = new ObjectMapper();
         //System.out.print("saleList==="+mapper.writeValueAsString(saleList));
         return mapper.writeValueAsString(saleList);
@@ -71,7 +101,6 @@ public class ProductController {
         public String order(Model model) {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         Company company= companyRepository.findOne(user.getCompanyId());
-        //Sale sale =saleService.getById(id);
         List<Config> configList = configRepository.findAll();
         float deliverFee= 0.00f;
         if(configList!=null && configList.size()>0){
@@ -79,18 +108,46 @@ public class ProductController {
                 deliverFee = configList.get(0).getDeliverFee();
             }
         }
-        float discount=clientService.getClientBenefit(user.getId());
+        float balance=(float)0.00;
+        if(company.getBalance() !=null){
+            balance=company.getBalance();
+        }
+        Float discount=clientService.getClientBenefit(user.getId());
         model.addAttribute("company", company);
         model.addAttribute("deliverFee",deliverFee);
         model.addAttribute("discount",discount);
-       //model.addAttribute("totalPrice",sale.getPrice()+deliverFee);
-       //model.addAttribute("sale",sale);
+        model.addAttribute("balance",balance);
         return "/product/order";
     }
+
+    @RequestMapping(value = "/getCouponDiscount", method = RequestMethod.POST)
+    @ResponseBody
+    public String getCouponDiscount(String code) throws JsonProcessingException {
+        Coupon coupon= couponRepository.findCouponByCodeAndUsed(code,false);
+        List<Coupon> couponList = new ArrayList<Coupon>();
+        if(coupon !=null){
+            couponList.add(coupon);
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(couponList);
+    }
+
     @RequestMapping(value = "/getOrderSaleId", method = RequestMethod.POST)
     @ResponseBody
     public String getOrderSaleId(String saleId, HttpServletRequest request)throws JsonProcessingException{
         Sale sale =saleService.getById(saleId);
+        if(sale.getProject() !=null && (!sale.getProject().equals(""))){
+            Dict dict =sysService.getDictByMask(sale.getProject());
+            sale.setProjectName(dict.getName());
+        }
+        if(sale.getType() !=null && (!sale.getType().equals(""))){
+            Dict dict =sysService.getDictByMask(sale.getType());
+            sale.setTypeName(dict.getName());
+        }
+        if(sale.getSubtype() !=null &&  (!sale.getSubtype().equals(""))){
+            Dict dict =sysService.getDictByMask(sale.getSubtype());
+            sale.setSubtypeName(dict.getName());
+        }
         List<Sale> saleList = new ArrayList<Sale>();
         saleList.add(sale);
         ObjectMapper mapper = new ObjectMapper();
@@ -104,6 +161,17 @@ public class ProductController {
         order.setCode(OrderUtils.genSerialnumber("0"));
         order.setType("GOODS_NORMAL");
         order.setTaskName("普通商品");
+        if(order.getItems() !=null && order.getItems().size()>0){
+            for(OrderItem orderItem:order.getItems()){
+                if(orderItem.getDiscountCode()!=null && (!orderItem.getDiscountCode().equals(""))){
+                    Coupon coupon=  couponRepository.findCouponByCodeAndUsed(orderItem.getDiscountCode(),false);
+                    if(coupon !=null){
+                        coupon.setUsed(true);
+                        couponRepository.save(coupon);
+                    }
+                }
+            }
+        }
         orderService.apply(order);
         return "{success: true}";
     }

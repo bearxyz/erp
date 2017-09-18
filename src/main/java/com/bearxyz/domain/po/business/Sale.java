@@ -96,6 +96,8 @@ public class Sale extends BaseDomain {
     @Transient
     private String typeName = "";
     @Transient
+    private String subtypeName="";
+    @Transient
     private String categoryName = "";
     @Transient
     private String stock = "";
@@ -456,5 +458,13 @@ public class Sale extends BaseDomain {
 
     public void setDays(Integer days) {
         this.days = days;
+    }
+
+    public String getSubtypeName() {
+        return subtypeName;
+    }
+
+    public void setSubtypeName(String subtypeName) {
+        this.subtypeName = subtypeName;
     }
 }
