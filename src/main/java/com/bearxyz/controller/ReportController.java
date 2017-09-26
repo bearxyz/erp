@@ -4,6 +4,8 @@ import com.bearxyz.common.DataTable;
 import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
+import com.bearxyz.domain.vo.ContractReport;
+import com.bearxyz.mapper.ContractMapper;
 import com.bearxyz.mapper.PurchasingOrderItemMapper;
 import com.bearxyz.mapper.StockMapper;
 import com.bearxyz.repository.*;
@@ -37,6 +39,8 @@ public class ReportController {
     private StockMapper stockMapper;
     @Autowired
     private StockItemRepository stockItemRepository;
+    @Autowired
+    private ContractMapper contractMapper;
 
     @RequestMapping(value = "/purchasing", method = RequestMethod.GET)
     public String purchasingReport() {
@@ -165,4 +169,73 @@ public class ReportController {
         return mapper.writeValueAsString(result);
 
     }
+
+    @RequestMapping(value = "/project", method = RequestMethod.GET)
+    public String project() {
+        return "/report/project";
+    }
+
+    @RequestMapping(value = "/project", method = RequestMethod.POST)
+    @ResponseBody
+    public String projectList(Integer draw, String startDate, String endDate, String project, String province) throws JsonProcessingException {
+        DataTable<ContractReport> result = new DataTable<>();
+        startDate = (startDate == null) ? "1970-1-1" : startDate;
+        endDate = (endDate == null) ? "1970-1-1" : endDate;
+        project = (project == null) ? "" : project;
+        province = (province == null) ? "" : province;
+        List<ContractReport> list = contractMapper.getContractReportByProject(startDate, endDate, project, province);
+        for(ContractReport report: list){
+            Dict dict = dictRepository.findByMask(report.getProject());
+            if(dict!=null)
+                report.setProjectName(dict.getName());
+        }
+        result.setData(list);
+        result.setDraw(draw);
+        result.setRecordsTotal((long)list.size());
+        result.setRecordsFiltered((long)list.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
+    @RequestMapping(value = "/saleman", method = RequestMethod.GET)
+    public String saleman() {
+        return "/report/saleman";
+    }
+
+    @RequestMapping(value = "/saleman", method = RequestMethod.POST)
+    @ResponseBody
+    public String salemantList(Integer draw, String startDate, String endDate, String project, String province) throws JsonProcessingException {
+        DataTable<ContractReport> result = new DataTable<>();
+        startDate = (startDate == null) ? "1970-1-1" : startDate;
+        endDate = (endDate == null) ? "1970-1-1" : endDate;
+        project = (project == null) ? "" : project;
+        province = (province == null) ? "" : province;
+        List<ContractReport> list = contractMapper.getContractReportBySaleman(startDate, endDate, project, province);
+        for(ContractReport report: list){
+            Dict dict = dictRepository.findByMask(report.getProject());
+            if(dict!=null)
+                report.setProjectName(dict.getName());
+            if(report.getCreatedBy()!=null) {
+                User user = userRepository.findOne(report.getCreatedBy());
+                report.setCreateByName(user.getFirstName() + user.getLastName());
+            }
+        }
+        result.setData(list);
+        result.setDraw(draw);
+        result.setRecordsTotal((long)list.size());
+        result.setRecordsFiltered((long)list.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
+    @RequestMapping(value = "/status", method = RequestMethod.GET)
+    public String status() {
+        return "/report/status";
+    }
+
+    @RequestMapping(value = "/comefrom", method = RequestMethod.GET)
+    public String comefrom() {
+        return "/report/comefrom";
+    }
+
 }

@@ -98,7 +98,7 @@ public class ProductController {
                 }
                 Dict dict = dictRepository.findByMask(sale.getProject());
                 for(Contract contract: contracts){
-                    if(contract.getProject().equals(dict.getName()))
+                    if(contract.getProject().equals(dict.getMask()))
                         has = true;
                 }
                 if(!has)
