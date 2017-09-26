@@ -1,13 +1,12 @@
 package com.bearxyz.controller;
 
-import com.bearxyz.domain.po.business.Company;
-import com.bearxyz.domain.po.business.Config;
-import com.bearxyz.domain.po.business.Order;
-import com.bearxyz.domain.po.business.Sale;
+import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.repository.CompanyRepository;
 import com.bearxyz.repository.ConfigRepository;
+import com.bearxyz.repository.ContractRepository;
+import com.bearxyz.repository.DictRepository;
 import com.bearxyz.service.business.OrderService;
 import com.bearxyz.service.business.SaleService;
 import com.bearxyz.service.sys.SysService;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -45,6 +45,10 @@ public class ResourceController {
     private ConfigRepository configRepository;
     @Autowired
     private SysService sysService;
+    @Autowired
+    private ContractRepository contractRepository;
+    @Autowired
+    private DictRepository dictRepository;
 
     @RequestMapping("/list")
     public String index(){
@@ -56,8 +60,12 @@ public class ResourceController {
     public String getIndex(String category) throws JsonProcessingException {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         List<Sale> saleList =saleService.getSaleByTypeList(user.getCompanyId(),category);
-        if(saleList !=null && saleList.size()>0){
-            for(Sale sale:saleList){
+        List<Contract> contracts = contractRepository.findAvaliableContractByCompanyId(user.getCompanyId());
+        Iterator<Sale> saleIterator = saleList.iterator();
+
+            while (saleIterator.hasNext()){
+                Sale sale = saleIterator.next();
+                boolean has = false;
                 if(sale.getProject() !=null && (!sale.getProject().equals(""))){
                     Dict dict =sysService.getDictByMask(sale.getProject());
                     sale.setProjectName(dict.getName());
@@ -70,12 +78,18 @@ public class ResourceController {
                     Dict dict =sysService.getDictByMask(sale.getSubtype());
                     sale.setSubtypeName(dict.getName());
                 }
+                Dict dict = dictRepository.findByMask(sale.getProject());
+                for(Contract contract: contracts){
+                    if(contract.getProject().equals(dict.getName()))
+                        has = true;
+                }
+                if(!has)
+                    saleIterator.remove();
             }
-        }
 
 
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(saleList);
+        return mapper.writeValueAsString(saleIterator);
     }
 
     @RequestMapping(value = "/order/{saleId}", method = RequestMethod.GET)

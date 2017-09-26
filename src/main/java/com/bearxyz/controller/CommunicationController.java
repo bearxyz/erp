@@ -3,6 +3,9 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.CommunicationRecord;
+import com.bearxyz.domain.po.business.Company;
+import com.bearxyz.repository.CommunicationRecordRepository;
+import com.bearxyz.repository.CompanyRepository;
 import com.bearxyz.service.business.CommunicationRecordService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +25,10 @@ public class CommunicationController {
 
     @Autowired
     private CommunicationRecordService communicationRecordService;
+    @Autowired
+    private CommunicationRecordRepository communicationRecordRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
 
 
     @RequestMapping(value = "/index/{id}", method = RequestMethod.POST)
@@ -43,7 +50,13 @@ public class CommunicationController {
     @ResponseBody
     @RequestMapping(value = {"/create"}, method = RequestMethod.POST)
     public String save(@ModelAttribute("record")CommunicationRecord record, SessionStatus status) {
-        communicationRecordService.save(record);
+        communicationRecordRepository.saveAndFlush(record);
+        Integer count = communicationRecordRepository.countAllByCompanyIdAndSuccessed(record.getCompanyId(), false);
+        if(count>=3){
+            Company company = companyRepository.findOne(record.getCompanyId());
+            company.setFailed(true);
+            companyRepository.save(company);
+        }
         status.setComplete();
         return "{success: true}";
     }

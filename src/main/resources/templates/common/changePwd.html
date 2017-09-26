@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<div class="row">
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <i class="fa fa-edit fa-fw "></i>
+            修改密码
+        </h1>
+    </div>
+</div>
+
+
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget well" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>修改密码</h2>
+                </header>
+                <div role="content">
+                    <div class="widget-body">
+                        <div class="row" id="result" style="display: none;">
+                            <article class="col-sm-12">
+                                <div class="alert alert-success fade in">
+                                    <button class="close" data-dismiss="alert">
+                                        ×
+                                    </button>
+                                    <i class="fa-fw fa fa-check"></i>
+                                    <strong>保存成功</strong> 密码修改成功。
+                                </div>
+                            </article>
+                        </div>
+                        <div class="row" id="fail" style="display: none;">
+                            <article class="col-sm-12">
+                                <div class="alert alert-danger fade in">
+                                    <button class="close" data-dismiss="alert">
+                                        ×
+                                    </button>
+                                    <i class="fa-fw fa fa-check"></i>
+                                    <strong>保存失败</strong> 原始密码输入不正确。
+                                </div>
+                            </article>
+                        </div>
+                        <form id="form" class="smart-form" novalidate="novalidate" method="post">
+                            <fieldset>
+                                <section>
+                                    <label class="label">原始密码：</label>
+                                    <label class="input">
+                                        <input type="password" name="oldpwd" id="oldpwd" />
+                                    </label>
+                                </section>
+                                <section>
+                                    <label class="label">新密码：</label>
+                                    <label class="input">
+                                        <input type="password" name="newpwd" id="newpwd" />
+                                    </label>
+                                </section>
+                                <section>
+                                    <label class="label">确认新密码：</label>
+                                    <label class="input">
+                                        <input type="password" name="confirmpwd" id="confirmpwd" />
+                                    </label>
+                                </section>
+                            </fieldset>
+                            <footer>
+                                <button type="submit" class="btn btn-primary">
+                                    保 存
+                                </button>
+                            </footer>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<script type="text/javascript">
+    pageSetUp();
+    var pagefunction = function () {
+
+        var $form = $("#form").validate({
+            rules: {
+                oldpwd: {required: true},
+                newpwd: {required: true},
+                confirmpwd: {equalTo:'#newpwd'}
+            },
+            messages: {
+                oldpwd: {required: '请输入原始密码'},
+                newpwd: {required: '请输入新密码'},
+                confirmpwd: {equalTo: '密码确认不一致'}
+            },
+            submitHandler: function () {
+                $("#result").hide();
+                $("#fail").hide();
+                $.ajax({
+                    url: '/common/changepwd',
+                    type: 'post',
+                    data: $('#form').serialize(),
+                    success: function (res) {
+                        var result = $.parseJSON(res);
+                        if(result.success)
+                            $("#result").show();
+                        else
+                            $("#fail").show();
+                    },
+                    error: function (e) {
+                        $.bigBox({
+                            title: "系统内部错误！",
+                            content: "该错误已被记录，请联系管理员，并稍后重试！",
+                            color: "#C46A69",
+                            icon: "fa fa-warning shake animated",
+                            timeout: 6000
+                        });
+                        e.preventDefault();
+                    }
+                });
+            },
+            // Do not change code below
+            errorPlacement: function (error, element) {
+                error.insertAfter(element.parent());
+            }
+        });
+    };
+    loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+</script>
+</body>
+</html>

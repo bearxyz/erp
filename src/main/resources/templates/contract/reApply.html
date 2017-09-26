@@ -178,6 +178,15 @@
                     </section>
                 </div>
             </section>
+            <section th:if="${contract.attachments}">
+                <label class="label">合同：</label>
+                <table>
+                    <tr th:each="attachment: ${contract.attachments}">
+                        <td><a th:href="@{'/common/download/'+${attachment.id}}" target="_blank">[[${attachment.name +'.'+attachment.fileType}]]</a>
+                        </td>
+                    </tr>
+                </table>
+            </section>
             <section>
                 <input type="file" class="file-loading" id="attachment" name="attachment" multiple/>
             </section>

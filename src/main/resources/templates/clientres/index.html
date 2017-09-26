@@ -199,7 +199,7 @@
         if (rowObject.signed)
             return "<span class='label label-success'>已签约</span>";
         else if (rowObject.failed)
-            return "<span class='label label-default'>未签约</span>";
+            return "<span class='label label-default'>签约失败</span>";
         else
             return "<span class='label label-warning'>准客户</span>";
     }
@@ -230,7 +230,6 @@
 <script type="text/javascript" shiro:hasAnyRoles="ROLE_LEASING_EXECUTIVE">
     function setSignBtn(id) {
         var h = '<a href="#/contract/create/' + id + '" class="btn btn-primary btn-xs"><span class="hidden-mobile">签约</span></a>';
-        h += '<a href="javascript:void(0);" class="btn btn-warning btn-xs" onclick="failed(' + id + ')"><span class="hidden-mobile">签约失败</span></a>';
         return h;
     }
 </script>

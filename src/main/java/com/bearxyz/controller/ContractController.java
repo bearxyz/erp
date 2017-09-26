@@ -26,6 +26,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -191,6 +192,18 @@ public class ContractController {
         user.setEnabled(true);
         user.setPassed(true);
         userRepository.save(user);
+        return "{success: true}";
+    }
+
+    @RequestMapping(value = "/pay", method = RequestMethod.POST)
+    @ResponseBody
+    public String pay(String id, Date recieveMoneyDate, String recieveMoneyBank, Float recieveMoney, String contractCode){
+        Contract contract = contractRepository.findOne(id);
+        contract.setRecieveMoneyDate(recieveMoneyDate);
+        contract.setRecieveMoney(recieveMoney);
+        contract.setRecieveMoneyBank(recieveMoneyBank);
+        contract.setContractCode(contractCode);
+        contractRepository.save(contract);
         return "{success: true}";
     }
 

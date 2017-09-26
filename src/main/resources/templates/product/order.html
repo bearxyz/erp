@@ -14,9 +14,9 @@
     <!-- col -->
     <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
         <h1 class="page-title txt-color-blueDark">
-        <!-- PAGE HEADER -->
-        <i class="fa-fw fa fa-home"></i>
-        产品订单
+            <!-- PAGE HEADER -->
+            <i class="fa-fw fa fa-home"></i>
+            产品订单
         </h1>
     </div>
 </div>
@@ -31,97 +31,118 @@
                     <h2>产品订单</h2>
                 </header>
                 <div role="content">
-            <div class="modal-body no-padding">
-                <form id="form" class="smart-form" >
-                <fieldset>
+                    <div class="modal-body no-padding">
+                        <form id="form" class="smart-form" >
+                            <fieldset>
+                                <section >
+                                    <label class="label"> 订单编号:[[${order.code}]]</label>
+                                </section>
+                            </fieldset>
+                            <fieldset>
+                                <section >
+                                    <label class="label"> 收货地址:[[${order.province}]][[${order.city}]][[${order.district}]][[${order.address}]]</label>
+                                </section>
+                            </fieldset>
+                            <fieldset>
+                                <section >
+                                    <label class="label">快递方式:[[${order.transport}]]</label>
+                                    <input class="form-control" id="sourceDeliverFee" name="sourceDeliverFee" th:value="${order.deliverFee}" type="hidden">
+                                    <input class="form-control" id="deliverFee" name="deliverFee" th:value="${order.deliverFee}" type="hidden">
+                                    <input class="form-control" id="discount" name="discount" th:value="${discount}" type="hidden">
+                                    <input class="form-control" id="balance" name="discount" th:value="${balance}" type="hidden">
+                                    <input class="form-control" id="id" name="id" th:value="${order.id}" type="hidden">
+                                    <input class="form-control" id="totalPrice" name="price" th:value="${totalPrice}" type="hidden">
+                                    <input class="form-control" id="youhuiPriceTotal" name="discountTotalPrice" th:value="${discountTotalPrice}" type="hidden">
 
-            <section >
-                <label class="label">收货地址</label>
-                <label class="input">
-                    <input class="form-control" name="status" th:value="1" type="hidden">
-                    <input class="form-control" name="companyId" th:value="${company.id}" type="hidden">
-                    <input class="form-control" id="province" name="province" th:value="${company.province}" readonly>
-                </label>
-                <label class="input">
-                    <input class="form-control" id="city" name="city" th:value="${company.city}" readonly>
-                </label>
-                <label class="input">
-                <input class="form-control" id="district" name="district" th:value="${company.district}" readonly>
-                </label>
-            </section>
-        </fieldset>
-                <fieldset>
-            <section >
-                <label class="label">详细地址</label>
-                <label class="textarea">
-                    <textarea rows="3" id="address" name="address" class="form-control">[[${company.address}]]</textarea>
-                </label>
-            </section>
-                </fieldset>
-                <fieldset>
-            <section >
-                <label class="label">快递方式</label>
-                <label class="radio"><input class="form-control" onclick="changeDeliverFee(1)" name="transport" value="快递" checked="checked" type="radio">
-                    <i></i>快递</label>
-                    <label class="radio"> <input class="form-control" onclick="changeDeliverFee(2)" name="transport" value="物流"  type="radio">
-                <i></i>物流</label>
-                <input class="form-control" id="sourceDeliverFee" name="sourceDeliverFee" th:value="${deliverFee}" type="hidden">
-                <input class="form-control" id="deliverFee" name="deliverFee" th:value="${deliverFee}" type="hidden">
-                <input class="form-control" id="discount" name="discount" th:value="${discount}" type="hidden">
-                <input class="form-control" id="balance" name="discount" th:value="${balance}" type="hidden">
-            </section>
-                </fieldset>
-                <fieldset>
-            <section >
-                <label class="label">确定订单信息</label>
-                <table class="table table-hover" id="cartList">
-                    <thead>
-                    <tr>
-                        <th>商品名称</th>
-                        <th>科目名称</th>
-                        <th>科目类型</th>
-                        <th>系列名称</th>
-                        <th>单价</th>
-                        <th>数量</th>
-                        <th>优惠券</th>
-                        <th>小计</th>
-                        <th>操作</th>
-                    </tr>
-                  <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td colspan="7">运费</td>
-                        <td>
-                            <strong><span id="deliverFeeHtml"></span></strong>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td colspan="7">总计</td>
-                        <td>
-                            <strong><span id="totalPriceHtml"></span></strong>
-                        </td>
-                        <td></td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                </table>
-            </section>
-                </fieldset>
-            <footer>
-                <button class="btn btn-primary" id="addOrder" type="submit">提交订单</button>
-                <button class="btn btn-default" type="button" onclick="window.history.back();">返回</button>
-            </footer>
-                </form>
-            </div>
+                                </section>
+                            </fieldset>
+                            <fieldset>
+                                <section >
+                                    <label class="label">确定订单信息</label>
+                                    <table class="table table-hover" id="cartList">
+                                        <thead>
+                                        <tr>
+                                            <th>商品名称</th>
+                                            <th>科目名称</th>
+                                            <th>科目类型</th>
+                                            <th>系列名称</th>
+                                            <th>单价</th>
+                                            <th>数量</th>
+                                            <th>优惠券</th>
+                                            <th>小计</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        <tr  th:each="orderItem,userStat: ${order.items}">
+                                            <td th:text="${orderItem.sale.name}"></td>
+                                            <td th:text="${orderItem.sale.projectName}"></td>
+                                            <td th:text="${orderItem.sale.typeName}"></td>
+                                            <td th:text="${orderItem.sale.subtypeName}"></td>
+                                            <td th:text="${orderItem.price}"></td>
+                                            <td th:text="${orderItem.count}"></td>
+                                            <td >
+                                                <div th:if="${orderItem.sale.canUseCoupon==true && discount==1.0}">
+                                                    <input type='text' name='discountCode' th:id="youhui+${orderItem.sale.id}" value=''>
+                                                    <button type="button" th:onclick="'javascript:toYouhui(\''+${orderItem.sale.id}+'\','+${orderItem.count}+')'">获取优惠价格
+                                                    </button>
+                                                    <input type='text' name='discountPrice' th:id='youhuiPrice+${orderItem.sale.id}' value='0.00' readonly>
+                                                    <input type='hidden' name='saleId' id="saleId" th:value="${orderItem.sale.id}" readonly>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div th:text="${orderItem.totalPrice}" th:id='priceHtml+${orderItem.sale.id}'>
+
+                                                </div>
+                                                <input type='hidden' name='prices' th:id='price+${orderItem.sale.id}'  th:value="${orderItem.totalPrice}" readonly>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7">运费</td>
+                                            <td>
+                                                <strong><span id="deliverFeeHtml">[[${order.deliverFee}]]</span></strong>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7">优惠金额</td>
+                                            <td>
+                                                <strong><span id="youhuiPriceTotalHtml">[[${discountTotalPrice}]]</span></strong>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7">钱包金额</td>
+                                            <td>
+                                                <strong><span >[[${balance}]]</span></strong>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="7">折扣</td>
+                                            <td>
+                                                <strong><span >[[${discount}]]</span></strong>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="7">总计</td>
+                                            <td>
+                                                <strong><span id="totalPriceHtml">[[${totalPrice}]]</span></strong>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                    </table>
+                                </section>
+                            </fieldset>
+                            <footer>
+                                <button class="btn btn-primary" id="addOrder" type="submit">提交订单</button>
+                                <button class="btn btn-default" type="button" onclick="window.history.back();">返回</button>
+                            </footer>
+                        </form>
+                    </div>
                 </div>
             </div>
         </article>
@@ -133,156 +154,21 @@
 <script type="text/javascript">
 
     pageSetUp();
-    //购物车
-    var Cart = function () {
-        this.Count = 0;
-        this.Total = 0;
-        this.Items = new Array();
-    };
-    //购物车集合对象
-    var CartItem = function () {
-        this.Id = 0;
-        //this.Name = "";
-        this.Count = 0;
-        this.Price = 0;
-        //this.Projcet="";
-       // this.Type="";
-        //this.Subtype="";
-    };
-    function cleanCart() {
-        var cartHelper =new CartHelper();
-        cartHelper.Clear();
-    }
-    function toAddCart(id, count, price){
-        var cartHelper =new CartHelper();
-        cartHelper.Add(id, count, price);
-    }
-    //购物车操作
-    var CartHelper = function () {
-        this.cookieName = "yxhCart";
-        this.Clear = function () {
-            var cart = new Cart();
-            this.Save(cart);
-            return cart;
-        };
-        //向购物车添加
-        this.Add = function (id, count, price) {
-            var carCount=parseInt($("#carCount").html());
-
-            var cart = this.Read();
-            var index = this.Find(id);
-            if (index != -1) {
-                cart.Items[index].Count = cart.Items[index].Count+1;
-                cart.Total +=(((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
-            } else {
-                var item = new CartItem();
-                item.Id = id;
-                 //item.Name = name;
-                item.Count = count;
-                item.Price = price;
-                cart.Items.push(item);
-                cart.Count++;
-                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
-            }
-            $("#carCount").html(carCount+1);
-            this.Save(cart);
-            return cart;
-        };
-        //改变数量
-        this.Change = function (id, count) {
-            var cart = this.Read();
-            var index = this.Find(id);
-            cart.Items[index].Count = count;
-            this.Save(cart);
-            return cart;
-        };
-        //移出购物车
-        this.Del = function (id) {
-            var cart = this.Read();
-            var index = this.Find(id);
-            if (index > -1) {
-                var item = cart.Items[index];
-                cart.Count--;
-                cart.Total = cart.Total - 1;
-                cart.Items.splice(index, 1);
-                this.Save(cart);
-            }
-            return cart;
-        };
-        //根据ID查找
-        this.Find = function (id) {
-            var cart = this.Read();
-            var index = -1;
-            for (var i = 0; i < cart.Items.length; i++) {
-                if (cart.Items[i].Id == id) {
-                    index = i;
-                }
-            }
-            return index;
-        };
-        //COOKIE操作
-        this.Save = function (cart) {
-            var source = "";
-            for (var i = 0; i < cart.Items.length; i++) {
-                if (source != "") { source += "|$|"; }
-                source += this.ItemToString(cart.Items[i]);
-            }
-            $.cookie(this.cookieName, source);
-        };
-        this.Read = function () {
-            //读取COOKIE中的集合
-            var source = $.cookie(this.cookieName);
-            var cart = new Cart();
-            if (source == null || source == "") {
-                return cart;
-            }
-            var arr = source.split("|$|");
-            cart.Count = arr.length;
-            for (var i = 0; i < arr.length; i++) {
-                var item = this.ItemToObject(arr[i]);
-                cart.Items.push(item);
-                cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
-            }
-            return cart;
-        };
-        this.ItemToString = function (item) {
-            return item.Id + "||" + item.Count + "||" + item.Price;
-        };
-        this.ItemToObject = function (str) {
-            var arr = str.split('||');
-            var item = new CartItem();
-            item.Id = arr[0];
-            //item.Name = unescape(arr[1]);
-            item.Count = arr[1];
-            item.Price = arr[2];
-           // item.Projcet =arr[4];
-           // item.Type= arr[5];
-           // item.Subtype=arr[6];
-            return item;
-        };
-    };
-
 
     var pagefunction = function() {
         // clears the variable if left blank
 
         var $form = $("#form").validate({
             rules: {
-                province: {required: true},
-                city: {required: true},
-                district: {required: true},
-                address: {required: true}
+
             },
             messages: {
-                province: {required: '请完善公司的省份信息'},
-                city: {required: '请完善公司的市信息'},
-                district: {required: '请完善公司的区域信息'},
-                address: {required: '请输入详细地址信息'}
+
             },
             onsubmit: true,
             submitHandler: function () {
                 $.ajax({
-                    url: '/product/apply',
+                    url: '/product/upateApply',
                     type: 'post',
                     data: $('#form').serialize(),
                     success: function (e) {
@@ -305,188 +191,10 @@
                 error.insertAfter(element.parent());
             }
         });
-
-
     };
-    function toCartShow(){
-        $("#cartList  tr:not(:first)").empty("");
-        var cartHtml="";
-        var supportAppId=$("#supportAppId").val();
-        if(supportAppId==""){
-
-
-        }else{
-            var cartHelper =new CartHelper();
-            var cart=cartHelper.Read();
-            var totalMoney=0;
-            var deliverFee=$("#deliverFee").val();
-            var discount=$("#discount").val();
-            var balance=$("#balance").val();
-            if(cart.Count>0){
-                for (var i = 0; i < cart.Count; i++) {
-                    var item =  cart.Items[i];
-                    var saleId=item.Id;
-                    $.ajax({
-                        url: '/product/getOrderSaleId',
-                        type: 'POST',
-                        async: false,
-                        data: {"saleId":saleId},
-                        success: function (data) {
-                            var sale =eval(data);
-                            var itemTotal=0;
-                            itemTotal+=item.Price*item.Count;
-                            totalMoney=totalMoney+itemTotal;
-                            var name="";
-                            var project=sale[0].projectName;
-                            var type=sale[0].typeName;
-                            var subtype=sale[0].subtypeName;
-                            if(sale[0].name==null){
-                                name="";
-                            }else{
-                                name=sale[0].name;
-                            }
-                            cartHtml+=" <tr><td>";
-                            cartHtml+="<input class=\"form-control\" name=\"items["+i+"].saleId\" value='"+item.Id+"' type=\"hidden\">";
-                            cartHtml+="<input class=\"form-control\"  value=\""+name+"\" type=\"hidden\"><span id=\"specHtml"+item.Id+"\"><span >"+name+"</span></td>";
-                            cartHtml+="<td><input class=\"form-control\" id=\"project\" name=\"items["+i+"].project\" value=\""+project+"\" type=\"hidden\"><span >"+project+"</span></td>";
-                            cartHtml+="<td><input class=\"form-control\" id=\"type\" name=\"items["+i+"].type\" value=\""+type+"\" type=\"hidden\"><span >"+type+"</span></td>";
-                            cartHtml+="<td><input class=\"form-control\" id=\"subtype\" name=\"items["+i+"].subtype\" value=\""+subtype+"\" type=\"hidden\"><span >"+subtype+"</span></td>";
-                            cartHtml+="<td><input class=\"form-control\" id=\"unit"+item.Id+"\"  name=\"items["+i+"].price\" value=\""+item.Price+"\" type=\"hidden\"><span id=\"unitHtml"+item.Id+"\">￥"+item.Price+"</span></td>";
-                            cartHtml+="<td><input class=\"form-control\" id=\"sourceCount"+item.Id+"\" name=\"sourceCount\" value=\""+item.Count+"\"  type=\"hidden\" ><input class=\"form-control\" id=\"count"+item.Id+"\" name=\"items["+i+"].count\" value=\""+item.Count+"\"  onchange=\"countChange('"+item.Id+"')\" ></td>";
-                            if(sale[0].canUseCoupon==true && discount==1.0){
-                                cartHtml+="<td>优惠码;<input type='text' name='items["+i+"].discountCode' id='youhui"+item.Id+"' value=''><a href=\"javascript:toYouhui('"+item.Id+"')\">获取优惠价格</a><input type='text' name='items["+i+"].discountPrice' id='youhuiPrice"+item.Id+"' value='0.00' readonly></td>";
-                            }else{
-                                cartHtml+="<td></td>";
-                            }
-                            cartHtml+="<td><input class=\"form-control\"  name='items["+i+"].totalPrice' id=\"price"+item.Id+"\"   value=\""+itemTotal+"\" type=\"hidden\"><span id=\"priceHtml"+item.Id+"\">￥"+itemTotal+"</span></td>";
-                            cartHtml+="<td><a href=\"javascript:toDelCart('"+item.Id+"')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\">删除</span></a>&nbsp;&nbsp;" ;
-                            cartHtml+="</td>";
-                            cartHtml+="</tr>";
-                        }
-                    });
-                }
-                totalMoney=Number(totalMoney)+Number(deliverFee);
-                var discount=$("#discount").val();
-                var discountPrice=totalMoney*discount;
-                var youhuiPriceTotal=totalMoney-discountPrice;
-                cartHtml+="<tr id=\"deliverFeeTr\">";
-                cartHtml+="<td  colspan=\"7\" >运费</td>";
-                cartHtml+="<td  ><strong><span id=\"deliverFeeHtml\">"+deliverFee+"</span></strong>";
-                cartHtml+="</tr>";
-                cartHtml+="<tr id=\"deliverFeeTr\">";
-                cartHtml+="<td  colspan=\"7\" >优惠金额</td>";
-                cartHtml+="<td  ><input class=\"form-control\" name=\"discountTotalPrice\" id=\"youhuiPriceTotal\" type=\"hidden\" value='"+youhuiPriceTotal+"'><strong><span  id=\"youhuiPriceTotalHtml\">"+youhuiPriceTotal+"</span></strong>";
-                cartHtml+="</tr>";
-                cartHtml+="<tr id=\"deliverFeeTr\">";
-                cartHtml+="<td  colspan=\"7\" >钱包金额</td>";
-                cartHtml+="<td  ><strong><span >"+balance+"</span></strong>";
-                cartHtml+="</tr>";
-                cartHtml+="</tr>";
-                cartHtml+="<tr id=\"discountTr\">";
-                cartHtml+="<td  colspan=\"7\" >折扣</td>";
-                cartHtml+="<td >*"+discount+" </td>";
-                cartHtml+="</tr>";
-                cartHtml+="<tr >";
-                cartHtml+="<td   colspan=\"7\" >总计</td>";
-                cartHtml+="<td  ><strong> <input class=\"form-control\" id=\"totalPrice\"  name=\"price\" value='"+totalMoney+"' type=\"hidden\"><span id=\"totalPriceHtml\">￥"+totalMoney+"</span></td>";
-                cartHtml+="</tr>";
-            }else{
-                cartHtml+="<tr>";
-                cartHtml+="<td ></td>";
-                cartHtml+="<td ></td>";
-                cartHtml+="<td ></td>";
-                cartHtml+="<td ></td>";
-                cartHtml+="<td ></td>";
-                cartHtml+="<td ></td>";
-                cartHtml+="<td ></td>";
-                cartHtml+="<td >无购物车数据</td>";
-                cartHtml+="</tr>";
-                $('#addOrder').addClass('disabled');
-            }
-            $("#cartList").append(cartHtml);
-
-        }
-
-
-
-    }
-    function toDelCart(id){
-        var cartHelper =new CartHelper();
-        cartHelper.Del(id);
-        toCartShow();
-    }
-    function countChange(saleId){
-        var count= $("#count"+saleId).val();
-        if(/^\d+$/.test(count)){
-            var sourceCount=$("#sourceCount"+saleId).val();
-            if(sourceCount>count){
-                var discount=$("#discount").val();
-                var unit=$("#unit"+saleId).val();
-                var minPrice=(sourceCount-count)*unit;
-                var price=$("#price"+saleId).val();
-                var totalPrice=$("#totalPrice").val();
-                $("#price"+saleId).val(count*unit);
-                $("#priceHtml"+saleId).html(count*unit);
-                var totalPriceHtml=(totalPrice-minPrice);
-                $("#totalPrice").val(totalPriceHtml);
-                $("#totalPriceHtml").html(totalPriceHtml);
-                var discountPrice=totalPriceHtml*discount;
-                $("#discountPrice").val(discountPrice);
-                $("#discountPriceHtml").html(discountPrice);
-                $("#sourceCount"+saleId).val(count);
-            }else if(sourceCount<count){
-                var discount=$("#discount").val();
-                var unit=$("#unit"+saleId).val();
-                var price=$("#price"+saleId).val();
-                var minPrice=(count-sourceCount)*unit;
-                var totalPrice=$("#totalPrice").val();
-                $("#price"+saleId).val(count*unit);
-                $("#priceHtml"+saleId).html(count*unit);
-                $("#totalPrice").val(Number(totalPrice)+Number(minPrice));
-                var totalPriceHtml=Number(totalPrice)+Number(minPrice);
-                $("#totalPriceHtml").html(totalPriceHtml);
-                var discountPrice=totalPriceHtml*discount;
-                $("#discountPrice").val(discountPrice);
-                $("#discountPriceHtml").html(discountPrice);
-                $("#sourceCount"+saleId).val(count);
-            }
-        }else if(count<=0) {
-            alert("数量必须大于0");
-        }else{
-            alert("数量必须为正整数");
-        }
-
-    }
-    function changeDeliverFee(type){
-        if(type==1){
-            var sourceDeliverFee=$("#sourceDeliverFee").val();
-            var deliverFee=$("#deliverFee").val();
-            if(deliverFee==0){
-                $("#deliverFeeHtml").html("+"+sourceDeliverFee);
-                var deliverFee= sourceDeliverFee;
-                $("#deliverFee").val(deliverFee);
-                var totalPrice=$("#totalPrice").val();
-                $("#totalPrice").val(Number(totalPrice)+Number(sourceDeliverFee));
-                var totalPriceHtml=Number(totalPrice)+Number(sourceDeliverFee);
-                $("#totalPriceHtml").html(totalPriceHtml);
-            }
-
-        }else if(type==2){
-            var deliverFee=$("#deliverFee").val();
-            var sourceDeliverFee=$("#sourceDeliverFee").val();
-            if(sourceDeliverFee!=0) {
-                $("#deliverFeeHtml").html("+0.00");
-                $("#deliverFee").val("0.00");
-                var totalPrice = $("#totalPrice").val();
-                var totalPriceHtml = Number(totalPrice) - Number(sourceDeliverFee);
-                $("#totalPrice").val(totalPriceHtml);
-                $("#totalPriceHtml").html(totalPriceHtml);
-            }
-        }
-    }
-    function toYouhui(saleId){
+    function toYouhui(saleId,count){
         var youhuiCode=$("#youhui"+saleId).val();
-        if(youhuiCode==""){
+        if(youhuiCode=="") {
             alert("请输入优惠码");
         }else{
             $.ajax({
@@ -497,32 +205,30 @@
                 success: function (data) {
                     var coupon=eval(data);
                     if(coupon.length<=0){
-                       alert("优惠码已使用或者优惠码不存在");
+                        alert("优惠码已使用或者优惠码不存在");
                     }else{
-                        var count=$("#count"+saleId).val();
                         if(count<coupon[0].needCount){
                             alert("购买数量没有达到"+coupon[0].needCount+"不能使用优惠券");
                         }else{
                             $("#youhuiPrice"+saleId).val(coupon[0].price);
                             var youhuiPriceTotal=  $("#youhuiPriceTotal").val();
                             var youhuiPriceTotalHtml=Number(youhuiPriceTotal)+Number(coupon[0].price);
-                            $("#youhuiPriceTotal").val(youhuiPriceTotalHtml);
-                            $("#youhuiPriceTotalHtml").val(youhuiPriceTotalHtml);
+                            $("#youhuiPriceTotal").val(youhuiPriceTotalHtml.toFixed(2));
+                            $("#youhuiPriceTotalHtml").html(youhuiPriceTotalHtml.toFixed(2));
                             var totalPrice = $("#totalPrice").val();
                             var totalPriceHtml = Number(totalPrice) - Number(coupon[0].price);
-                            $("#totalPrice").val(totalPriceHtml);
-                            $("#totalPriceHtml").html(totalPriceHtml);
+                            $("#totalPrice").val(totalPriceHtml.toFixed(2));
+                            $("#totalPriceHtml").html(totalPriceHtml.toFixed(2));
                             var price=$("#price"+saleId).val();
                             var priceHtml= Number(price) - Number(coupon[0].price);
-                            $("#price"+saleId).val(priceHtml);
-                            $("#priceHtml"+saleId).html(priceHtml);
+                            $("#price"+saleId).val(priceHtml.toFixed(2));
+                            $("#priceHtml"+saleId).html(priceHtml.toFixed(2));
                         }
                     }
                 }
             });
         }
     }
-    toCartShow();
     pagefunction();
 
 </script>

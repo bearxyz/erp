@@ -36,6 +36,8 @@ public class StockItem extends BaseDomain{
     private Goods goods;
     @Transient
     private String supplierName = "";
+    @Transient
+    private PurchasingOrderItem orderItem;
 
     @ManyToOne
     @JoinColumn(name = "STOCK_ID")
@@ -151,5 +153,13 @@ public class StockItem extends BaseDomain{
 
     public void setApproved(boolean approved) {
         this.approved = approved;
+    }
+
+    public PurchasingOrderItem getOrderItem() {
+        return orderItem;
+    }
+
+    public void setOrderItem(PurchasingOrderItem orderItem) {
+        this.orderItem = orderItem;
     }
 }

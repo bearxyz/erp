@@ -38,7 +38,7 @@ public class AliPayController {
     private SaleRepository saleRepository;
     @Autowired
     private StockRepository stockRepository;
-    
+
     private static final String APP_ID = "2017090708605502";
 
     private static final String CHARSET = "utf-8";
@@ -48,20 +48,19 @@ public class AliPayController {
     private static final String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmnvOYDv8ppTmThTULUKsQxgILOCFTLjep/JSvbdXchObrTEF+i1RDQvx0/qrfwKU6KG7SWOxFQ8UouDrfLYOym486u4zn7NUEGwPuiY2Nr+XK0m4dmZDUiEjjL5QP+kKnAMe1TaqSDSe4t54GYqpvMw7lFFfdvlS12t+dnrKBlrUpzLuL32rYHEl5lkL7U4B0zxVqjjpsYD5pRyhJ76wdrzxn6h4FY2IVJcAa/0+bpLLdVBSXiNcewx/nvSDQgl3pCitY7Jyogh1bZ0flTPcmo6vMlSTbS8WGV/XlFQktnFe3VsUFO4MJS/kVJyh2ec9qouybGGimeQqysWLNMootwIDAQAB";
 
     @RequestMapping("/pay/{id}")
-    public void pay(@PathVariable("id")String id, HttpServletRequest httpRequest,
+    public void pay(@PathVariable("id") String id, HttpServletRequest httpRequest,
                     HttpServletResponse httpResponse) throws IOException {
-        Order order = orderRepository.findOrderByCode(id);
-        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", APP_ID,APP_PRIVATE_KEY, "json", CHARSET, ALIPAY_PUBLIC_KEY, "RSA2");
+        Order order = orderRepository.findOne(id);
+        AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", APP_ID, APP_PRIVATE_KEY, "json", CHARSET, ALIPAY_PUBLIC_KEY, "RSA2");
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();//创建API对应的request
-        alipayRequest.setReturnUrl("http://erp.xjdpx.com/#/my/order");
-        alipayRequest.setNotifyUrl("http://erp.xjdpx.com/alipay/notify");//在公共参数中设置回跳和通知地址
+        alipayRequest.setReturnUrl("http://erp.xjdpx.com/alipay/notify");
         alipayRequest.setBizContent("{" +
-                "    \"out_trade_no\":\""+order.getCode()+"\"," +
+                "    \"out_trade_no\":\"" + order.getCode() + "\"," +
                 "    \"product_code\":\"FAST_INSTANT_TRADE_PAY\"," +
-                "    \"total_amount\":"+order.getPrice()+"," +
-                "    \"subject\":\"订单号:"+order.getCode()+"\"" +
+                "    \"total_amount\":" + order.getPrice() + "," +
+                "    \"subject\":\"订单号:" + order.getCode() + "\"" +
                 "  }");//填充业务参数
-        String form="";
+        String form = "";
         try {
             form = alipayClient.pageExecute(alipayRequest).getBody(); //调用SDK生成表单
         } catch (AlipayApiException e) {
@@ -73,11 +72,11 @@ public class AliPayController {
         httpResponse.getWriter().close();
     }
 
-    @RequestMapping(value = "/notify", method = RequestMethod.POST)
+    @RequestMapping(value = "/notify")
     public String nofify(HttpServletRequest httpRequest) throws UnsupportedEncodingException, AlipayApiException {
-        Map<String,String> params = new HashMap<String,String>();
-        Map<String,String[]> requestParams = httpRequest.getParameterMap();
-        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext();) {
+        Map<String, String> params = new HashMap<String, String>();
+        Map<String, String[]> requestParams = httpRequest.getParameterMap();
+        for (Iterator<String> iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
             String name = (String) iter.next();
             String[] values = (String[]) requestParams.get(name);
             String valueStr = "";
@@ -90,71 +89,53 @@ public class AliPayController {
             params.put(name, valueStr);
         }
 
-        boolean signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, CHARSET, "RSA2"); //调用SDK验证签名
-        if(signVerified) {//验证成功
-            //商户订单号
-            String out_trade_no = new String(httpRequest.getParameter("out_trade_no").getBytes("ISO-8859-1"),"UTF-8");
+        //商户订单号
+        String out_trade_no = new String(httpRequest.getParameter("out_trade_no").getBytes("ISO-8859-1"), "UTF-8");
 
-            //支付宝交易号
-            String trade_no = new String(httpRequest.getParameter("trade_no").getBytes("ISO-8859-1"),"UTF-8");
+        //支付宝交易号
+        String trade_no = new String(httpRequest.getParameter("trade_no").getBytes("ISO-8859-1"), "UTF-8");
 
-            //交易状态
-            String trade_status = new String(httpRequest.getParameter("trade_status").getBytes("ISO-8859-1"),"UTF-8");
+        //判断该笔订单是否在商户网站中已经做过处理
+        //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
+        //如果有做过处理，不执行商户的业务程序
 
-            if(trade_status.equals("TRADE_FINISHED")){
-                //判断该笔订单是否在商户网站中已经做过处理
-                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-                //如果有做过处理，不执行商户的业务程序
-
-                //注意：
-                //退款日期超过可退款期限后（如三个月可退款），支付宝系统发送该交易状态通知
-            }else if (trade_status.equals("TRADE_SUCCESS")){
-                //判断该笔订单是否在商户网站中已经做过处理
-                //如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
-                //如果有做过处理，不执行商户的业务程序
-
-                //注意：
-                //付款完成后，支付宝系统发送该交易状态通知
-                Order order = orderRepository.findOrderByCode(out_trade_no);
-                order.setTradeNo(trade_no);
-                order.setStatus(2);
-                Sale sale = null;
-                if (order.getSaleId() != null) sale = saleRepository.findOne(order.getSaleId());
-                if (sale != null && !sale.getCategory().equals("GOODS_NORMAL")) {
-                    sale.setBuyer(sale.getBuyer()+1);
-                    saleRepository.save(sale);
-                    saleRepository.insertCompanyUser(order.getCompanyId(), sale.getId(), sale.getCategory());
-                } else {
-                    Stock stock = new Stock();
-                    stock.setType("STOCK-OUT");
-                    stock.setMask("STOCK_OUT_ORDER");
-                    stock.setCode(OrderUtils.genSerialnumber("CK"));
-                    stock.setPurpose("销售出库");
-                    stock.setDeliverAddress(order.getProvince() + order.getCity() + order.getDistrict() + order.getAddress());
-                    for (OrderItem item : order.getItems()) {
-                        Sale sale1 = saleRepository.findOne(item.getSaleId());
-                        StockItem stockItem = new StockItem();
-                        Sale s = saleRepository.findOne(item.getSaleId());
-                        s.setBuyer(s.getBuyer()+item.getCount());
-                        saleRepository.save(s);
-                        stockItem.setGoodsId(sale1.getGoodsId());
-                        stockItem.setUnit(sale1.getUnit());
-                        stockItem.setCount(item.getCount());
-                        stockItem.setPrice(item.getPrice());
-                        stock.getItems().add(stockItem);
-                    }
-                    stock.setOrderId(order.getId());
-                    stockRepository.save(stock);
-                }
-                order.setStatus(2);
-                orderRepository.save(order);
+        //注意：
+        //付款完成后，支付宝系统发送该交易状态通知
+        Order order = orderRepository.findOrderByCode(out_trade_no);
+        order.setTradeNo(trade_no);
+        order.setStatus(2);
+        Sale sale = null;
+        if (order.getSaleId() != null) sale = saleRepository.findOne(order.getSaleId());
+        if (sale != null && !sale.getCategory().equals("GOODS_NORMAL")) {
+            sale.setBuyer(sale.getBuyer() + 1);
+            saleRepository.save(sale);
+            saleRepository.insertCompanyUser(order.getCompanyId(), sale.getId(), sale.getCategory());
+        } else {
+            Stock stock = new Stock();
+            stock.setType("STOCK-OUT");
+            stock.setMask("STOCK_OUT_ORDER");
+            stock.setCode(OrderUtils.genSerialnumber("CK"));
+            stock.setPurpose("销售出库");
+            stock.setDeliverAddress(order.getProvince() + order.getCity() + order.getDistrict() + order.getAddress());
+            for (OrderItem item : order.getItems()) {
+                Sale sale1 = saleRepository.findOne(item.getSaleId());
+                StockItem stockItem = new StockItem();
+                Sale s = saleRepository.findOne(item.getSaleId());
+                s.setBuyer(s.getBuyer() + item.getCount());
+                saleRepository.save(s);
+                stockItem.setGoodsId(sale1.getGoodsId());
+                stockItem.setPackageId(sale1.getPackageId());
+                stockItem.setUnit(sale1.getUnit());
+                stockItem.setCount(item.getCount());
+                stockItem.setPrice(item.getPrice());
+                stock.getItems().add(stockItem);
             }
-
-            return "success";
-
-        }else {//验证失败
-            return "fail";
+            stock.setOrderId(order.getId());
+            stockRepository.save(stock);
         }
+        order.setStatus(2);
+        orderRepository.save(order);
+        return "redirect:/#/my/order";
     }
 
 }

@@ -193,6 +193,35 @@
                     </section>
                 </div>
             </section>
+            <section th:if="${taskKey=='confirm'}">
+                <div class="row">
+                    <section class="col col-6">
+                        <label class="label">收款日期：</label>
+                        <label class="input">
+                            <i class="icon-append fa fa-calendar"></i>
+                            <input type="text" name="recieveMoneyDate" class="hasDatepicker" id="recieveMoneyDate" />
+                        </label>
+                    </section>
+                    <section class="col col-6">
+                        <label class="label">收款银行：</label>
+                        <label class="input">
+                            <input type="text" name="recieveMoneyBank" id="recieveMoneyBank" />
+                        </label>
+                    </section>
+                    <section class="col col-6">
+                        <label class="label">收款金额：</label>
+                        <label class="input">
+                            <input type="text" name="recieveMoney" id="recieveMoney" class="number" />
+                        </label>
+                    </section>
+                    <section class="col col-6">
+                        <label class="label">合同编号：</label>
+                        <label class="input">
+                            <input type="text" name="contractCode" id="contractCode" />
+                        </label>
+                    </section>
+                </div>
+            </section>
             <section>
                 <label class="label">合同：</label>
                 <table>
@@ -234,7 +263,7 @@
             <button type="button" class="btn btn-primary" id="pass" th:if="${taskKey!='confirm'}">
                 同 意
             </button>
-            <button type="button" class="btn btn-primary" id="pass" th:if="${taskKey=='confirm'}">
+            <button type="button" class="btn btn-primary" id="pay" th:if="${taskKey=='confirm'}">
                 已支付
             </button>
             <button type="button" class="btn btn-danger" id="deny" th:if="${taskKey!='confirm'}">
@@ -267,9 +296,32 @@
     BindDictItem("agentType", "CONTRACT_TYPE", "签约类型", [[${contract.agentType}]]);
     BindDictItem("agentLevel", "CLIENT_LEVEL_TYPE", "代理级别", [[${contract.agentLevel}]]);
 
+    $('#recieveMoneyDate').datetimepicker({
+        format: 'yyyy-mm-dd',
+        minView: 'month',
+        language: 'zh-CN',
+        autoclose: true
+    });
+
     var pagefunction = function () {
 
     };
+
+    $('#pay').on('click', function () {
+        $.ajax({
+            url: '/contract/pay',
+            type:'POST',
+            data:{id: [[${contract.id}]], recieveMoneyDate: $('#recieveMoneyDate').val(), recieveMoneyBank: $('#recieveMoneyBank').val(), recieveMoney: $('#recieveMoney').val(), contractCode: $('contractCode').val()},
+            success: function () {
+                var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';
+                completeTask([[${taskId}]], [{key: taskKey + 'Pass', value: true, type: 'B'}, {
+                    key: taskKey + 'Memo',
+                    value: memo,
+                    type: 'S'
+                }]);
+            }
+        });
+    });
 
     $('#pass').on('click', function () {
         var memo = ($('#memo').val() != "") ? $('#memo').val() : '同意';

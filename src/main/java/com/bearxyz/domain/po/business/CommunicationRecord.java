@@ -23,6 +23,8 @@ public class CommunicationRecord extends BaseDomain {
     private String solution = "";
     @Column(length = 500)
     private String memo = "";
+    @Column
+    private Boolean successed = false;
 
     @Transient
     private String operator = "";
@@ -65,5 +67,13 @@ public class CommunicationRecord extends BaseDomain {
 
     public void setOperator(String operator) {
         this.operator = operator;
+    }
+
+    public Boolean isSuccessed() {
+        return successed;
+    }
+
+    public void setSuccessed(Boolean successed) {
+        this.successed = successed;
     }
 }

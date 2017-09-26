@@ -173,8 +173,10 @@
         var html = '<div class="btn-group btn-group-justified">';
         if (!rowObject.hasAccount)
             html += '<a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#remoteModal" href="client/setAccount/' + rowObject.id + '">分配账号</a>';
-        else
+        else {
             html += '<a class="btn btn-primary btn-xs" data-toggle="modal" data-target="#remoteModal" href="client/resetPwd/' + rowObject.id + '">重置密码</a>';
+            html += '<a class="btn btn-primary btn-xs" href="#/contract/create/' + rowObject.id + '">续约</a>';
+        }
         try {
             if (setEditBtn) html += setEditBtn(rowObject.id);
         } catch (e) {

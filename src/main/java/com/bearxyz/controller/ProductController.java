@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,6 +52,10 @@ public class ProductController {
     private SupportApplyRepository supportApplyRepository;
     @Autowired
     private CouponRepository couponRepository;
+    @Autowired
+    private ContractRepository contractRepository;
+    @Autowired
+    private DictRepository dictRepository;
 
 
     @RequestMapping("/index")
@@ -72,8 +78,12 @@ public class ProductController {
             categorys.add("GOODS_SUPPORT");
         }
         List<Sale> saleList =saleService.getSaleByTypeList(categorys);
-        if(saleList !=null && saleList.size()>0){
-            for(Sale sale:saleList){
+        List<Contract> contracts = contractRepository.findAvaliableContractByCompanyId(user.getCompanyId());
+        Iterator<Sale> saleIterator = saleList.iterator();
+
+            while (saleIterator.hasNext()){
+                Sale sale = saleIterator.next();
+                boolean has = false;
                 if(sale.getProject() !=null && (!sale.getProject().equals(""))){
                     Dict dict =sysService.getDictByMask(sale.getProject());
                     sale.setProjectName(dict.getName());
@@ -86,19 +96,20 @@ public class ProductController {
                     Dict dict =sysService.getDictByMask(sale.getSubtype());
                     sale.setSubtypeName(dict.getName());
                 }
+                Dict dict = dictRepository.findByMask(sale.getProject());
+                for(Contract contract: contracts){
+                    if(contract.getProject().equals(dict.getName()))
+                        has = true;
+                }
+                if(!has)
+                    saleIterator.remove();
             }
-        }
         ObjectMapper mapper = new ObjectMapper();
         //System.out.print("saleList==="+mapper.writeValueAsString(saleList));
-        return mapper.writeValueAsString(saleList);
+        return mapper.writeValueAsString(saleIterator);
     }
     @RequestMapping(value = "/cart", method = RequestMethod.GET)
     public String cart(Model model) {
-       // model.addAttribute("user", new User());
-        return "/product/cart";
-    }
-    @RequestMapping(value = "/order", method = RequestMethod.GET)
-        public String order(Model model) {
         User user = (User) SecurityUtils.getSubject().getPrincipal();
         Company company= companyRepository.findOne(user.getCompanyId());
         List<Config> configList = configRepository.findAll();
@@ -108,15 +119,35 @@ public class ProductController {
                 deliverFee = configList.get(0).getDeliverFee();
             }
         }
+        Float discount=clientService.getClientBenefit(user.getId());
+        model.addAttribute("company", company);
+        model.addAttribute("deliverFee",deliverFee);
+        return "/product/cart";
+    }
+    @RequestMapping(value = "/order/{id}", method = RequestMethod.GET)
+        public String order(Model model,@PathVariable("id")String id) {
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        Company company= companyRepository.findOne(user.getCompanyId());
+        Order order =orderService.getOrderById(id);
         float balance=(float)0.00;
         if(company.getBalance() !=null){
             balance=company.getBalance();
         }
+
         Float discount=clientService.getClientBenefit(user.getId());
+        Float discountTotalPrice=(float)0.00f;
+        //Float discount=(float)0.8;
+        if(discount!=0.1){
+            discountTotalPrice=order.getPrice()-order.getPrice()*discount;
+        }
+        DecimalFormat decimalFormat=new DecimalFormat(".00");
+        Float totalPrice=order.getPrice()*discount;
         model.addAttribute("company", company);
-        model.addAttribute("deliverFee",deliverFee);
         model.addAttribute("discount",discount);
         model.addAttribute("balance",balance);
+        model.addAttribute("order",order);
+        model.addAttribute("discountTotalPrice",decimalFormat.format(discountTotalPrice));
+        model.addAttribute("totalPrice",decimalFormat.format(totalPrice));
         return "/product/order";
     }
 
@@ -175,6 +206,37 @@ public class ProductController {
         orderService.apply(order);
         return "{success: true}";
     }
+    @RequestMapping(value = "/upateApply", method = RequestMethod.POST)
+    @ResponseBody
+    public String upateApply(Order order,String saleId,String discountCode,String discountPrice,String prices ,SessionStatus status, HttpServletRequest request) {
+        Order order1=orderService.getOrderById(order.getId());
+        order1.setPrice(order.getPrice());
+        order1.setDiscountTotalPrice(order.getDiscountTotalPrice());
+        if(saleId !=null &&  discountCode ==null &&  discountPrice ==null && prices !=null ){
+            String [] saleIds =saleId.split(",");
+            String [] discountCodes =discountCode.split(",");
+            String [] discountPrices =discountPrice.split(",");
+            String [] pricess =prices.split(",");
+            for(int i=0;i<saleIds.length;i++){
+                List<OrderItem> orderItems =order1.getItems();
+                for(int k=0;k<orderItems.size();k++){
+                    OrderItem orderItem =orderItems.get(k);
+                    if(orderItem.getSaleId().equals(saleIds[i])){
+                        if(discountPrices[i].equals("")){
+                            orderItem.setDiscountPrice((float)0.00);
+                        }else{
+                            orderItem.setDiscountPrice(Float.parseFloat(discountPrices[i]));
+                        }
+                        orderItem.setDiscountCode(discountCodes[i]);
+                        orderItem.setTotalPrice(Float.parseFloat(pricess[i]));
+                    };
+                }
+            }
+        }
+        orderService.apply(order1);
+        return "{success: true}";
+    }
+
 
     @RequestMapping(value = "/secindex", method = RequestMethod.GET)
     public String secindex(){

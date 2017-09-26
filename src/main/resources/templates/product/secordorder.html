@@ -76,9 +76,9 @@
                                         <thead>
                                         <tr>
                                             <th>商品名称</th>
-                                            <th>项目</th>
-                                            <th>分类</th>
-                                            <th>项目分类</th>
+                                            <th>科目名称</th>
+                                            <th>科目类型</th>
+                                            <th>系列名称</th>
                                             <th>单价</th>
                                             <th>数量</th>
                                             <th>小计</th>
@@ -177,21 +177,6 @@
                 //item.Name = name;
                 item.Count = count;
                 item.Price = price;
-                //if (project == "null" ){
-                //  item.project="";
-                // }else{
-                //item.Projcet=project;
-                // }
-                // if (type== "null"){
-                //  item.Type="";
-                // }else{
-                //   item.Type=type;
-                // }
-                // if (subtype == "null"){
-                //   item.Subtype="";
-                // }else{
-                //   item.Subtype=subtype;
-                // }
                 cart.Items.push(item);
                 cart.Count++;
                 cart.Total += (((cart.Items[0].Count * 100) * (cart.Items[0].Price * 100)) / 10000);
@@ -342,28 +327,13 @@
                         itemTotal+=item.Price*item.Count;
                         totalMoney=totalMoney+itemTotal;
                         var name="";
-                        var project="";
-                        var type="";
-                        var subtype="";
+                        var project=sale[0].projectName;
+                        var type=sale[0].typeName;
+                        var subtype=sale[0].subtypeName;
                         if(sale[0].name==null){
                             name="";
                         }else{
                             name=sale[0].name;
-                        }
-                        if(sale[0].project==null){
-                            project="";
-                        }else{
-                            project=sale[0].project;
-                        }
-                        if(sale[0].type==null){
-                            type="";
-                        }else{
-                            type=sale[0].type;
-                        }
-                        if(sale[0].subtype==null){
-                            subtype="";
-                        }else{
-                            subtype=sale[0].subtype;
                         }
                         cartHtml+=" <tr><td>";
                         cartHtml+="<input class=\"form-control\" name=\"items["+i+"].saleId\" value='"+item.Id+"' type=\"hidden\">";
@@ -373,13 +343,13 @@
                         cartHtml+="<td><input class=\"form-control\" id=\"subtype\" name=\"items["+i+"].subtype\" value=\""+subtype+"\" type=\"hidden\"><span >"+subtype+"</span></td>";
                         cartHtml+="<td><input class=\"form-control\" id=\"unit"+item.Id+"\"  name=\"items["+i+"].price\" value=\""+item.Price+"\" type=\"hidden\"><span id=\"unitHtml"+item.Id+"\">￥"+item.Price+"</span></td>";
                         cartHtml+="<td><input class=\"form-control\" id=\"sourceCount"+item.Id+"\" name=\"sourceCount\" value=\""+item.Count+"\"  type=\"hidden\" ><input class=\"form-control\" id=\"count"+item.Id+"\" name=\"items["+i+"].count\" value=\""+item.Count+"\"  onchange=\"countChange('"+item.Id+"')\" ></td>";
-                        cartHtml+="<td><input class=\"form-control\" id=\"price"+item.Id+"\"   value=\""+itemTotal+"\" type=\"hidden\"><span id=\"priceHtml"+item.Id+"\">￥"+itemTotal+"</span></td>";
+                        cartHtml+="<td><input class=\"form-control\" id=\"price"+item.Id+"\"  name=\"items["+i+"].totalPrice\"  value=\""+itemTotal+"\" type=\"hidden\"><span id=\"priceHtml"+item.Id+"\">￥"+itemTotal+"</span></td>";
                         cartHtml+="<td><a href=\"javascript:toDelCart('"+item.Id+"')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\">删除</span></a></td>";
                         cartHtml+="</tr>";
                     }
                 });
             }
-            totalMoney=Number(totalMoney)+Number(deliverFee);
+            totalMoney=(Number(totalMoney)+Number(deliverFee)).toFixed(2);
             cartHtml+="<tr id=\"deliverFeeTr\">";
             cartHtml+="<td  colspan=\"6\" >运费</td>";
             cartHtml+="<td  ><strong><span id=\"deliverFeeHtml\">"+deliverFee+"</span></strong>";
@@ -417,22 +387,22 @@
                 var minPrice=(sourceCount-count)*unit;
                 var price=$("#price"+saleId).val();
                 var totalPrice=$("#totalPrice").val();
-                $("#price"+saleId).val(count*unit);
-                $("#priceHtml"+saleId).html(count*unit);
+                $("#price"+saleId).val((count*unit).toFixed(2));
+                $("#priceHtml"+saleId).html((count*unit).toFixed(2));
                 var totalPriceHtml=totalPrice-minPrice;
-                $("#totalPrice").val(totalPrice-minPrice);
-                $("#totalPriceHtml").html(totalPriceHtml);
+                $("#totalPrice").val(totalPriceHtml.toFixed(2));
+                $("#totalPriceHtml").html(totalPriceHtml.toFixed(2));
                 $("#sourceCount"+saleId).val(count);
             }else if(sourceCount<count){
                 var unit=$("#unit"+saleId).val();
                 var price=$("#price"+saleId).val();
                 var minPrice=(count-sourceCount)*unit;
                 var totalPrice=$("#totalPrice").val();
-                $("#price"+saleId).val(count*unit);
-                $("#priceHtml"+saleId).html(count*unit);
-                $("#totalPrice").val(Number(totalPrice)+Number(minPrice));
+                $("#price"+saleId).val((count*unit).toFixed(2));
+                $("#priceHtml"+saleId).html((count*unit).toFixed(2));
                 var totalPriceHtml=Number(totalPrice)+Number(minPrice);
-                $("#totalPriceHtml").html(totalPriceHtml);
+                $("#totalPrice").val(totalPriceHtml.toFixed(2));
+                $("#totalPriceHtml").html(totalPriceHtml.toFixed(2));
                 $("#sourceCount"+saleId).val(count);
             }
         }else if(count<=0) {
@@ -451,9 +421,9 @@
                 var deliverFee= sourceDeliverFee;
                 $("#deliverFee").val(deliverFee);
                 var totalPrice=$("#totalPrice").val();
-                $("#totalPrice").val(Number(totalPrice)+Number(sourceDeliverFee));
                 var totalPriceHtml=Number(totalPrice)+Number(sourceDeliverFee);
-                $("#totalPriceHtml").html(totalPriceHtml);
+                $("#totalPrice").val(totalPriceHtml.toFixed(2));
+                $("#totalPriceHtml").html(totalPriceHtml.toFixed(2));
             }
 
         }else if(type==2){
@@ -463,9 +433,9 @@
                 $("#deliverFeeHtml").html("+0.00");
                 $("#deliverFee").val("0.00");
                 var totalPrice = $("#totalPrice").val();
-                $("#totalPrice").val(Number(totalPrice) - Number(sourceDeliverFee));
                 var totalPriceHtml = Number(totalPrice) - Number(sourceDeliverFee);
-                $("#totalPriceHtml").html(totalPriceHtml);
+                $("#totalPrice").val(totalPriceHtml.toFixed(2));
+                $("#totalPriceHtml").html(totalPriceHtml.toFixed(2));
             }
         }
     }

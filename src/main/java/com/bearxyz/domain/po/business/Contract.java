@@ -48,7 +48,7 @@ public class Contract extends BaseDomain {
     @Column(length = 50)
     private String agentAddress = "";
     @Column
-    private Integer duration = 0;
+    private Float duration = (float)0.0;
     @Column(length = 50)
     private String project = "";
     @Column(length = 50)
@@ -101,6 +101,14 @@ public class Contract extends BaseDomain {
     private String inchargePhone="";
     @Column
     private Boolean second = false;
+    @Column
+    private Date recieveMoneyDate;
+    @Column(length = 50)
+    private String recieveMoneyBank = "";
+    @Column
+    private Float recieveMoney = (float)0.0;
+    @Column
+    private String contractCode = "";
 
     @Transient
     private String projectName = "";
@@ -443,11 +451,11 @@ public class Contract extends BaseDomain {
         this.agentDistrict = agentDistrict;
     }
 
-    public Integer getDuration() {
+    public Float getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(Float duration) {
         this.duration = duration;
     }
 
@@ -547,5 +555,35 @@ public class Contract extends BaseDomain {
         this.second = second;
     }
 
+    public Date getRecieveMoneyDate() {
+        return recieveMoneyDate;
+    }
 
+    public void setRecieveMoneyDate(Date recieveMoneyDate) {
+        this.recieveMoneyDate = recieveMoneyDate;
+    }
+
+    public String getRecieveMoneyBank() {
+        return recieveMoneyBank;
+    }
+
+    public void setRecieveMoneyBank(String recieveMoneyBank) {
+        this.recieveMoneyBank = recieveMoneyBank;
+    }
+
+    public Float getRecieveMoney() {
+        return recieveMoney;
+    }
+
+    public void setRecieveMoney(Float recieveMoney) {
+        this.recieveMoney = recieveMoney;
+    }
+
+    public String getContractCode() {
+        return contractCode;
+    }
+
+    public void setContractCode(String contractCode) {
+        this.contractCode = contractCode;
+    }
 }

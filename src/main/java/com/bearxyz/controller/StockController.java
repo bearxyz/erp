@@ -4,11 +4,9 @@ package com.bearxyz.controller;
 import com.bearxyz.common.DataTable;
 import com.bearxyz.common.PaginationCriteria;
 import com.bearxyz.domain.po.business.*;
+import com.bearxyz.domain.po.business.Package;
 import com.bearxyz.domain.po.sys.User;
-import com.bearxyz.repository.OrderRepository;
-import com.bearxyz.repository.PurchasingOrderItemRepository;
-import com.bearxyz.repository.StockRepository;
-import com.bearxyz.repository.WarehouseRepository;
+import com.bearxyz.repository.*;
 import com.bearxyz.service.business.GoodsService;
 import com.bearxyz.service.business.OfficialPartnerService;
 import com.bearxyz.service.business.StockService;
@@ -20,6 +18,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
@@ -29,6 +28,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/stock")
 @SessionAttributes("stock")
+@Transactional
 public class StockController {
 
     @Autowired
@@ -54,6 +54,12 @@ public class StockController {
 
     @Autowired
     private StockService service;
+
+    @Autowired
+    private GoodsRepository goodsRepository;
+
+    @Autowired
+    private PackageRepository packageRepository;
 
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String index() {
@@ -180,8 +186,13 @@ public class StockController {
                 orderRepository.save(order);
             }
         }
-        for (StockItem item : stock.getItems())
+        for (StockItem item : stock.getItems()) {
+            Goods goods = goodsRepository.findOne(item.getGoodsId());
+            Package pak = packageRepository.findOne(item.getPackageId());
+            goods.setStock(goods.getStock()-pak.getAmmount()*item.getCount());
             item.setApproved(true);
+            goodsRepository.save(goods);
+        }
         service.save(stock);
         status.setComplete();
         return "{success: true}";
