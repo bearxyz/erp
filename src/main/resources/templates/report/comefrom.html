@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge"/>
+    <title></title>
+</head>
+<body>
+<!-- Bread crumb is created dynamically -->
+<!-- row -->
+<div class="row">
+
+    <!-- col -->
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-4">
+        <h1 class="page-title txt-color-blueDark">
+            <!-- PAGE HEADER -->
+            <i class="fa-fw fa fa-table"></i>
+            客户来源
+        </h1>
+    </div>
+    <!-- end col -->
+
+</div>
+<!-- end row -->
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+
+    <!-- row -->
+    <div class="row">
+
+        <!-- NEW WIDGET START -->
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false"
+                 data-widget-deletebutton="false"
+                 data-widget-fullscreenbutton="false" data-widget-togglebutton="false">
+                <header>
+                    <span class="widget-icon">
+                        <i class="fa fa-table"></i>
+                    </span>
+                    <h2><strong> 客户来源</strong></h2>
+                </header>
+                <div>
+                    <div class="widget-body no-padding" id="grid-content">
+                        <table id="dt_basic" class="table table-striped table-bordered table-hover table-checkable"
+                               width="100%">
+                            <thead>
+                            <tr>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                                <th class="hasinput"><input type="text" class="form-control"/></th>
+                            </tr>
+                            <tr>
+                                <th>客户来源</th>
+                                <th>客户状态</th>
+                                <th>咨询项目</th>
+                                <th>咨询省份</th>
+                                <th>咨询区域</th>
+                                <th>信息录入人</th>
+                                <th>招商专员</th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <!-- WIDGET END -->
+
+    </div>
+
+    <!-- end row -->
+
+</section>
+<!-- end widget grid -->
+
+<!-- Dynamic Modal -->
+<div class="modal fade" id="remoteModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" style="width:1000px;">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+
+<script type="text/javascript">
+
+    pageSetUp();
+
+    var pagefunction = function () {
+
+        var responsiveHelper_dt_basic = undefined;
+        var breakpointDefinition = {tablet: 1024, phone: 480};
+
+        var otable = $('#dt_basic').DataTable({
+            "processing": true,
+            ajax: {
+                url: "/report/comefrom",
+                "type": "POST",
+                "data": function (d) {
+                }
+            },
+            "columns": [
+                {"data": "comeFrom"},
+                {"data": null, render: formatStatus},
+                {"data": "consultProject"},
+                {"data": "consultProvince"},
+                {"data": null, render: formatArea},
+                {"data": null, render: formatCreator},
+                {"data": null, render: formatSaleman}
+            ],
+            "autoWidth": true,
+            "language": CONSTANT.DATA_TABLES.DEFAULT_OPTION.LANGUAGE,
+            "bStateSave": true,
+            "preDrawCallback": function () {
+                if (!responsiveHelper_dt_basic) {
+                    responsiveHelper_dt_basic = new ResponsiveDatatablesHelper($('#dt_basic'), breakpointDefinition);
+                }
+            },
+            "rowCallback": function (nRow) {
+                responsiveHelper_dt_basic.createExpandIcon(nRow);
+            },
+            "drawCallback": function (oSettings) {
+                responsiveHelper_dt_basic.respond();
+            },
+            "sDom": "<'dt-toolbar'<'col-xs-12 col-sm-6'><'col-sm-6 col-xs-12 hidden-xs'l>>t<'dt-toolbar-footer'<'col-sm-6 col-xs-12 hidden-xs'i><'col-sm-6 col-xs-12'p>>"
+        });
+
+        $("#dt_basic thead th input[type=text]").on('keyup change', function () {
+            otable.column($(this).parent().index() + ':visible')
+                .search(this.value)
+                .draw();
+
+        });
+
+    }
+
+    loadScript("js/plugin/datatables/jquery.dataTables.min.js", function () {
+        loadScript("js/plugin/datatables/dataTables.tableTools.min.js", function () {
+            loadScript("js/plugin/datatables/dataTables.bootstrap.min.js", function () {
+                loadScript("js/plugin/datatable-responsive/datatables.responsive.min.js", pagefunction)
+            });
+        });
+    });
+
+    function formatStatus(cellValue, options, rowObject) {
+        if (rowObject.signed)
+            return "<span class='label label-success'>已签约</span>";
+        else if (rowObject.failed)
+            return "<span class='label label-default'>签约失败</span>";
+        else
+            return "<span class='label label-warning'>准客户</span>";
+    }
+    function formatArea(cellValue, options, rowObject) {
+        return rowObject.consultCity + "-" + rowObject.consultDistrict;
+    }
+    function formatCreator(cellValue, options, rowObject) {
+        if(rowObject.user!=null)
+            return rowObject.creator.firstName+rowObject.creator.lastName;
+        else
+            return "";
+    }
+    function formatSaleman(cellValue, options, rowObject) {
+        if(rowObject.user!=null)
+            return rowObject.user.firstName+rowObject.user.lastName;
+        else
+            return "";
+    }
+</script>
+</body>
+</html>

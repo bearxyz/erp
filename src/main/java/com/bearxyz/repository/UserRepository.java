@@ -38,4 +38,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     List<User> findAllByCompanyIdOrParentCompanyId(String cid, String pcid);
 
+    @Query(value = "SELECT u.* FROM SYS_USER u INNER JOIN T_USER_PROVINCE up ON u.ID=up.USER_ID INNER JOIN SYS_ROLE_USER ru ON ru.USER_ID=u.ID INNER JOIN SYS_ROLE r ON r.ID=ru.ROLE_ID WHERE up.PROVINCE=?1 AND r.MASK='ROLE_DEPARTMENT_INVITEINVESTMENTS'", nativeQuery = true)
+    User findUserByProvince(String province);
+
 }

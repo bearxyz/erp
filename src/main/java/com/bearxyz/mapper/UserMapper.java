@@ -1,5 +1,6 @@
 package com.bearxyz.mapper;
 
+import com.bearxyz.domain.po.sys.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -27,4 +28,10 @@ public interface UserMapper {
 
     @Delete("DELETE from T_USER_CLIENT WHERE USER_ID = #{uid}")
     void deleteClientByUser(String uid);
+
+    @Select("SELECT u.* FROM SYS_USER u INNER JOIN T_USER_PROVINCE up ON u.ID=up.USER_ID INNER JOIN SYS_ROLE_USER ru ON ru.USER_ID=u.ID INNER JOIN SYS_ROLE r ON r.ID=ru.ROLE_ID WHERE up.PROVINCE=#{province} AND r.MASK='ROLE_DEPARTMENT_INVITEINVESTMENTS'")
+    User findUserByProvince(String province);
+
+    @Select("SELECT u.* FROM SYS_USER u INNER JOIN T_USER_CLIENT uc ON u.ID=uc.USER_ID WHERE uc.COMPANY_ID=#{companyId}")
+    User findUserByClientId(String companyId);
 }

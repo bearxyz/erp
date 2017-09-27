@@ -5,9 +5,8 @@ import com.bearxyz.domain.po.business.*;
 import com.bearxyz.domain.po.sys.Dict;
 import com.bearxyz.domain.po.sys.User;
 import com.bearxyz.domain.vo.ContractReport;
-import com.bearxyz.mapper.ContractMapper;
-import com.bearxyz.mapper.PurchasingOrderItemMapper;
-import com.bearxyz.mapper.StockMapper;
+import com.bearxyz.domain.vo.SaleReport;
+import com.bearxyz.mapper.*;
 import com.bearxyz.repository.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +40,14 @@ public class ReportController {
     private StockItemRepository stockItemRepository;
     @Autowired
     private ContractMapper contractMapper;
+    @Autowired
+    private CompanyRepository companyRepository;
+    @Autowired
+    private ContractRepository contractRepository;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private OrderItemMapper orderItemMapper;
 
     @RequestMapping(value = "/purchasing", method = RequestMethod.GET)
     public String purchasingReport() {
@@ -131,15 +138,14 @@ public class ReportController {
             item.setGoods(goods);
             if (item.getSupplier() != null) {
                 OfficialPartner partner = officialPartnerRepository.findOne(item.getSupplier());
-                if(partner!=null)
+                if (partner != null)
                     item.setSupplierName(partner.getName());
             }
-            if(item.getPurchasingOrderItemId()!=null){
+            if (item.getPurchasingOrderItemId() != null) {
                 PurchasingOrderItem orderItem = purchasingOrderItemRepository.findOne(item.getPurchasingOrderItemId());
                 item.setOrderItem(orderItem);
-                orderCount+=orderItem.getCount();
-            }else
-            {
+                orderCount += orderItem.getCount();
+            } else {
                 item.setOrderItem(new PurchasingOrderItem());
             }
             StockItem i = stockItemRepository.findOne(item.getId());
@@ -184,15 +190,15 @@ public class ReportController {
         project = (project == null) ? "" : project;
         province = (province == null) ? "" : province;
         List<ContractReport> list = contractMapper.getContractReportByProject(startDate, endDate, project, province);
-        for(ContractReport report: list){
+        for (ContractReport report : list) {
             Dict dict = dictRepository.findByMask(report.getProject());
-            if(dict!=null)
+            if (dict != null)
                 report.setProjectName(dict.getName());
         }
         result.setData(list);
         result.setDraw(draw);
-        result.setRecordsTotal((long)list.size());
-        result.setRecordsFiltered((long)list.size());
+        result.setRecordsTotal((long) list.size());
+        result.setRecordsFiltered((long) list.size());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(result);
     }
@@ -211,19 +217,19 @@ public class ReportController {
         project = (project == null) ? "" : project;
         province = (province == null) ? "" : province;
         List<ContractReport> list = contractMapper.getContractReportBySaleman(startDate, endDate, project, province);
-        for(ContractReport report: list){
+        for (ContractReport report : list) {
             Dict dict = dictRepository.findByMask(report.getProject());
-            if(dict!=null)
+            if (dict != null)
                 report.setProjectName(dict.getName());
-            if(report.getCreatedBy()!=null) {
+            if (report.getCreatedBy() != null) {
                 User user = userRepository.findOne(report.getCreatedBy());
                 report.setCreateByName(user.getFirstName() + user.getLastName());
             }
         }
         result.setData(list);
         result.setDraw(draw);
-        result.setRecordsTotal((long)list.size());
-        result.setRecordsFiltered((long)list.size());
+        result.setRecordsTotal((long) list.size());
+        result.setRecordsFiltered((long) list.size());
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(result);
     }
@@ -233,9 +239,271 @@ public class ReportController {
         return "/report/status";
     }
 
+    @RequestMapping(value = "/status", method = RequestMethod.POST)
+    @ResponseBody
+    public String statusList(Integer draw) throws JsonProcessingException {
+        DataTable<Company> result = new DataTable<>();
+        List<Company> companies = companyRepository.findAll();
+        for (Company company : companies) {
+            Contract contracts = contractRepository.findNewestContractByCompanyId(company.getId());
+            if (contracts != null) {
+                Dict dict = dictRepository.findByMask(contracts.getProject());
+                if (dict != null)
+                    contracts.setProjectName(dict.getName());
+            }
+            company.setContract(contracts);
+            if (company.getAutoAssigned()) {
+                User user = userRepository.findUserByProvince(company.getProvince());
+                if (user != null)
+                    company.setUser(user);
+            } else {
+                User user = userMapper.findUserByClientId(company.getId());
+                if (user != null)
+                    company.setUser(user);
+            }
+        }
+        result.setData(companies);
+        result.setDraw(draw);
+        result.setRecordsTotal((long) companies.size());
+        result.setRecordsFiltered((long) companies.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
     @RequestMapping(value = "/comefrom", method = RequestMethod.GET)
     public String comefrom() {
         return "/report/comefrom";
+    }
+
+    @RequestMapping(value = "/comefrom", method = RequestMethod.POST)
+    @ResponseBody
+    public String comfromList(Integer draw) throws JsonProcessingException {
+        DataTable<Company> result = new DataTable<>();
+        List<Company> companies = companyRepository.findAll();
+        for (Company company : companies) {
+            Contract contracts = contractRepository.findNewestContractByCompanyId(company.getId());
+            if (contracts != null) {
+                Dict dict = dictRepository.findByMask(contracts.getProject());
+                if (dict != null)
+                    contracts.setProjectName(dict.getName());
+            }
+            company.setContract(contracts);
+            if (company.getAutoAssigned()) {
+                User user = userRepository.findUserByProvince(company.getProvince());
+                if (user != null)
+                    company.setUser(user);
+            } else {
+                User user = userMapper.findUserByClientId(company.getId());
+                if (user != null)
+                    company.setUser(user);
+            }
+            User creator = userRepository.findOne(company.getCreatedBy());
+            if (creator != null)
+                company.setCreator(creator);
+        }
+        result.setData(companies);
+        result.setDraw(draw);
+        result.setRecordsTotal((long) companies.size());
+        result.setRecordsFiltered((long) companies.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
+    @RequestMapping(value = "/projectsale", method = RequestMethod.GET)
+    public String productSale(){
+        return "/report/projectsale";
+    }
+
+    @RequestMapping(value = "/projectsale", method = RequestMethod.POST)
+    @ResponseBody
+    public String productSaleList(Integer draw, String startDate, String endDate) throws JsonProcessingException{
+        DataTable<SaleReport> result = new DataTable<>();
+        startDate = (startDate == null) ? "1970-1-1" : startDate;
+        endDate = (endDate == null) ? "1970-1-1" : endDate;
+        List<SaleReport> list = orderItemMapper.getSaleReportByProject(startDate, endDate);
+        Integer totalCount = 0;
+        Float totalPrice = (float)0.0;
+        for(SaleReport sr: list){
+            Dict dict = dictRepository.findByMask(sr.getProject());
+            if(dict!=null)
+                sr.setProject(dict.getName());
+            totalCount+=sr.getCount();
+            totalPrice+=sr.getTotalPrice();
+        }
+        SaleReport total = new SaleReport();
+        total.setProject("合计：");
+        total.setCount(totalCount);
+        total.setTotalPrice(totalPrice);
+        list.add(total);
+        result.setData(list);
+        result.setDraw(draw);
+        result.setRecordsTotal((long) list.size());
+        result.setRecordsFiltered((long) list.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
+    @RequestMapping(value = "/productsale", method = RequestMethod.GET)
+    public String productsale(){
+        return "/report/productsale";
+    }
+
+    @RequestMapping(value = "/productsale", method = RequestMethod.POST)
+    @ResponseBody
+    public String productSaleList(Integer draw, String startDate, String endDate, String project) throws JsonProcessingException{
+        DataTable<SaleReport> result = new DataTable<>();
+        startDate = (startDate == null) ? "1970-1-1" : startDate;
+        endDate = (endDate == null) ? "1970-1-1" : endDate;
+        project = (project == null) ? "" : project;
+        List<SaleReport> list = orderItemMapper.getSaleReportByProduct(startDate, endDate, project);
+        Integer totalCount = 0;
+        Float totalPrice = (float)0.0;
+        for(SaleReport sr: list){
+            Dict dict = dictRepository.findByMask(sr.getProject());
+            if(dict!=null)
+                sr.setProject(dict.getName());
+            dict = dictRepository.findByMask(sr.getType());
+            if(dict!=null)
+                sr.setType(dict.getName());
+            Goods goods = goodsRepository.findOne(sr.getGoods());
+            if(goods!=null)
+                sr.setGoods(goods.getName());
+            totalCount+=sr.getCount();
+            totalPrice+=sr.getTotalPrice();
+        }
+        SaleReport total = new SaleReport();
+        total.setProject("合计：");
+        total.setCount(totalCount);
+        total.setTotalPrice(totalPrice);
+        list.add(total);
+        result.setData(list);
+        result.setDraw(draw);
+        result.setRecordsTotal((long) list.size());
+        result.setRecordsFiltered((long) list.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
+    @RequestMapping(value = "/productareasale", method = RequestMethod.GET)
+    public String productAreaSale(){
+        return "/report/productareasale";
+    }
+
+    @RequestMapping(value = "/productareasale", method = RequestMethod.POST)
+    @ResponseBody
+    public String productAreaSaleList(Integer draw, String startDate, String endDate, String project, String province, String city, String district) throws JsonProcessingException{
+        DataTable<SaleReport> result = new DataTable<>();
+        startDate = (startDate == null) ? "1970-1-1" : startDate;
+        endDate = (endDate == null) ? "1970-1-1" : endDate;
+        project = (project == null) ? "" : project;
+        province = (province == null) ? "" : province;
+        city = (city == null) ? "" : city;
+        district = (district == null) ? "" : district;
+        List<SaleReport> list = orderItemMapper.getSaleReportByProductAndProvince(startDate, endDate, project, province, city, district);
+        Integer totalCount = 0;
+        Float totalPrice = (float)0.0;
+        for(SaleReport sr: list){
+            Dict dict = dictRepository.findByMask(sr.getProject());
+            if(dict!=null)
+                sr.setProject(dict.getName());
+            dict = dictRepository.findByMask(sr.getType());
+            if(dict!=null)
+                sr.setType(dict.getName());
+            Goods goods = goodsRepository.findOne(sr.getGoods());
+            if(goods!=null)
+                sr.setGoods(goods.getName());
+            totalCount+=sr.getCount();
+            totalPrice+=sr.getTotalPrice();
+        }
+        SaleReport total = new SaleReport();
+        total.setProject("合计：");
+        total.setCount(totalCount);
+        total.setTotalPrice(totalPrice);
+        list.add(total);
+        result.setData(list);
+        result.setDraw(draw);
+        result.setRecordsTotal((long) list.size());
+        result.setRecordsFiltered((long) list.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
+    @RequestMapping(value = "/customersale", method = RequestMethod.GET)
+    public String customerSale(){
+        return "/report/customersale";
+    }
+
+    @RequestMapping(value = "/customersale", method = RequestMethod.POST)
+    @ResponseBody
+    public String customerSaleList(Integer draw, String startDate, String endDate, String project, String province) throws JsonProcessingException{
+        DataTable<SaleReport> result = new DataTable<>();
+        startDate = (startDate == null) ? "1970-1-1" : startDate;
+        endDate = (endDate == null) ? "1970-1-1" : endDate;
+        project = (project == null) ? "" : project;
+        province = (province == null) ? "" : province;
+        List<SaleReport> list = orderItemMapper.getSaleReportByCustomerAndProvince(startDate, endDate, project, province);
+        Integer totalCount = 0;
+        Float totalPrice = (float)0.0;
+        for(SaleReport sr: list){
+            Dict dict = dictRepository.findByMask(sr.getProject());
+            if(dict!=null)
+                sr.setProject(dict.getName());
+            User user  = userRepository.findOne(sr.getCustomer());
+            if(user!=null)
+                sr.setCustomer(user.getFirstName()+user.getLastName());
+            totalCount+=sr.getCount();
+            totalPrice+=sr.getTotalPrice();
+        }
+        SaleReport total = new SaleReport();
+        total.setProject("合计：");
+        total.setCount(totalCount);
+        total.setTotalPrice(totalPrice);
+        list.add(total);
+        result.setData(list);
+        result.setDraw(draw);
+        result.setRecordsTotal((long) list.size());
+        result.setRecordsFiltered((long) list.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
+    }
+
+    @RequestMapping(value = "/areasale", method = RequestMethod.GET)
+    public String areaSale(){
+        return "/report/areasale";
+    }
+
+    @RequestMapping(value = "/areasale", method = RequestMethod.POST)
+    @ResponseBody
+    public String areaSaleList(Integer draw, String startDate, String endDate, String project, String province, String city, String district, String signPerson) throws JsonProcessingException{
+        DataTable<SaleReport> result = new DataTable<>();
+        startDate = (startDate == null) ? "1970-1-1" : startDate;
+        endDate = (endDate == null) ? "1970-1-1" : endDate;
+        project = (project == null) ? "" : project;
+        province = (province == null) ? "" : province;
+        city = (city == null) ? "" : city;
+        district = (district == null) ? "" : district;
+        signPerson = (signPerson == null) ? "" : signPerson;
+        List<SaleReport> list = orderItemMapper.getSaleReportByClientAndProvince(startDate, endDate, project, province, city, district, signPerson);
+        Integer totalCount = 0;
+        Float totalPrice = (float)0.0;
+        for(SaleReport sr: list){
+            Dict dict = dictRepository.findByMask(sr.getProject());
+            if(dict!=null)
+                sr.setProject(dict.getName());
+            totalCount+=sr.getCount();
+            totalPrice+=sr.getTotalPrice();
+        }
+        SaleReport total = new SaleReport();
+        total.setProject("合计：");
+        total.setCount(totalCount);
+        total.setTotalPrice(totalPrice);
+        list.add(total);
+        result.setData(list);
+        result.setDraw(draw);
+        result.setRecordsTotal((long) list.size());
+        result.setRecordsFiltered((long) list.size());
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.writeValueAsString(result);
     }
 
 }

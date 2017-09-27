@@ -133,6 +133,8 @@ public class Company extends BaseDomain {
     private Boolean failed = false;
 
     @Transient
+    private Contract contract;
+    @Transient
     private Boolean hasAccount = false;
     @Transient
     private java.sql.Date currentStartDate;
@@ -142,6 +144,8 @@ public class Company extends BaseDomain {
     private String createrName = "";
     @Transient
     private User user;
+    @Transient
+    private User creator;
 
     @Transient
     private String goalPie = "";
@@ -636,5 +640,21 @@ public class Company extends BaseDomain {
 
     public void setContracts(List<Contract> contracts) {
         this.contracts = contracts;
+    }
+
+    public Contract getContract() {
+        return contract;
+    }
+
+    public void setContract(Contract contract) {
+        this.contract = contract;
+    }
+
+    public User getCreator() {
+        return creator;
+    }
+
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 }
